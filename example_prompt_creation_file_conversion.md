@@ -1,3 +1,9 @@
+https://chatgpt.com/share/67c006ad-186c-8000-b7b4-742b63778b6b
+
+Here is your updated prompt in the **C.R.A.F.T.** format:
+
+---
+
 **Context:**  
 You are tasked with developing a Python application that uses the Gradio library to provide a web UI. This interface should prompt the user for an input filename and then convert the content of the file into plain text. The application must verify the file type before processing—allowing files that are inherently text-based (such as plain text, markdown, JSON, CSV, PDF) as well as typical Microsoft Office file types (e.g., DOC, DOCX, XLS, XLSX, PPT, PPTX). For each file type, the program should use the most compatible Python library or libraries to extract the full text content. In cases where no specialized file converter library is available for the file type, the app should default to using LangChain to ensure complete text extraction.
 
@@ -27,35 +33,3 @@ You are a top-tier Python developer and AI systems integrator with over two deca
 
 **Target Audience:**  
 This prompt is intended for advanced AI systems (such as ChatGPT 4.0, ChatGPT 3.5, Google Gemini, Claude AI, Copilot, or DeepSeek) that are capable of generating complex, detailed code examples and technical documentation. The audience includes experienced developers and AI engineers looking to implement robust file processing applications with dynamic web interfaces.
-
----
-
-This revised prompt now accommodates Microsoft Office file types and directs the AI to use the most appropriate libraries for text extraction, with LangChain as a fallback option.
-
----
-
-```bash
-file_conversion_app_claude_3.7.py:   pip install -r requirements.txt
-
-file_conversion_app_deepseek-r1.py:   pip install gradio PyPDF2 python-docx openpyxl python-pptx langchain unstructured
-
-file_conversion_app_deepseek-r1_perplexity.py:pip install gradio PyPDF2 markdown2 python-docx openpyxl langchain-community
-
-file_conversion_app_grok3.py:   pip install gradio PyPDF2 markdown2 python-docx openpyxl python-pptx langchain pandas
-
-file_conversion_app_grok3.py:  pip install unstructured
-
-file_conversion_app_o3-mini_perplexity.py:# !pip install gradio langchain PyPDF2 markdown2 python-docx openpyxl pptx
-
-file_conversion_app_qwen2.5.py:pip install gradio PyPDF2 markdown2 python-docx openpyxl pandas langchain
-
-file_conversion_grok3.py:pip install gradio PyPDF2 markdown2 python-docx openpyxl python-pptx langchain pandas
-```
-
-## Installation Requirments:
-
-```bash
-pip install gradio PyPDF2 python-docx openpyxl python-pptx langchain unstructured markdown2 langchain-community pandas # pptx (Windows) 
-
-pip install -U pydantic markupsafe pydantic pydantic-core python-dateutil aiofiles
-```

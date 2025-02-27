@@ -28,6 +28,14 @@ file_conversion_app_qwen2.5.py:pip install gradio PyPDF2 markdown2 python-docx o
 
 file_conversion_grok3.py:pip install gradio PyPDF2 markdown2 python-docx openpyxl python-pptx langchain pandas
 ```
+
+-  10831 Feb 27 16:59 file_conversion_app_claude_3.7.py
+-   6422 Feb 27 17:01 file_conversion_app_grok3.py
+-   5314 Feb 27 17:02 file_conversion_app_o3-mini_perplexity.py
+-   4128 Feb 27 17:01 file_conversion_app_deepseek-r1_perplexity.py
+-   3689 Feb 27 17:00 file_conversion_app_deepseek-r1.py
+-   3122 Feb 27 17:04 file_conversion_app_qwen2.5.py
+
 ---
 ## Prompt
 ```

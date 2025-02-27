@@ -2,6 +2,7 @@
 pip install -U gradio langchain_community PyPDF2 python-docx openpyxl python-pptx
 python file_conversion_app_qwq_improved_claude3.7.py
 ```
+https://chat.qwenlm.ai/s/30c2b059-adf5-4d90-a165-e162ffdd249b
 ![image](https://github.com/user-attachments/assets/fdfff281-5c44-48a2-93cf-fde82d6e5a39)
 
 ```bash

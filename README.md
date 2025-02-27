@@ -1,4 +1,10 @@
 ```bash
+pip install -U gradio langchain_community PyPDF2 python-docx openpyxl python-pptx
+python file_conversion_app_qwq_improved_claude3.7.py
+```
+![image](https://github.com/user-attachments/assets/fdfff281-5c44-48a2-93cf-fde82d6e5a39)
+
+```bash
 python file_conversion_app_claude_3.7.py
 ```
 ![image](https://github.com/user-attachments/assets/caabe544-ee02-4b29-b22e-429fa43204ab)

@@ -1,5 +1,12 @@
-
+```bash
+python file_conversion_app_claude_3.7.py
+```
 ![image](https://github.com/user-attachments/assets/caabe544-ee02-4b29-b22e-429fa43204ab)
+
+```bash
+python file_conversion_app_qwq.py
+```
+![image](https://github.com/user-attachments/assets/41df0e05-e548-4e47-a43f-b187ce300948)
 
 ## Installation Requirments:
 
@@ -8,7 +15,6 @@ pip install gradio PyPDF2 python-docx openpyxl python-pptx langchain unstructure
 
 pip install -U pydantic markupsafe pydantic pydantic-core python-dateutil aiofiles
 
-python file_conversion_app_claude_3.7.py
 ```
 
 ```bash

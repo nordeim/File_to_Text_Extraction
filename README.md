@@ -4,23 +4,23 @@ python file_conversion_app_qwq_improved_claude3.7.py
 ```
 https://chat.qwenlm.ai/s/30c2b059-adf5-4d90-a165-e162ffdd249b
 ![image](https://github.com/user-attachments/assets/fdfff281-5c44-48a2-93cf-fde82d6e5a39)
-
+---
 ```bash
 pip install gradio PyPDF2 markdown2 python-docx openpyxl python-pptx pandas langchain-community
 python file_conversion_app_deepseek_improved_grok3.py
 ```
 ![image](https://github.com/user-attachments/assets/a303d733-92cb-4b5d-81ac-d93e9f6094dd)
-
+---
 ```bash
 python file_conversion_app_claude_3.7.py
 ```
 ![image](https://github.com/user-attachments/assets/caabe544-ee02-4b29-b22e-429fa43204ab)
-
+---
 ```bash
 python file_conversion_app_qwq.py
 ```
 ![image](https://github.com/user-attachments/assets/41df0e05-e548-4e47-a43f-b187ce300948)
-
+---
 ## Installation Requirments:
 
 ```bash

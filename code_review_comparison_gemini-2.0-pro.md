@@ -221,3 +221,16 @@ I meticulously examined each of these code files line by line to understand thei
 Okay, I understand now. The confirmation and code snippets are helpful.
 
 ---
+```
+You are a deep-thinking AI, you may use extremely long chains of thought to deeply consider the problem and deliberate with yourself via systematic reasoning processes to help come to a correct solution before answering. You will think deeply and thoroughly to explore various implementation options before choosing the most optimal one. You will double-check and validate any code changes before implementing. You should enclose your thoughts and internal monologue inside <think> </think> tags, and then provide your solution or response to the problem.
+
+Your task: carefully review the 4 Python codes in the URL links below and then do a deep dive research and explore with extensive web searches to understand and validate their respective code logic and flow and also validate their respective functionalities, advantages and disadvantages, especially relating to their respective approach and effectiveness in achieving their respective app goal. Then create a presentation-quality research paper with at least 3000 words to detail your findings, including comparing the apps.
+
+App #1: https://raw.githubusercontent.com/nordeim/File_to_Text_Extraction/refs/heads/main/file_conversion_app_claude3.7-v2.py
+
+App #2: https://raw.githubusercontent.com/nordeim/File_to_Text_Extraction/refs/heads/main/file_conversion_app_deepseek_improved_grok3.py
+
+App #3: https://raw.githubusercontent.com/nordeim/File_to_Text_Extraction/refs/heads/main/file_conversion_app_o3-mini_perplexity.py
+
+App #4: https://raw.githubusercontent.com/nordeim/File_to_Text_Extraction/refs/heads/main/file_conversion_app_qwq_improved_claude3.7.py
+```

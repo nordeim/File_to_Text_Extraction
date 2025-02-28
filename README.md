@@ -1,9 +1,15 @@
 ```bash
-pip install -U gradio langchain_community PyPDF2 python-docx openpyxl python-pptx
+pip install gradio langchain_community PyPDF2 python-docx openpyxl python-pptx
 python file_conversion_app_qwq_improved_claude3.7.py
 ```
 https://chat.qwenlm.ai/s/30c2b059-adf5-4d90-a165-e162ffdd249b
 ![image](https://github.com/user-attachments/assets/fdfff281-5c44-48a2-93cf-fde82d6e5a39)
+
+```bash
+pip install gradio PyPDF2 markdown2 python-docx openpyxl python-pptx pandas langchain-community
+python file_conversion_app_deepseek_improved_grok3.py
+```
+![image](https://github.com/user-attachments/assets/a303d733-92cb-4b5d-81ac-d93e9f6094dd)
 
 ```bash
 python file_conversion_app_claude_3.7.py

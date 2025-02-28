@@ -1,4 +1,5 @@
 ```bash
+// conda create -n File_to_Text_Extraction python=3.11 -y && conda activate File_to_Text_Extraction # optional
 pip install gradio langchain_community PyPDF2 python-docx openpyxl python-pptx
 python file_conversion_app_qwq_improved_claude3.7.py
 ```

@@ -1,10 +1,5 @@
-```bash
-python file_conversion_app-v3.py (file_conversion_app_claude_deepseek_grok3.py)
-```
----
-I've thoroughly reviewed the code and it appears to be complete and addresses all the requirements. Let me create a detailed technical design specification document for this application.
+I've thoroughly reviewed the code, file_conversion_app-v3.py (file_conversion_app_claude_deepseek_grok3.py), and it appears to be complete and addresses all the requirements. Let me create a detailed technical design specification document for this application.
 
-# Technical Design Specification Document
 # File Text Extractor Application v3.0
 
 ## Table of Contents

@@ -1,0 +1,2585 @@
+=== Gemini - Ubuntu live filesystem guide.pdf ===
+--- Page 1 ---
+give me a clear step-by-step guide to create a SquashFS filesystem for a custom Ubuntu 24.04  
+installation that you can live boot on another computer using the `boot=casper` option in GRUB
+Creating a SquashFS Live Boot Image for Ubuntu 24.04
+Understanding the Process:
+A SquashFS filesystem is a compressed read-only file system that is ideal for creating  
+bootable live images. W e'll create a custom Ubuntu 24.04 image that can be booted  
+directly from a USB drive or mounted as a loop device.
+Step-by-Step Guide:
+1. Prepare the Base System:
+Install Ubuntu 24.04:  Install Ubuntu 24.04 on a virtual machine or physical
+machine.
+Customize the System:  Install any additional packages or configurations you need
+for your custom image.
+Remove Unnecessary Packages:  Use apt autoremove  to remove unnecessary
+packages.
+2. Create a Rootfs Directory:
+Create a Directory:  Create a directory to hold the root filesystem of your live
+image. For example:
+Bash
+sudo mkdir live-rootfs
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 1/30
+
+--- Page 2 ---
+Copy the Root Filesystem:  Copy the contents of your Ubuntu installation's root
+filesystem to the  live-rootfs  directory . This can be done using  rsync :
+3. Create an Initramfs Image:
+Install  initramfs-tools :
+Create an Initramfs Image:
+4. Create the SquashFS Image:Bash
+sudo rsync -axv / live-rootfs/
+Use code with caution.
+Bash
+sudo apt install initramfs-tools
+Use code with caution.
+Bash
+sudo chroot live-rootfs /bin/bash
+sudo update-initramfs -u
+exit
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 2/30
+
+--- Page 3 ---
+Install  mksquashfs :
+Create the SquashFS Image:
+Clean Up:
+5. Create a Bootable USB Drive:
+Format the USB Drive:  Use a tool like  dd or a graphical disk utility to format the
+USB drive as F AT32.
+Copy the SquashFS Image:  Copy the  squashfs.img  file to the root directory of
+the USB drive.Bash
+sudo apt install mksquashfs
+Use code with caution.
+Bash
+sudo mksquashfs live-rootfs squashfs.img -comp xz
+Use code with caution.
+Bash
+sudo rm -rf live-rootfs
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 3/30
+
+--- Page 4 ---
+what are the additional packages needed to support a Ubuntu live boot process via the Grub  
+menu's boot=casper option?Create a Bootloader Configuration:  Create a GRUB configuration file
+(e.g.,  grub.cfg ) with the following content:
+Install GRUB:  Use a tool like  qemu-system-x86_64  or a physical machine to install
+GRUB on the USB drive.
+Booting the Live Image:
+Plug the USB Drive:  Plug the USB drive into the target computer .
+Boot from the USB Drive:  Configure the BIOS/UEFI to boot from the USB drive.
+Select the Live Image:  Select "Ubuntu 24.04 Live" from the GRUB menu.
+Additional Tips:
+Kernel Customization:  If you need to customize the kernel, you can rebuild it and
+replace the kernel and initramfs images in the  live-rootfs  directory .
+Persistent Storage:  For persistent storage, you can use a loopback device or a
+UnionFS filesystem.
+Testing:  Thoroughly test the live image on dif ferent hardware configurations to ensure
+compatibility .
+By following these steps, you can create a highly customized Ubuntu 24.04 live image  
+that can be booted on various systems.menuentry "Ubuntu 24.04 Live" {
+    linux /squashfs.img boot=casper
+    initrd /squashfs.img
+}10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 4/30
+
+--- Page 5 ---
+Core Packages for Live Boot with boot=casper
+To create a functional Ubuntu live boot environment using the boot=casper  option in  
+GRUB, you'll primarily need the following packages installed on your base system:
+1. initramfs-tools : This package is essential for creating the initial RAM file system
+(initramfs), which is a compressed archive of files needed to boot the kernel.
+2. casper : This package provides the necessary scripts and configuration files for the
+live environment, including the  boot=casper  functionality .
+Additional Packages for Enhanced Functionality
+While not strictly necessary for the basic live boot, these packages can significantly  
+enhance the live session experience:
+live-build : This tool automates the process of creating custom live images,
+including customizing the package list, kernel configuration, and more.    
+ubiquity : This package provides the installer for Ubuntu, which can be used to
+install Ubuntu to a hard drive from the live environment.    
+debian-installer : This package provides the Debian installer , which can be used to
+install Debian-based systems from the live environment.
+lxde , xfce4 , or kde-plasma-desktop : These packages provide lightweight desktop
+environments that can be used in the live session.
+network-manager : This package provides network management tools, allowing the
+live system to connect to the network.    
+firmware-linux : This package provides firmware for various hardware components,
+which may be necessary for certain devices to work properly in the live environment.
+Remember:
+Customization:  The specific packages you need will depend on the desired
+functionality of your live system.
+Testing:  Thoroughly test your live image on dif ferent hardware configurations to
+ensure compatibility .1
+1.overview-of-tools - Debian Live
+Manual
+live-team.pages.debian.net10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 5/30
+
+--- Page 6 ---
+how to install live-build and how to use or run it?Security:  Keep your base system and packages up-to-date to address security
+vulnerabilities.
+By carefully selecting and installing the necessary packages, you can create a robust  
+and feature-rich Ubuntu live boot environment.
+overview-of-tools - Debian Live
+Manual
+live-team.pages.debian.netUbiquity - Ubuntu Wiki
+wiki.ubuntu.comNetworkMana
+wiki.debian
+Installing live-build
+On Debian-based systems:
+1. Update package lists:
+Bash
+sudo apt update
+Use code with caution.Sources and related content10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 6/30
+
+--- Page 7 ---
+2. Install live-build:
+Using live-build
+Once installed, you can use live-build to create custom live images. Here's a basic  
+example:
+1. Create a configuration directory:
+2. Initialize the configuration:
+This will create a config  directory with default settings.Bash
+sudo apt install live-build
+Use code with caution.
+Bash
+mkdir my-live-image
+cd my-live-image
+Use code with caution.
+Bash
+lb config
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 7/30
+
+--- Page 8 ---
+3. Customize the configuration:
+You can edit the configuration files in the config  directory to customize the image.  
+For example, you can:
+Specify the target architecture (e.g.,  i386 , amd64 )
+Choose a distribution (e.g.,  debian , ubuntu )
+Select packages to include
+Configure the kernel and initramfs
+Set up networking and other system settings
+4. Build the image:
+This will build the live image and place it in the build  directory .
+Additional Tips:
+Consult the live-build documentation:  For more detailed information and advanced
+usage, refer to the of ficial documentation:  https://live-team.pages.debian.net/live-
+manual/html/live-manual/index.en.html
+Use configuration templates:  Live-build provides pre-configured templates that you
+can use as a starting point.    
+Test your image:  Thoroughly test your live image on dif ferent hardware configurations
+to ensure compatibility .
+Consider automation:  You can automate the build process using scripts to streamline
+the creation of multiple live images.
+By following these steps and customizing the configuration, you can create tailored live  
+images for specific use cases.Bash
+lb build
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 8/30
+
+--- Page 9 ---
+does "lb config" command only to Debian? can it work for Ubuntu's separate Casper boot  
+system?github.com
+MIT
+github.com
+No, the lb config  command is specific to the live-build  tool, which is primarily  
+designed for Debian-based systems. It's not directly applicable to Ubuntu's separate  
+Casper boot system.
+However , you can still create custom Ubuntu live images by using the casper  package  
+and manually configuring the necessary files. This approach of fers more flexibility but  
+requires a deeper understanding of the boot process.
+Here are some alternative approaches to creating custom Ubuntu live images:
+1. Using Remastersys:
+Remastersys is a graphical tool that can be used to create custom live images
+based on existing Ubuntu installations.    
+It simplifies the process of selecting packages, customizing settings, and creating
+the final image.Sources and related content10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 9/30
+
+--- Page 10 ---
+2. Manual Configuration:
+You can manually create a custom live image by following these steps:
+1. Prepare the base system:  Install the desired packages and configurations on a
+base Ubuntu system.
+2. Create the root filesystem:  Copy the root filesystem of the base system to a
+new directory .
+3. Create an initramfs image:  Use initramfs-tools  to create an initramfs image
+that includes the  casper  hook.
+4. Create the SquashFS image:  Compress the root filesystem into a SquashFS
+image.
+5. Create a bootable USB drive:  Format a USB drive and copy the SquashFS
+image and GRUB configuration to it.
+While the manual approach of fers more control, it can be more complex and time-
+consuming. Remastersys provides a more user-friendly way to create custom Ubuntu  
+live images.
+Remember to test your custom live images on dif ferent hardware configurations to  
+ensure compatibility .
+Remastersys - Create custom Ubuntu
+(live) CD - Tutorial - Dedoimedo
+www.dedoimedo.comSources and related content10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 10/30
+
+--- Page 11 ---
+Let say I already have a working Ubuntu 24.04 system on a physical partition and I want  
+to create a filesystem.squashfs image file that I can subsequently boot using the  
+"boot=casper" option in Grub.
+…
+Preparing Your Ubuntu 24.04 System for a SquashFS Live Image
+1. Install Essential Packages:
+Ensure that the following packages are installed on your Ubuntu system:
+2. Create the Root Filesystem Directory:
+Create a directory to hold the root filesystem of your live image. For example:
+3. Copy the Root Filesystem:
+Copy the contents of your Ubuntu installation's root filesystem to the live-rootfs  
+directory . This can be done using rsync :Bash
+sudo apt install mksquashfs casper
+Use code with caution.
+Bash
+sudo mkdir live-rootfs
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 11/30
+
+--- Page 12 ---
+4. Create an Initramfs Image:
+5. Modify /etc/default/grub :
+Edit /etc/default/grub  to ensure that the GRUB_CMDLINE_LINUX_DEFAULT  line contains 
+boot=casper  if you want it to be the default boot option.
+6. Update the Grub Configuration:
+Update the GRUB configuration to include an entry for your live image. You can use the  
+following command to update the GRUB configuration:Bash
+sudo rsync -axv / live-rootfs/
+Use code with caution.
+Bash
+sudo chroot live-rootfs /bin/bash
+sudo update-initramfs -u
+exit
+Use code with caution.
+Bash
+sudo update-grub
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 12/30
+
+--- Page 13 ---
+7. Create the SquashFS Image:
+Now you can create the SquashFS image using mksquashfs :
+Creating a Bootable USB Drive:
+1. Format the USB Drive:  Format the USB drive as F AT32.
+2. Copy the SquashFS Image:  Copy the  squashfs.img  file to the root directory of the
+USB drive.
+3. Create a GRUB Configuration:  Create a GRUB configuration file (e.g.,  grub.cfg )
+with the following content:
+4. Install GRUB:  Use a tool like  qemu-system-x86_64  or a physical machine to install
+GRUB on the USB drive.
+Additional Considerations:
+Kernel Customization:  If you need to customize the kernel, you can rebuild it and
+replace the kernel and initramfs images in the  live-rootfs  directory .
+Persistent Storage:  For persistent storage, you can use a loopback device or a
+UnionFS filesystem.
+Testing:  Thoroughly test the live image on dif ferent hardware configurations to ensure
+compatibility .Bash
+sudo mksquashfs live-rootfs squashfs.img -comp xz
+Use code with caution.
+menuentry "Ubuntu 24.04 Live" {
+    linux /squashfs.img boot=casper
+    initrd /squashfs.img
+}10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 13/30
+
+--- Page 14 ---
+how to ensure that the initrd.img file created in step #4 contains the necessary casper boot  
+files that will look for and mount the the squashfs live image file, do the necessary  
+initializations before switching to the mounted squashfs system as the root?By following these steps, you can create a bootable live image of your Ubuntu 24.04  
+system that can be booted using the boot=casper  option in GRUB.
+Ensuring Casper Boot Files in the Initramfs Image
+The update-initramfs  command in step 4 is crucial for creating the initramfs image. It  
+automatically includes the necessary modules and scripts, including the Casper boot  
+files, to ensure a smooth boot process.
+However , to be extra cautious and to verify the inclusion of Casper boot files, you can  
+manually check the contents of the initramfs image:
+1. Extract the Initramfs Image:
+This will extract the contents of the initramfs image to your current directory .
+2. Check for Casper Files:
+Look for files like casper/initrd  and other Casper-related scripts and modules.  Bash
+sudo zcat /boot/initrd.img-$(uname -r) | cpio -i
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 14/30
+
+--- Page 15 ---
+If I use the debian "live-build" package to build a Ubuntu based live system image, do I use  
+"boot=live" or "boot=casper" option in Grub to load it?They should be present in the extracted files.
+If you find that the necessary Casper files are missing, you can manually add them to  
+the initramfs image using the mkinitramfs  command. However , this requires a deep  
+understanding of the boot process and the initramfs structure. It's generally  
+recommended to rely on the update-initramfs  command to handle this automatically .
+Additional Tips:
+Test Your Live Image:  Before deploying your live image, test it on dif ferent hardware
+configurations to ensure compatibility and proper booting.
+Consider Using a Live Image Creation Tool: Tools like  live-build  can automate the
+process of creating custom live images, including the generation of the initramfs image
+with the necessary Casper files.
+Update Your Base System:  Ensure that your base system is up-to-date with the latest
+packages and security patches. This will help to minimize potential issues with your
+live image.
+By following these guidelines and testing your live image thoroughly , you can create a  
+reliable and functional live boot environment using the boot=casper  option in GRUB.
+You would typically use the boot=casper  option in GRUB to load a live system image  
+created with live-build . This option is specifically designed for booting live systems  
+based on the Debian Installer framework, which is the foundation for many Linux  
+distributions, including Ubuntu.
+The boot=casper  option triggers the Casper boot process, which handles the initial boot  
+stages, mounts the live system's root filesystem, and starts the live environment. This 10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 15/30
+
+--- Page 16 ---
+So after I execute the following steps for a working Ubunbu 24.04 system mounted on  
+/mnt, the "update-initramfs -u" in the "chroot /mnt /bin/bash" environment will be able to  
+automatically include all the necessary casper boot scripts in the resulting initrd.img file?
+…
+can I say that the live-build tool will generate all the necessary "boot=casper" scripts that the  
+"update-initramfs -u" step will automatically include when creating the initrd.img? process is well-suited for live systems created with live-build .
+Yes, that's correct. When you run update-initramfs -u  within the chroot environment  
+of your Ubuntu 24.04 system, it will automatically include the necessary Casper boot  
+scripts in the generated initrd.img file.
+The live-build  tool is designed to create Debian-based live systems, including  
+Ubuntu. It handles the configuration and build process, ensuring that the resulting live  
+image includes all the required components for booting, including the Casper boot  
+scripts.
+Therefore, after following the steps you outlined, you can boot your live image using the 
+boot=casper  option in GRUB.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 16/30
+
+--- Page 17 ---
+so I just need to install the Ubuntu "casper" package when I switch to the chroot environment  
+before running "update-initramfs -u"?Yes, that's an accurate statement.
+The live-build  tool is designed to create Debian-based live systems, including  
+Ubuntu. It automatically generates the necessary configuration files and scripts,  
+including the Casper boot scripts, which are essential for booting a live system using the 
+boot=casper  option.
+When you run update-initramfs -u  within the chroot environment of your Ubuntu  
+24.04 system, it will incorporate these Casper boot scripts into the generated initrd.img  
+file. This ensures that your live system can boot correctly and provide the expected live  
+environment.
+No, you don't need to install the casper  package within the chroot environment.
+The casper  package is a system package that interacts with the initramfs-tools  to 
+create the necessary boot environment. When you run update-initramfs -u  within the  
+chroot environment, it leverages the casper  package and its configuration from the host  
+system to include the appropriate scripts and modules in the generated initramfs image.
+Therefore, the key steps to create a bootable SquashFS image are:
+1. Install  mksquashfs  and casper  on the host system:
+Bash10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 17/30
+
+--- Page 18 ---
+2. Create a root filesystem directory:
+3. Copy the root filesystem:
+4. Chroot into the root filesystem:sudo apt install mksquashfs casper
+Use code with caution.
+Bash
+sudo mkdir live-rootfs
+Use code with caution.
+Bash
+sudo rsync -axv / live-rootfs/
+Use code with caution.
+Bash
+sudo chroot live-rootfs /bin/bash
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 18/30
+
+--- Page 19 ---
+5. Update the initramfs:
+6. Exit the chroot environment:
+7. Create the SquashFS image:
+By following these steps, you'll ensure that the generated initramfs image includes the  
+necessary Casper boot scripts, allowing your live system to boot correctly using the 
+boot=casper  option in GRUB.Bash
+sudo update-initramfs -u
+Use code with caution.
+Bash
+exit
+Use code with caution.
+Bash
+sudo mksquashfs live-rootfs squashfs.img -comp xz
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 19/30
+
+--- Page 20 ---
+In your last response, you didn't include the "live-build" script in the 7 steps? is it an  
+omission?
+You're absolutely right. I apologize for the oversight. The live-build  tool is a powerful  
+way to automate the creation of custom live systems, including Ubuntu-based ones.
+While it's not strictly necessary to use live-build  for a simple SquashFS live image, it  
+can significantly streamline the process and provide additional features and flexibility .
+Here's a revised approach using live-build :
+1. Install  live-build :
+2. Create a configuration directory:Bash
+sudo apt install live-build
+Use code with caution.
+Bash
+mkdir my-live-image10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 20/30
+
+--- Page 21 ---
+3. Initialize the configuration:
+4. Customize the configuration:
+Edit the configuration files in the  config  directory to specify the target
+architecture, distribution, packages, kernel, and other settings.
+5. Build the image:
+This will create a bootable live image in the build  directory , which you can then copy to  
+a USB drive or other storage medium.
+Remember:
+Configuration is Key:  The lb config  step is crucial for customizing your live image.
+Test Thoroughly:  Test your live image on dif ferent hardware configurations to ensure
+compatibility .cd my-live-image
+Use code with caution.
+Bash
+lb config
+Use code with caution.
+Bash
+lb build
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 21/30
+
+--- Page 22 ---
+If I install and use the Remastersys tool, do I still need the above mentioned steps for the  
+creation of a live Ubuntu system image?Consider Additional Tools:  Tools like  remastersys  can also be useful for creating
+custom live images.
+By using live-build , you can automate the process of creating a custom Ubuntu live  
+image, including the generation of the initramfs image with the necessary Casper boot  
+scripts. This can save you time and ef fort, especially for complex configurations.
+No, you don't need to follow the manual steps if you're using Remastersys.
+Remastersys is a user-friendly tool designed to automate the process of creating custom  
+live images.  It handles the complexities of creating the initramfs image, configuring the  
+boot loader , and packaging the system into a bootable image.    
+Here's a basic workflow using Remastersys:
+1. Install Remastersys:
+Bash
+sudo apt install remastersys
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 22/30
+
+--- Page 23 ---
+2. Launch Remastersys:
+3. Follow the On-Screen Instructions:  The Remastersys GUI will guide you through the
+process of creating a live image.  You can choose to include your personal data or
+create a minimal live system.    
+Remastersys will handle:
+Creating the initramfs image with the necessary Casper boot scripts.
+Configuring the boot loader .
+Packaging the system into a bootable image (ISO or SquashFS).
+By using Remastersys, you can significantly simplify the process of creating a custom  
+Ubuntu live image.    Bash
+sudo remastersys-gui
+Use code with caution.
+Remastersys - Create custom Ubuntu
+(live) CD - Tutorial - Dedoimedo
+www.dedoimedo.comSources and related content10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 23/30
+
+--- Page 24 ---
+How can I manually unpack an existing initrd.img file, add additional files (binaries and  
+scripts) to the extracted folder and then re-pack the folder as a new initrd.img file?
+Unpacking and Repacking an Initramfs Image
+Unpacking the Initramfs Image:
+1. Identify the correct initramfs image:
+Use the following command to list available initramfs images:
+Choose the appropriate image based on your kernel version.
+2. Unpack the image:
+This will extract the contents of the initramfs image to your current directory .
+Adding Files to the Initramfs:Bash
+ls /boot/initrd.img-*
+Use code with caution.
+Bash
+sudo zcat /boot/initrd.img-$(uname -r) | cpio -i
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 24/30
+
+--- Page 25 ---
+1. Copy the additional files:  Copy the files you want to add to the initramfs image into
+the extracted directory .
+2. Check file permissions:  Ensure that the permissions of the added files are
+appropriate for the initramfs environment. You may need to adjust permissions using
+the chmod  command.
+Repacking the Initramfs Image:
+1. Create a new directory for the repackaged image:
+2. Copy the extracted files:
+3. Create the new initramfs image:Bash
+mkdir new-initramfs
+Use code with caution.
+Bash
+cp -r * new-initramfs/
+Use code with caution.
+Bash
+cd new-initramfs
+find . | cpio -H newc -o | gzip > ../new-initrd.img10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 25/30
+
+--- Page 26 ---
+4. Install the new initramfs image:
+If you want to replace the existing initramfs image, you can use the  update-
+initramfs  command:
+Or, you can create a new kernel image with the new initramfs image:
+You'll then need to update your bootloader configuration to use the new kernel and
+initramfs images.
+Important Considerations:
+File Permissions:  Ensure that the permissions of the added files are appropriate for
+the initramfs environment.
+Dependencies:  If your added files have dependencies on other libraries or modules,
+you'll need to include them in the initramfs as well.
+Boot Process:  Be careful not to modify critical files or scripts that are essential for the
+boot process.Use code with caution.
+Bash
+sudo cp new-initrd.img /boot/initrd.img-$(uname -r)
+sudo update-initramfs -u
+Use code with caution.
+Bash
+sudo mkinitramfs -o /boot/initrd.img-new-kernel-version
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 26/30
+
+--- Page 27 ---
+Is step #4 necessary since I am repacking a new initrd.img based on a existing initrd.img? Testing:  Thoroughly test your modified initramfs image to ensure that it boots correctly
+and functions as expected.
+By following these steps, you can manually modify the contents of an initramfs image  
+and create a custom boot environment.
+You're absolutely right.  Step 4, which involves creating a new directory and copying files,  
+is redundant when repacking an existing initramfs image.
+Here's a simplified approach:
+1. Unpack the existing initramfs:
+2. Add additional files:  Copy or modify the necessary files directly in the extracted
+directory .
+3. Repack the initramfs:Bash
+sudo zcat /boot/initrd.img-$(uname -r) | cpio -i
+Use code with caution.
+Bash10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 27/30
+
+--- Page 28 ---
+In step #4 above, you add the "update-initramfs -u" command after the "cp new-
+initrd.img ..." command, won't this replace the manual customizations already done on  
+the new-initrd.img in steps #1 to #3?4. Install the new initramfs:
+This streamlined approach avoids unnecessary steps and directly modifies the extracted  
+files, ensuring a clean and ef ficient repackaging process.find . | cpio -H newc -o | gzip > ../new-initrd.img
+Use code with caution.
+Bash
+sudo cp new-initrd.img /boot/initrd.img-$(uname -r)
+sudo update-initramfs -u
+Use code with caution.
+You're absolutely right. The update-initramfs -u  command can potentially overwrite  
+manual changes made to the initramfs image.
+Here's a corrected approach:Show drafts10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 28/30
+
+--- Page 29 ---
+1. Unpack the existing initramfs:
+2. Add additional files or modify existing ones:  Make the necessary changes directly to
+the extracted files.
+3. Repack the initramfs:
+4. Install the new initramfs:  Instead of using  update-initramfs -u , directly install the
+new initramfs:
+By directly copying the new initramfs image to the /boot  directory and updating the  
+GRUB configuration, you can ensure that your manual modifications are preserved.Bash
+sudo zcat /boot/initrd.img-$(uname -r) | cpio -i
+Use code with caution.
+Bash
+find . | cpio -H newc -o | gzip > ../new-initrd.img
+Use code with caution.
+Bash
+sudo cp new-initramfs.img /boot/initrd.img-$(uname -r)
+Use code with caution.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 29/30
+
+--- Page 30 ---
+Remember:
+GRUB Configuration:  If you've modified the kernel or initramfs image, you may need
+to update your GRUB configuration to point to the new images.
+Testing:  Always test your modified system to ensure that it boots correctly and
+functions as expected.
+By following these steps, you can ef fectively customize your initramfs image and boot  
+your system with the desired modifications.10/31/24, 6:20 PM Gemini
+https://gemini.google.com/app/16523e4aba615d0f 30/30
+
+
+=== English Course - vocabulary and grammar tests.pdf ===
+--- Page 1 ---
+Sure!Belowaretwotests:oneforvocabulary andanotherforgrammar.
+###Vocabulary Test:MostCommon 100Words
+**Instructions:** Choosethecorrectwordtocomplete eachsentence.
+1.___sunisshining.
+-a)A
+-b)An
+-c)The
+2.I___abook.
+-a)have
+-b)has
+-c)had
+3.She___goingtoschool.
+-a)is
+-b)are
+-c)be
+4.Thisis___apple.
+-a)a
+-b)an
+-c)the
+5.They___happy.
+-a)is
+-b)are
+-c)am
+6.He___likepizza.
+-a)don't
+-b)doesn't
+-c)isn't
+7.Wewillgo___thepark.
+-a)to
+-b)too
+-c)two
+8.She___anewdress.
+-a)buy
+-b)buys
+-c)buying
+9.___isyourname?
+-a)Who
+-b)What
+-c)Where
+10.I___coffeeeverymorning.
+-a)drink
+-b)drinks
+-c)drinking
+11.They___athomeyesterday.
+-a)is
+-b)were
+-c)was
+12.___youlikechocolate?
+-a)Do
+-b)Does
+-c)Did
+13.He___hishomework.
+-a)did
+-b)does
+-c)do
+
+--- Page 2 ---
+14.She___adoctor.
+-a)is
+-b)are
+-c)am
+15.___youcoming?
+-a)Are
+-b)Is
+-c)Am
+16.I___tothestore.
+-a)go
+-b)goes
+-c)going
+17.___youseethatmovie?
+-a)Have
+-b)Has
+-c)Had
+18.They___playingsoccer.
+-a)is
+-b)are
+-c)am
+19.We___apartynextweek.
+-a)have
+-b)has
+-c)willhave
+20.___isitgoing?
+-a)How
+-b)What
+-c)Why
+21.She___tothegym.
+-a)go
+-b)goes
+-c)going
+22.It___raining.
+-a)is
+-b)are
+-c)am
+23.___isyourfavoritecolor?
+-a)Which
+-b)What
+-c)Who
+24.We___friends.
+-a)are
+-b)is
+-c)am
+25.He___tall.
+-a)is
+-b)are
+-c)am
+26.___theycomingover?
+-a)Are
+-b)Is
+-c)Am
+27.She___thebookyesterday.
+-a)read
+-b)reads
+
+--- Page 3 ---
+-c)reading
+28.I___anewphone.
+-a)have
+-b)has
+-c)had
+29.They___tothebeachlastsummer.
+-a)went
+-b)go
+-c)goes
+30.___youready?
+-a)Are
+-b)Is
+-c)Am
+31.He___happy.
+-a)look
+-b)looks
+-c)looking
+32.We___dinnerat7PM.
+-a)have
+-b)has
+-c)had
+33.___youseenmykeys?
+-a)Have
+-b)Has
+-c)Had
+34.She___agreatsinger.
+-a)is
+-b)are
+-c)am
+35.They___alotoffun.
+-a)have
+-b)has
+-c)having
+36.I___toworkeveryday.
+-a)walk
+-b)walks
+-c)walking
+37.___isshedoing?
+-a)What
+-b)Where
+-c)Who
+38.He___acar.
+-a)have
+-b)has
+-c)had
+39.___youtired?
+-a)Are
+-b)Is
+-c)Am
+40.We___inthepark.
+-a)play
+-b)plays
+-c)playing
+41.She___breakfast at8AM.
+-a)eats
+
+--- Page 4 ---
+-b)eat
+-c)eating
+42.___youlikeicecream?
+-a)Do
+-b)Does
+-c)Did
+43.He___watching TV.
+-a)is
+-b)are
+-c)am
+44.They___abook.
+-a)read
+-b)reads
+-c)reading
+45.I___tired.
+-a)am
+-b)is
+-c)are
+46.___wegoing?
+-a)Are
+-b)Is
+-c)Am
+47.She___abeautiful dress.
+-a)wear
+-b)wears
+-c)wearing
+48.They___theirhomework.
+-a)do
+-b)does
+-c)did
+49.___youlikethissong?
+-a)Do
+-b)Does
+-c)Did
+50.He___ateacher.
+-a)is
+-b)are
+-c)am
+51.We___lunchtogether.
+-a)have
+-b)has
+-c)had
+52.___itraining?
+-a)Is
+-b)Are
+-c)Am
+53.She___tothestore.
+-a)go
+-b)goes
+-c)going
+54.They___happy.
+-a)are
+-b)is
+-c)am
+55.I___astudent.
+
+--- Page 5 ---
+-a)am
+-b)is
+-c)are
+56.___youcoming?
+-a)Are
+-b)Is
+-c)Am
+57.He___abook.
+-a)read
+-b)reads
+-c)reading
+58.We___toschool.
+-a)go
+-b)goes
+-c)going
+59.She___adog.
+-a)have
+-b)has
+-c)had
+60.They___playing.
+-a)are
+-b)is
+-c)am
+61.I___coffeeinthemorning.
+-a)drink
+-b)drinks
+-c)drinking
+62.___youready?
+-a)Are
+-b)Is
+-c)Am
+63.He___athome.
+-a)is
+-b)are
+-c)am
+64.We___amovie.
+-a)watch
+-b)watches
+-c)watching
+65.She___happy.
+-a)is
+-b)are
+-c)am
+66.They___dinner.
+-a)eat
+-b)eats
+-c)eating
+67.I___atwork.
+-a)am
+-b)is
+-c)are
+68.___youthere?
+-a)Are
+-b)Is
+-c)Am
+
+--- Page 6 ---
+69.He___afriend.
+-a)has
+-b)have
+-c)had
+70.We___playing.
+-a)are
+-b)is
+-c)am
+71.She___music.
+-a)likes
+-b)like
+-c)liking
+72.___youhungry?
+-a)Are
+-b)Is
+-c)Am
+73.They___atthepark.
+-a)are
+-b)is
+-c)am
+74.I___anewcar.
+-a)have
+-b)has
+-c)had
+75.He___sad.
+-a)is
+-b)are
+-c)am
+76.We___finished.
+-a)are
+-b)is
+-c)am
+77.She___goinghome.
+-a)is
+-b)are
+-c)am
+78.They___lunch.
+-a)have
+-b)has
+-c)had
+79.___youthere?
+-a)Are
+-b)Is
+-c)Am
+80.I___adog.
+-a)have
+-b)has
+-c)had
+81.He___tired.
+-a)is
+-b)are
+-c)am
+82.___youcoming?
+-a)Are
+-b)Is
+
+--- Page 7 ---
+-c)Am
+83.We___ready.
+-a)are
+-b)is
+-c)am
+84.She___abook.
+-a)read
+-b)reads
+-c)reading
+85.They___atschool.
+-a)are
+-b)is
+-c)am
+86.I___happy.
+-a)am
+-b)is
+-c)are
+87.He___acar.
+-a)has
+-b)have
+-c)had
+88.We___agame.
+-a)play
+-b)plays
+-c)playing
+89.She___dinner.
+-a)cooks
+-b)cook
+-c)cooking
+90.They___friends.
+-a)are
+-b)is
+-c)am
+91.I___abike.
+-a)have
+-b)has
+-c)had
+92.He___late.
+-a)is
+-b)are
+-c)am
+93.___youcoming?
+-a)Are
+-b)Is
+-c)Am
+94.We___watching TV.
+-a)are
+-b)is
+-c)am
+95.She___aphone.
+-a)has
+-b)have
+-c)had
+96.They___athome.
+-a)are
+
+--- Page 8 ---
+-b)is
+-c)am
+97.I___astudent.
+-a)am
+-b)is
+-c)are
+98.___youhappy?
+-a)Are
+-b)Is
+-c)Am
+99.He___ateacher.
+-a)is
+-b)are
+-c)am
+100.We___here.
+-a)are
+-b)is
+-c)am
+---
+###Grammar Test:Common Grammar Rules
+**Instructions:** Choosethecorrectoptiontocomplete eachsentence.
+1.She___playingwhenthephonerang.
+-a)was
+-b)is
+-c)were
+2.They___finishedtheprojectbytomorrow.
+-a)willhave
+-b)has
+-c)have
+3.Ifitrains,we___stayinside.
+-a)will
+-b)would
+-c)should
+4.Shesings___.
+-a)beautifully
+-b)beautiful
+-c)beauty
+5.We___tothepartylastnight.
+-a)went
+-b)go
+-c)gone
+6.I___seenthatmoviebefore.
+-a)have
+-b)has
+-c)had
+7.They___soccereverySaturday.
+-a)play
+-b)plays
+-c)playing
+8.He___adoctor.
+-a)is
+-b)are
+-c)am
+9.She___anewdressyesterday.
+-a)bought
+
+--- Page 9 ---
+-b)buy
+-c)buying
+10.We___goingtothebeachtomorrow.
+-a)are
+-b)is
+-c)am
+11.She___tallerthanherbrother.
+-a)is
+-b)are
+-c)am
+12.___youliketeaorcoffee?
+-a)Do
+-b)Does
+-c)Did
+13.He___hishomework beforedinner.
+-a)does
+-b)did
+-c)doing
+14.They___livinghereforfiveyears.
+-a)havebeen
+-b)hasbeen
+-c)hadbeen
+15.I___tothestorelater.
+-a)willgo
+-b)go
+-c)going
+16.She___readingabookwhenIcalled.
+-a)was
+-b)is
+-c)were
+17.He___tothegymeveryday.
+-a)goes
+-b)go
+-c)going
+18.We___dinnerwhenshearrived.
+-a)werehaving
+-b)arehaving
+-c)washaving
+19.She___aletteryesterday.
+-a)wrote
+-b)write
+-c)writing
+20.___youcomingtotheparty?
+-a)Are
+-b)Is
+-c)Am
+21.Thebook___onthetable.
+-a)is
+-b)are
+-c)am
+22.They___anewcarlastweek.
+-a)bought
+-b)buy
+-c)buying
+23.Wewillgo___itstopsraining.
+
+--- Page 10 ---
+-a)when
+-b)while
+-c)during
+24.She___acakefortheparty.
+-a)baked
+-b)bakes
+-c)baking
+25.He___veryhappytoday.
+-a)is
+-b)are
+-c)am
+26.___areyougoing?
+-a)Where
+-b)Who
+-c)What
+27.She___ateacher.
+-a)is
+-b)are
+-c)am
+28.They___theirhomework done.
+-a)have
+-b)has
+-c)had
+29.We___goingtothemovietonight.
+-a)are
+-b)is
+-c)am
+30.I___seeyoutomorrow.
+-a)will
+-b)am
+-c)is
+31.She___playingpianobeautifully.
+-a)plays
+-b)play
+-c)playing
+32.He___readingabookrightnow.
+-a)is
+-b)are
+-c)am
+33.We___dinnertogether lastnight.
+-a)had
+-b)have
+-c)having
+34.She___anewsong.
+-a)sang
+-b)sings
+-c)singing
+35.They___alreadyeaten.
+-a)have
+-b)has
+-c)had
+36.I___alettertomyfriend.
+-a)wrote
+-b)write
+-c)writing
+
+--- Page 11 ---
+37.She___agoodsinger.
+-a)is
+-b)are
+-c)am
+38.___youlikethemovie?
+-a)Did
+-b)Do
+-c)Does
+39.We___happytoseeyou.
+-a)are
+-b)is
+-c)am
+40.He___acarlastmonth.
+-a)bought
+-b)buy
+-c)buying
+41.She___herhomework already.
+-a)hasdone
+-b)havedone
+-c)haddone
+42.They___anewhouse.
+-a)bought
+-b)buy
+-c)buying
+43.We___gototheparktomorrow.
+-a)will
+-b)am
+-c)is
+44.She___thebeststudentinclass.
+-a)is
+-b)are
+-c)am
+45.He___eatingdinner.
+-a)is
+-b)are
+-c)am
+46.They___playingsoccer.
+-a)are
+-b)is
+-c)am
+47.I___youtomorrow.
+-a)willsee
+-b)see
+-c)seeing
+48.She___herroom.
+-a)cleaned
+-b)clean
+-c)cleaning
+49.We___apartyforher.
+-a)had
+-b)have
+-c)having
+50.He___agreatjob.
+-a)did
+-b)do
+
+--- Page 12 ---
+-c)does
+51.She___aletteryesterday.
+-a)wrote
+-b)write
+-c)writing
+52.They___anewcar.
+-a)have
+-b)has
+-c)had
+53.We___tothemovielastnight.
+-a)went
+-b)go
+-c)gone
+54.I___abook.
+-a)read
+-b)reads
+-c)reading
+55.___hefinishtheproject?
+-a)Did
+-b)Does
+-c)Do
+56.She___cookingdinner.
+-a)is
+-b)are
+-c)am
+57.They___goingtotheparty.
+-a)are
+-b)is
+-c)am
+58.We___agoodtime.
+-a)had
+-b)have
+-c)having
+59.He___hishomework.
+-a)did
+-b)do
+-c)does
+60.She___thebook.
+-a)read
+-b)reads
+-c)reading
+61.I___acar.
+-a)have
+-b)has
+-c)had
+62.They___happytoseeus.
+-a)are
+-b)is
+-c)am
+63.We___dinnerlastnight.
+-a)had
+-b)have
+-c)having
+64.He___anewsong.
+-a)sang
+
+--- Page 13 ---
+-b)sings
+-c)singing
+65.She___alreadyeaten.
+-a)has
+-b)have
+-c)had
+66.They___anewhouse.
+-a)have
+-b)has
+-c)had
+67.I___gotothestore.
+-a)will
+-b)am
+-c)is
+68.___isyourfavoritecolor?
+-a)What
+-b)Where
+-c)Who
+69.She___ateacher.
+-a)is
+-b)are
+-c)am
+70.He___playingsoccer.
+-a)is
+-b)are
+-c)am
+71.We___anewsong.
+-a)sang
+-b)sings
+-c)singing
+72.They___alreadyhere.
+-a)are
+-b)is
+-c)am
+73.I___agreatjob.
+-a)did
+-b)do
+-c)does
+74.She___aletter.
+-a)wrote
+-b)write
+-c)writing
+75.We___happytoseeyou.
+-a)are
+-b)is
+-c)am
+76.He___abooklastweek.
+-a)read
+-b)reads
+-c)reading
+77.___theyfinishtheirwork?
+-a)Did
+-b)Does
+-c)Do
+78.She___cookingrightnow.
+
+--- Page 14 ---
+-a)is
+-b)are
+-c)am
+79.They___goinghome.
+-a)are
+-b)is
+-c)am
+80.We___agreattime.
+-a)had
+-b)have
+-c)having
+81.He___hishomework.
+-a)did
+-b)do
+-c)does
+82.She___abook.
+-a)read
+-b)reads
+-c)reading
+83.I___acar.
+-a)have
+-b)has
+-c)had
+84.___hehappy?
+-a)Is
+-b)Are
+-c)Am
+85.We___dinnertogether.
+-a)had
+-b)have
+-c)having
+86.He___anewsong.
+-a)sang
+-b)sings
+-c)singing
+87.She___alreadyeaten.
+-a)has
+-b)have
+-c)had
+88.They___anewhouse.
+-a)have
+-b)has
+-c)had
+89.I___gotothestore.
+-a)will
+-b)am
+-c)is
+90.She___ateacher.
+-a)is
+-b)are
+-c)am
+91.He___playingsoccer.
+-a)is
+-b)are
+-c)am
+
+--- Page 15 ---
+92.We___asong.
+-a)sang
+-b)sings
+-c)singing
+93.They___herealready.
+-a)are
+-b)is
+-c)am
+94.I___agreatjob.
+-a)did
+-b)do
+-c)does
+95.She___aletter.
+-a)wrote
+-b)write
+-c)writing
+96.We___happytoseeyou.
+-a)are
+-b)is
+-c)am
+97.He___abook.
+-a)read
+-b)reads
+-c)reading
+98.___theyfinishtheirwork?
+-a)Did
+-b)Does
+-c)Do
+99.She___cooking.
+-a)is
+-b)are
+-c)am
+100.They___goinghome.
+-a)are
+-b)is
+-c)am
+Thesetestsshouldcoverawiderangeofvocabulary andgrammar rulesessential foreveryday communication.
+
+
+=== English Course - Basic Grammar.pdf ===
+--- Page 1 ---
+Certainly! Here’sanexpanded listofgrammar ruleswithmultipleexample sentences tocoverdifferentusage
+scenarios:
+###1.Subject-Verb Agreement
+-**He**runseverymorning.
+-**She** likeschocolate.
+-**They** playsocceronweekends.
+-**It**worksperfectly.
+-**We**aregoingtothestore.
+-**Thedog**barksloudly.
+###2.SimplePresentTense
+-I**eat**breakfast at7AM.
+-She**drinks** coffeeeveryday.
+-They**visit** theirgrandparents often.
+-Thesun**rises** intheeast.
+-He**reads** thenewspaper daily.
+###3.SimplePastTense
+-I**visited** mygrandmother yesterday.
+-She**watched** amovielastnight.
+-They**played** soccerafterschool.
+-He**finished** hishomework.
+-We**traveled** toSpainlastsummer.
+###4.SimpleFutureTense
+-They**willtravel**toParisnextyear.
+-She**willcall**youtomorrow.
+-I**willfinish**thereportbyFriday.
+-We**willmeet**at6PM.
+-He**willstart**anewjobnextweek.
+###5.PresentContinuous Tense
+-She**isreading** abook.
+-They**areplaying** inthegarden.
+-I**amworking** onaproject.
+-He**iseating** dinner.
+-We**arewatching** amovie.
+###6.PastContinuous Tense
+-I**waswatching** TVwhenshecalled.
+-They**wereplaying** soccerwhenitstartedtorain.
+-She**wasreading** whenthelightswentout.
+-He**wascooking** dinnerat7PM.
+-We**werewalking** homewhenitbegantosnow.
+###7.FutureContinuous Tense
+-We**willbehaving** dinnerat8PM.
+-She**willbeworking** latetonight.
+-They**willbetraveling** nextmonth.
+-I**willbestudying** forexamstomorrow.
+-He**willbewaiting** foryouatthestation.
+###8.PresentPerfectTense
+-I**havevisited** Japan.
+-She**hasfinished** herhomework.
+-They**haveseen**themovietwice.
+-He**haslived**hereforfiveyears.
+-We**haveeaten**already.
+###9.PastPerfectTense
+-She**hadleft**beforeIarrived.
+-They**hadeaten**dinnerbythetimewegotthere.
+-I**hadfinished** thebookbeforetheclassstarted.
+
+--- Page 2 ---
+-He**hadcompleted** thetaskbeforethedeadline.
+-We**hadvisited** themuseum beforeitclosed.
+###10.FuturePerfectTense
+-They**willhavefinished** theprojectbytomorrow.
+-She**willhaveleft**bythetimeyouarrive.
+-I**willhavecompleted** thecoursebynextyear.
+-He**willhaveeaten**breakfast by9AM.
+-We**willhavetraveled** tothreecountries bythen.
+###11.Articles(a,an,the)
+-Isaw**a**cat.
+-Sheate**an**apple.
+-**The** catwassleeping.
+-Hefound**a**bookonthetable.
+-**The** sunisbrighttoday.
+###12.Prepositions
+-Thebookis**on**thetable.
+-Sheis**in**theroom.
+-Theywalked**through** thepark.
+-Hesat**beside** her.
+-Wearrived**at**theairport.
+###13.Pronouns
+-**Sarah** ismyfriend.**She** iskind.
+-**Tom** and**Jerry** arehere.**They** areplaying.
+-**Thedog**iscute.**It**issmall.
+-**I**amhappy.
+-**You** arewelcome.
+###14.Adjectives
+-Itisa**sunny** day.
+-Shehasa**beautiful** dress.
+-Heisa**smart** student.
+-Thehouseis**big**and**old**.
+-Theyliveina**small** apartment.
+###15.Adverbs
+-Shesings**beautifully**.
+-Heran**quickly** tothestore.
+-Theyarrived**early**.
+-Sheworks**hard**.
+-Hespoke**softly**.
+###16.Conjunctions
+-Iwanttogo,**but**Iamtired.
+-Sheissmart,**and**sheiskind.
+-Wecangotothepark,**or**wecanstayhome.
+-Hewashungry,**so**heateasandwich.
+-Iwillgo**if**youcomewithme.
+###17.Question Formation
+-**Do**youlikecoffee?
+-**Where** areyougoing?
+-**Is**shecomingtotheparty?
+-**What** timeisit?
+-**Why** areyousad?
+###18.Imperatives
+-**Please sit**down.
+-**Close** thedoor.
+-**Don’tforget**yourkeys.
+-**Help** mewiththis,please.
+
+--- Page 3 ---
+-**Listen** carefully.
+###19.Possessives
+-Thisis**John’s** book.
+-**Her**carisred.
+-It’s**their** house.
+-**My**phoneischarging.
+-**Our**teamwonthegame.
+###20.Comparatives andSuperlatives
+-Sheis**taller** thanherbrother.
+-Thisisthe**best** movie.
+-Heruns**faster** thanme.
+-Thatwasthe**happiest** dayofmylife.
+-Sheisthe**mosttalented** singer.
+Theseexamples illustratevariouswaystoapplyessential grammar rulesineveryday communication.
+
+
+=== ECA_spending.xls ===
+
+--- Sheet: ECA_spending ---
+
+ID | age | gender | year_in_school | major | monthly_income | financial_aid | tuition | housing | food | transportation | books_supplies | entertainment | personal_care | technology | health_wellness | miscellaneous | preferred_payment_method
+1.0 | 24.0 | Female | Junior | Economics | 1006.0 | 875.0 | 4908.0 | 557.0 | 365.0 | 85.0 | 252.0 | 74.0 | 92.0 | 226.0 | 129.0 | 68.0 | Credit/Debit Card
+2.0 | 24.0 | Junior | Economics | 734.0 | 928.0 | 3051.0 | 666.0 | 220.0 | 137.0 | 99.0 | 130.0 | 23.0 | 239.0 | 112.0 | 133.0 | Cash
+3.0 | 23.0 | Female | Senior | Computer Science | 617.0 | 265.0 | 4935.0 | 652.0 | 289.0 | 114.0 | 223.0 | 99.0 | 30.0 | 163.0 | 105.0 | 55.0 | Mobile Payment App
+4.0 | 20.0 | Female | Senior | Computer Science | 810.0 | 522.0 | 3887.0 | 825.0 | 372.0 | 168.0 | 194.0 | 48.0 | 71.0 | 88.0 | 71.0 | 104.0 | Credit/Debit Card
+5.0 | 25.0 | Sophomore | Computer Science | 523.0 | 790.0 | 3151.0 | 413.0 | 386.0 | 122.0 | 131.0 | 73.0 | 38.0 | 234.0 | 108.0 | 99.0 | Mobile Payment App
+6.0 | 23.0 | Female | Freshman | Engineering | 1354.0 | 69.0 | 4973.0 | 812.0 | 398.0 | 101.0 | 213.0 | 21.0 | 38.0 | 157.0 | 117.0 | 48.0 | Credit/Debit Card
+7.0 | 23.0 | Female | Junior | Economics | 631.0 | 748.0 | 3966.0 | 571.0 | 269.0 | 92.0 | 251.0 | 37.0 | 90.0 | 152.0 | 56.0 | 62.0 | Mobile Payment App
+8.0 | 22.0 | Senior | Computer Science | 1402.0 | 248.0 | 5638.0 | 599.0 | 354.0 | 82.0 | 155.0 | 123.0 | 41.0 | 162.0 | 172.0 | 194.0 | Credit/Debit Card
+9.0 | 18.0 | Female | Junior | Computer_Science | 1423.0 | 74.0 | 3977.0 | 626.0 | 249.0 | 117.0 | 123.0 | 51.0 | 74.0 | 243.0 | 34.0 | 196.0 | Mobile Payment App
+10.0 | 23.0 | Male | Junior | Biology | 762.0 | 615.0 | 4093.0 | 660.0 | 262.0 | 58.0 | 183.0 | 98.0 | 21.0 | 274.0 | 66.0 | 50.0 | Credit/Debit Card
+11.0 | 25.0 | Male | Freshman | Engineering | 1068.0 | 19.0 | 5138.0 | 734.0 | 243.0 | 200.0 | 228.0 | 57.0 | 57.0 | 209.0 | 193.0 | 146.0 | Credit/Debit Card
+12.0 | 21.0 | Male | Sophomore | Economics | 719.0 | 540.0 | 4863.0 | 894.0 | 280.0 | 120.0 | 126.0 | 41.0 | 50.0 | 78.0 | 113.0 | 114.0 | Credit/Debit Card
+13.0 | 19.0 | Female | Junior | Biology | 1176.0 | 859.0 | 5201.0 | 626.0 | 234.0 | 50.0 | 274.0 | 20.0 | 77.0 | 125.0 | 199.0 | 103.0 | Mobile Payment App
+14.0 | 24.0 | Freshman | Economics | 1496.0 | 75.0 | 5301.0 | 657.0 | 151.0 | 63.0 | 92.0 | 124.0 | 64.0 | 196.0 | 50.0 | 117.0 | Cash
+15.0 | 22.0 | Sophomore | Computer_Science | 1227.0 | 26.0 | 4175.0 | 884.0 | 328.0 | 167.0 | 175.0 | 111.0 | 96.0 | 73.0 | 154.0 | 109.0 | Cash
+16.0 | 23.0 | Female | Freshman | Psychology | 1419.0 | 237.0 | 5450.0 | 883.0 | 361.0 | 200.0 | 141.0 | 76.0 | 22.0 | 285.0 | 185.0 | 76.0 | Cash
+17.0 | 21.0 | Female | Freshman | Computer_Science | 1454.0 | 851.0 | 3538.0 | 754.0 | 357.0 | 110.0 | 188.0 | 33.0 | 24.0 | 50.0 | 74.0 | 46.0 | Mobile Payment App
+18.0 | 19.0 | Female | Sophomore | Psychology | 1487.0 | 311.0 | 4401.0 | 883.0 | 292.0 | 69.0 | 51.0 | 75.0 | 60.0 | 105.0 | 181.0 | 164.0 | Credit/Debit Card
+19.0 | 20.0 | Female | Senior | Engineering | 1157.0 | 401.0 | 3131.0 | 886.0 | 196.0 | 131.0 | 216.0 | 57.0 | 39.0 | 264.0 | 39.0 | 174.0 | Mobile Payment App
+20.0 | 19.0 | Male | Junior | Psychology | 1180.0 | 732.0 | 4206.0 | 597.0 | 254.0 | 195.0 | 67.0 | 51.0 | 21.0 | 97.0 | 185.0 | 46.0 | Credit/Debit Card
+21.0 | 24.0 | Male | Sophomore | Computer Science | 516.0 | 549.0 | 4878.0 | 814.0 | 286.0 | 180.0 | 282.0 | 55.0 | 25.0 | 77.0 | 73.0 | 184.0 | Mobile Payment App
+22.0 | 18.0 | Sophomore | Biology | 1225.0 | 610.0 | 4998.0 | 473.0 | 159.0 | 134.0 | 294.0 | 37.0 | 86.0 | 159.0 | 60.0 | 43.0 | Cash
+23.0 | 24.0 | Senior | Economics | 582.0 | 285.0 | 4210.0 | 421.0 | 348.0 | 138.0 | 143.0 | 62.0 | 85.0 | 218.0 | 113.0 | 60.0 | Credit/Debit Card
+24.0 | 19.0 | Female | Senior | Economics | 1062.0 | 56.0 | 4500.0 | 731.0 | 238.0 | 103.0 | 76.0 | 111.0 | 95.0 | 238.0 | 74.0 | 83.0 | Mobile Payment App
+25.0 | 25.0 | Female | Junior | Biology | 1054.0 | 528.0 | 5486.0 | 789.0 | 400.0 | 81.0 | 211.0 | 95.0 | 74.0 | 237.0 | 140.0 | 136.0 | Mobile Payment App
+26.0 | 20.0 | Male | Senior | Economics | 667.0 | 690.0 | 3541.0 | 762.0 | 173.0 | 185.0 | 288.0 | 53.0 | 38.0 | 84.0 | 159.0 | 137.0 | Credit/Debit Card
+27.0 | 20.0 | Female | Junior | Psychology | 796.0 | 705.0 | 5616.0 | 664.0 | 291.0 | 179.0 | 260.0 | 127.0 | 21.0 | 113.0 | 194.0 | 80.0 | Credit/Debit Card
+28.0 | 24.0 | Sophomore | Psychology | 905.0 | 671.0 | 4156.0 | 444.0 | 163.0 | 131.0 | 141.0 | 132.0 | 31.0 | 156.0 | 95.0 | 128.0 | Credit/Debit Card
+29.0 | 23.0 | Junior | Engineering | 531.0 | 448.0 | 3099.0 | 742.0 | 394.0 | 179.0 | 95.0 | 64.0 | 62.0 | 73.0 | 104.0 | 173.0 | Mobile Payment App
+30.0 | 23.0 | Freshman | Economics | 1426.0 | 3.0 | 5943.0 | 677.0 | 296.0 | 110.0 | 137.0 | 146.0 | 21.0 | 155.0 | 105.0 | 26.0 | Mobile Payment App
+31.0 | 23.0 | Male | Sophomore | Psychology | 1465.0 | 302.0 | 5417.0 | 468.0 | 113.0 | 190.0 | 134.0 | 119.0 | 82.0 | 276.0 | 165.0 | 191.0 | Mobile Payment App
+32.0 | 24.0 | Junior | Computer Science | 522.0 | 555.0 | 5236.0 | 860.0 | 169.0 | 133.0 | 147.0 | 123.0 | 48.0 | 138.0 | 89.0 | 150.0 | Credit/Debit Card
+33.0 | 25.0 | Female | Freshman | Economics | 1338.0 | 110.0 | 5615.0 | 468.0 | 325.0 | 158.0 | 244.0 | 98.0 | 46.0 | 231.0 | 183.0 | 80.0 | Cash
+34.0 | 23.0 | Male | Junior | Biology | 1363.0 | 365.0 | 3222.0 | 695.0 | 185.0 | 166.0 | 99.0 | 116.0 | 68.0 | 77.0 | 31.0 | 161.0 | Mobile Payment App
+35.0 | 21.0 | Male | Freshman | Biology | 1328.0 | 320.0 | 3090.0 | 718.0 | 254.0 | 93.0 | 204.0 | 74.0 | 30.0 | 228.0 | 60.0 | 179.0 | Cash
+36.0 | 22.0 | Male | Sophomore | Engineering | 1350.0 | 675.0 | 3931.0 | 462.0 | 372.0 | 147.0 | 282.0 | 149.0 | 92.0 | 269.0 | 105.0 | 190.0 | Cash
+37.0 | 23.0 | Senior | Computer Science | 1309.0 | 265.0 | 5160.0 | 600.0 | 178.0 | 148.0 | 186.0 | 88.0 | 78.0 | 242.0 | 54.0 | 172.0 | Cash
+38.0 | 21.0 | Female | Senior | Biology | 965.0 | 251.0 | 5344.0 | 695.0 | 249.0 | 88.0 | 249.0 | 49.0 | 29.0 | 298.0 | 96.0 | 31.0 | Cash
+39.0 | 20.0 | Female | Senior | Engineering | 600.0 | 392.0 | 5733.0 | 791.0 | 309.0 | 178.0 | 67.0 | 22.0 | 29.0 | 142.0 | 74.0 | 105.0 | Mobile Payment App
+40.0 | 24.0 | Female | Freshman | Engineering | 605.0 | 118.0 | 5696.0 | 653.0 | 165.0 | 189.0 | 151.0 | 86.0 | 82.0 | 117.0 | 83.0 | 156.0 | Mobile Payment App
+41.0 | 25.0 | Male | Sophomore | Economics | 804.0 | 140.0 | 5332.0 | 517.0 | 289.0 | 147.0 | 153.0 | 125.0 | 43.0 | 159.0 | 44.0 | 127.0 | Cash
+42.0 | 23.0 | Female | Sophomore | Economics | 1274.0 | 449.0 | 4639.0 | 755.0 | 137.0 | 55.0 | 249.0 | 103.0 | 50.0 | 176.0 | 67.0 | 175.0 | Cash
+43.0 | 23.0 | Male | Junior | Psychology | 509.0 | 942.0 | 3958.0 | 511.0 | 391.0 | 192.0 | 264.0 | 57.0 | 85.0 | 108.0 | 115.0 | 141.0 | Credit/Debit Card
+44.0 | 23.0 | Female | Senior | Economics | 1285.0 | 881.0 | 3823.0 | 740.0 | 253.0 | 182.0 | 230.0 | 32.0 | 92.0 | 118.0 | 34.0 | 39.0 | Credit/Debit Card
+45.0 | 18.0 | Male | Freshman | Computer Science | 929.0 | 348.0 | 3854.0 | 590.0 | 204.0 | 196.0 | 183.0 | 129.0 | 80.0 | 163.0 | 116.0 | 55.0 | Credit/Debit Card
+46.0 | 25.0 | Freshman | Psychology | 1163.0 | 235.0 | 4951.0 | 549.0 | 261.0 | 86.0 | 185.0 | 102.0 | 21.0 | 252.0 | 31.0 | 88.0 | Cash
+47.0 | 19.0 | Male | Senior | Psychology | 1195.0 | 745.0 | 5269.0 | 920.0 | 167.0 | 57.0 | 88.0 | 113.0 | 60.0 | 242.0 | 35.0 | 106.0 | Mobile Payment App
+48.0 | 25.0 | Male | Junior | Psychology | 1036.0 | 260.0 | 4141.0 | 918.0 | 122.0 | 86.0 | 105.0 | 62.0 | 88.0 | 90.0 | 169.0 | 137.0 | Cash
+49.0 | 24.0 | Female | Junior | Economics | 588.0 | 211.0 | 4875.0 | 604.0 | 163.0 | 101.0 | 198.0 | 89.0 | 23.0 | 128.0 | 62.0 | 42.0 | Mobile Payment App
+50.0 | 20.0 | Female | Junior | Engineering | 1377.0 | 723.0 | 5414.0 | 786.0 | 355.0 | 137.0 | 187.0 | 45.0 | 90.0 | 145.0 | 200.0 | 27.0 | Cash
+51.0 | 21.0 | Freshman | Economics | 1451.0 | 479.0 | 5481.0 | 661.0 | 140.0 | 67.0 | 128.0 | 31.0 | 48.0 | 293.0 | 37.0 | 128.0 | Credit/Debit Card
+52.0 | 19.0 | Male | Senior | Computer Science | 669.0 | 660.0 | 3823.0 | 837.0 | 193.0 | 115.0 | 75.0 | 121.0 | 65.0 | 150.0 | 96.0 | 58.0 | Cash
+53.0 | 18.0 | Male | Freshman | Psychology | 1294.0 | 818.0 | 4079.0 | 806.0 | 115.0 | 97.0 | 71.0 | 24.0 | 31.0 | 79.0 | 107.0 | 63.0 | Mobile Payment App
+54.0 | 24.0 | Senior | Engineering | 941.0 | 90.0 | 3688.0 | 963.0 | 372.0 | 197.0 | 146.0 | 32.0 | 86.0 | 109.0 | 45.0 | 198.0 | Mobile Payment App
+55.0 | 22.0 | Female | Sophomore | Engineering | 1131.0 | 312.0 | 4244.0 | 926.0 | 339.0 | 142.0 | 237.0 | 145.0 | 93.0 | 121.0 | 91.0 | 158.0 | Cash
+56.0 | 24.0 | Freshman | Computer Science | 854.0 | 700.0 | 4824.0 | 525.0 | 223.0 | 145.0 | 133.0 | 47.0 | 91.0 | 294.0 | 191.0 | 170.0 | Cash
+57.0 | 20.0 | Male | Sophomore | Economics | 1158.0 | 653.0 | 3017.0 | 960.0 | 216.0 | 193.0 | 299.0 | 40.0 | 61.0 | 263.0 | 55.0 | 141.0 | Mobile Payment App
+58.0 | 25.0 | Sophomore | Biology | 668.0 | 50.0 | 3650.0 | 466.0 | 377.0 | 161.0 | 221.0 | 60.0 | 80.0 | 180.0 | 142.0 | 86.0 | Mobile Payment App
+59.0 | 20.0 | Female | Junior | Biology | 695.0 | 970.0 | 4694.0 | 626.0 | 304.0 | 104.0 | 200.0 | 47.0 | 71.0 | 223.0 | 93.0 | 191.0 | Mobile Payment App
+60.0 | 20.0 | Male | Junior | Engineering | 1375.0 | 722.0 | 5389.0 | 416.0 | 132.0 | 193.0 | 149.0 | 67.0 | 27.0 | 261.0 | 46.0 | 43.0 | Mobile Payment App
+61.0 | 23.0 | Female | Junior | Engineering | 1084.0 | 315.0 | 5205.0 | 721.0 | 230.0 | 76.0 | 141.0 | 86.0 | 34.0 | 187.0 | 159.0 | 144.0 | Mobile Payment App
+62.0 | 18.0 | Female | Senior | Biology | 733.0 | 838.0 | 5248.0 | 977.0 | 298.0 | 164.0 | 241.0 | 85.0 | 78.0 | 281.0 | 121.0 | 168.0 | Cash
+63.0 | 20.0 | Freshman | Economics | 1061.0 | 989.0 | 5194.0 | 464.0 | 370.0 | 58.0 | 77.0 | 135.0 | 34.0 | 124.0 | 40.0 | 171.0 | Mobile Payment App
+64.0 | 19.0 | Female | Junior | Computer_Science | 1352.0 | 13.0 | 3403.0 | 477.0 | 144.0 | 82.0 | 190.0 | 109.0 | 84.0 | 81.0 | 56.0 | 80.0 | Mobile Payment App
+65.0 | 19.0 | Male | Freshman | Biology | 1092.0 | 550.0 | 5841.0 | 916.0 | 150.0 | 143.0 | 257.0 | 90.0 | 29.0 | 262.0 | 192.0 | 177.0 | Mobile Payment App
+66.0 | 24.0 | Male | Freshman | Economics | 963.0 | 367.0 | 3830.0 | 883.0 | 260.0 | 79.0 | 139.0 | 135.0 | 64.0 | 54.0 | 81.0 | 74.0 | Mobile Payment App
+67.0 | 21.0 | Female | Junior | Engineering | 1204.0 | 121.0 | 4261.0 | 488.0 | 283.0 | 111.0 | 287.0 | 115.0 | 56.0 | 230.0 | 85.0 | 24.0 | Credit/Debit Card
+68.0 | 23.0 | Male | Senior | Engineering | 1184.0 | 104.0 | 5380.0 | 940.0 | 115.0 | 185.0 | 171.0 | 58.0 | 45.0 | 111.0 | 30.0 | 169.0 | Mobile Payment App
+69.0 | 22.0 | Male | Junior | Economics | 562.0 | 728.0 | 4560.0 | 986.0 | 306.0 | 105.0 | 109.0 | 90.0 | 99.0 | 187.0 | 195.0 | 34.0 | Mobile Payment App
+70.0 | 19.0 | Male | Freshman | Economics | 1218.0 | 878.0 | 4643.0 | 451.0 | 234.0 | 169.0 | 240.0 | 105.0 | 21.0 | 238.0 | 101.0 | 38.0 | Mobile Payment App
+71.0 | 21.0 | Sophomore | Computer Science | 1235.0 | 805.0 | 5442.0 | 745.0 | 390.0 | 150.0 | 228.0 | 96.0 | 80.0 | 104.0 | 35.0 | 131.0 | Cash
+72.0 | 23.0 | Sophomore | Economics | 1424.0 | 367.0 | 3220.0 | 684.0 | 328.0 | 118.0 | 91.0 | 143.0 | 88.0 | 98.0 | 159.0 | 54.0 | Cash
+73.0 | 22.0 | Female | Freshman | Biology | 1176.0 | 804.0 | 4272.0 | 861.0 | 305.0 | 97.0 | 106.0 | 103.0 | 43.0 | 185.0 | 104.0 | 67.0 | Mobile Payment App
+74.0 | 25.0 | Female | Sophomore | Engineering | 1334.0 | 81.0 | 3986.0 | 873.0 | 180.0 | 186.0 | 236.0 | 23.0 | 61.0 | 88.0 | 87.0 | 33.0 | Credit/Debit Card
+75.0 | 19.0 | Female | Senior | Computer Science | 1442.0 | 354.0 | 5371.0 | 733.0 | 153.0 | 166.0 | 105.0 | 29.0 | 80.0 | 86.0 | 137.0 | 109.0 | Cash
+76.0 | 22.0 | Male | Sophomore | Computer_Science | 983.0 | 862.0 | 5650.0 | 648.0 | 159.0 | 128.0 | 259.0 | 124.0 | 97.0 | 96.0 | 150.0 | 134.0 | Cash
+77.0 | 24.0 | Female | Sophomore | Computer_Science | 914.0 | 24.0 | 4881.0 | 564.0 | 149.0 | 55.0 | 61.0 | 129.0 | 79.0 | 180.0 | 94.0 | 33.0 | Credit/Debit Card
+78.0 | 22.0 | Senior | Economics | 898.0 | 155.0 | 5428.0 | 868.0 | 175.0 | 129.0 | 148.0 | 114.0 | 74.0 | 196.0 | 104.0 | 77.0 | Cash
+79.0 | 23.0 | Junior | Economics | 1164.0 | 357.0 | 5212.0 | 631.0 | 331.0 | 125.0 | 199.0 | 115.0 | 48.0 | 130.0 | 107.0 | 196.0 | Cash
+80.0 | 18.0 | Female | Freshman | Biology | 1484.0 | 594.0 | 4636.0 | 518.0 | 299.0 | 74.0 | 55.0 | 104.0 | 87.0 | 122.0 | 171.0 | 193.0 | Mobile Payment App
+81.0 | 19.0 | Female | Junior | Biology | 1127.0 | 850.0 | 5104.0 | 623.0 | 385.0 | 94.0 | 193.0 | 29.0 | 57.0 | 259.0 | 113.0 | 31.0 | Mobile Payment App
+82.0 | 24.0 | Senior | Biology | 1105.0 | 671.0 | 5501.0 | 841.0 | 235.0 | 164.0 | 109.0 | 144.0 | 100.0 | 252.0 | 198.0 | 36.0 | Cash
+83.0 | 19.0 | Male | Freshman | Computer Science | 1351.0 | 156.0 | 4529.0 | 678.0 | 186.0 | 178.0 | 75.0 | 34.0 | 95.0 | 97.0 | 140.0 | 75.0 | Mobile Payment App
+84.0 | 22.0 | Female | Freshman | Biology | 930.0 | 768.0 | 3050.0 | 490.0 | 349.0 | 54.0 | 174.0 | 80.0 | 51.0 | 278.0 | 143.0 | 41.0 | Mobile Payment App
+85.0 | 25.0 | Senior | Computer Science | 1346.0 | 932.0 | 5683.0 | 718.0 | 376.0 | 152.0 | 156.0 | 94.0 | 81.0 | 220.0 | 145.0 | 83.0 | Credit/Debit Card
+86.0 | 25.0 | Sophomore | Computer Science | 1240.0 | 44.0 | 3901.0 | 618.0 | 315.0 | 177.0 | 180.0 | 41.0 | 63.0 | 247.0 | 112.0 | 138.0 | Credit/Debit Card
+87.0 | 25.0 | Female | Junior | Computer Science | 727.0 | 143.0 | 4051.0 | 840.0 | 269.0 | 119.0 | 121.0 | 132.0 | 40.0 | 173.0 | 198.0 | 125.0 | Credit/Debit Card
+88.0 | 20.0 | Female | Junior | Economics | 622.0 | 959.0 | 4707.0 | 431.0 | 234.0 | 184.0 | 264.0 | 54.0 | 84.0 | 295.0 | 162.0 | 177.0 | Mobile Payment App
+89.0 | 23.0 | Male | Sophomore | Economics | 800.0 | 933.0 | 5304.0 | 421.0 | 144.0 | 97.0 | 51.0 | 103.0 | 66.0 | 247.0 | 183.0 | 92.0 | Credit/Debit Card
+90.0 | 18.0 | Junior | Psychology | 1199.0 | 516.0 | 5959.0 | 778.0 | 260.0 | 82.0 | 238.0 | 74.0 | 82.0 | 149.0 | 126.0 | 62.0 | Credit/Debit Card
+91.0 | 19.0 | Male | Senior | Economics | 1006.0 | 392.0 | 3526.0 | 411.0 | 357.0 | 109.0 | 268.0 | 107.0 | 94.0 | 65.0 | 138.0 | 145.0 | Cash
+92.0 | 23.0 | Sophomore | Economics | 1295.0 | 903.0 | 4423.0 | 791.0 | 397.0 | 144.0 | 64.0 | 59.0 | 79.0 | 187.0 | 189.0 | 113.0 | Mobile Payment App
+93.0 | 18.0 | Male | Sophomore | Economics | 1222.0 | 625.0 | 4236.0 | 862.0 | 127.0 | 180.0 | 63.0 | 91.0 | 90.0 | 191.0 | 87.0 | 122.0 | Mobile Payment App
+94.0 | 18.0 | Female | Senior | Computer Science | 1384.0 | 800.0 | 4822.0 | 809.0 | 237.0 | 174.0 | 85.0 | 21.0 | 72.0 | 130.0 | 185.0 | 104.0 | Credit/Debit Card
+95.0 | 18.0 | Female | Junior | Engineering | 1035.0 | 513.0 | 3367.0 | 760.0 | 182.0 | 57.0 | 95.0 | 119.0 | 21.0 | 166.0 | 149.0 | 119.0 | Credit/Debit Card
+96.0 | 20.0 | Male | Freshman | Economics | 1395.0 | 723.0 | 5126.0 | 551.0 | 258.0 | 130.0 | 81.0 | 102.0 | 84.0 | 234.0 | 172.0 | 78.0 | Credit/Debit Card
+97.0 | 18.0 | Sophomore | Biology | 767.0 | 457.0 | 5096.0 | 780.0 | 331.0 | 200.0 | 115.0 | 89.0 | 27.0 | 265.0 | 175.0 | 158.0 | Credit/Debit Card
+98.0 | 24.0 | Female | Senior | Biology | 933.0 | 452.0 | 4706.0 | 787.0 | 166.0 | 136.0 | 106.0 | 112.0 | 63.0 | 270.0 | 86.0 | 29.0 | Cash
+99.0 | 23.0 | Male | Junior | Psychology | 803.0 | 796.0 | 3471.0 | 931.0 | 293.0 | 54.0 | 146.0 | 142.0 | 58.0 | 84.0 | 104.0 | 41.0 | Mobile Payment App
+100.0 | 22.0 | Male | Sophomore | Psychology | 1333.0 | 231.0 | 3300.0 | 971.0 | 295.0 | 51.0 | 219.0 | 91.0 | 94.0 | 259.0 | 161.0 | 50.0 | Cash
+101.0 | 23.0 | Female | Senior | Psychology | 1115.0 | 437.0 | 5317.0 | 818.0 | 341.0 | 136.0 | 116.0 | 115.0 | 22.0 | 56.0 | 38.0 | 106.0 | Mobile Payment App
+102.0 | 20.0 | Female | Sophomore | Psychology | 920.0 | 149.0 | 3366.0 | 636.0 | 295.0 | 143.0 | 77.0 | 120.0 | 96.0 | 137.0 | 162.0 | 178.0 | Cash
+103.0 | 25.0 | Male | Junior | Psychology | 780.0 | 95.0 | 5931.0 | 759.0 | 216.0 | 99.0 | 251.0 | 20.0 | 38.0 | 192.0 | 105.0 | 97.0 | Cash
+104.0 | 21.0 | Female | Junior | Psychology | 882.0 | 912.0 | 5570.0 | 555.0 | 305.0 | 103.0 | 81.0 | 112.0 | 28.0 | 112.0 | 162.0 | 197.0 | Mobile Payment App
+105.0 | 21.0 | Female | Senior | Computer Science | 959.0 | 258.0 | 3200.0 | 464.0 | 360.0 | 153.0 | 220.0 | 26.0 | 88.0 | 144.0 | 161.0 | 134.0 | Cash
+106.0 | 25.0 | Female | Senior | Psychology | 748.0 | 494.0 | 4789.0 | 447.0 | 353.0 | 164.0 | 201.0 | 60.0 | 43.0 | 99.0 | 93.0 | 172.0 | Mobile Payment App
+107.0 | 21.0 | Male | Junior | Biology | 810.0 | 73.0 | 4884.0 | 742.0 | 112.0 | 173.0 | 276.0 | 136.0 | 63.0 | 294.0 | 161.0 | 136.0 | Mobile Payment App
+108.0 | 20.0 | Male | Sophomore | Computer Science | 965.0 | 322.0 | 4992.0 | 433.0 | 175.0 | 56.0 | 71.0 | 89.0 | 74.0 | 66.0 | 59.0 | 130.0 | Mobile Payment App
+109.0 | 24.0 | Male | Senior | Psychology | 784.0 | 513.0 | 4906.0 | 863.0 | 116.0 | 110.0 | 140.0 | 116.0 | 56.0 | 264.0 | 179.0 | 160.0 | Credit/Debit Card
+110.0 | 22.0 | Male | Sophomore | Economics | 970.0 | 553.0 | 5894.0 | 680.0 | 344.0 | 156.0 | 114.0 | 120.0 | 79.0 | 53.0 | 40.0 | 156.0 | Mobile Payment App
+111.0 | 23.0 | Senior | Economics | 1349.0 | 873.0 | 5866.0 | 661.0 | 205.0 | 129.0 | 88.0 | 72.0 | 28.0 | 192.0 | 72.0 | 101.0 | Credit/Debit Card
+112.0 | 19.0 | Female | Senior | Psychology | 760.0 | 61.0 | 5429.0 | 831.0 | 268.0 | 84.0 | 63.0 | 26.0 | 92.0 | 278.0 | 185.0 | 60.0 | Credit/Debit Card
+113.0 | 21.0 | Female | Freshman | Computer Science | 702.0 | 273.0 | 4977.0 | 906.0 | 385.0 | 106.0 | 277.0 | 148.0 | 41.0 | 205.0 | 149.0 | 116.0 | Cash
+114.0 | 21.0 | Male | Junior | Engineering | 720.0 | 675.0 | 5309.0 | 661.0 | 284.0 | 95.0 | 153.0 | 93.0 | 21.0 | 108.0 | 81.0 | 64.0 | Mobile Payment App
+115.0 | 22.0 | Male | Freshman | Biology | 1286.0 | 789.0 | 3618.0 | 902.0 | 343.0 | 194.0 | 182.0 | 74.0 | 62.0 | 171.0 | 126.0 | 112.0 | Mobile Payment App
+116.0 | 22.0 | Female | Sophomore | Engineering | 1135.0 | 261.0 | 4753.0 | 629.0 | 335.0 | 168.0 | 97.0 | 113.0 | 60.0 | 223.0 | 44.0 | 62.0 | Cash
+117.0 | 18.0 | Senior | Engineering | 1030.0 | 240.0 | 3108.0 | 859.0 | 386.0 | 147.0 | 208.0 | 27.0 | 60.0 | 265.0 | 36.0 | 23.0 | Credit/Debit Card
+118.0 | 21.0 | Female | Senior | Engineering | 1265.0 | 722.0 | 4579.0 | 760.0 | 122.0 | 122.0 | 63.0 | 34.0 | 48.0 | 250.0 | 153.0 | 184.0 | Credit/Debit Card
+119.0 | 24.0 | Female | Freshman | Psychology | 1175.0 | 803.0 | 5634.0 | 444.0 | 290.0 | 170.0 | 63.0 | 25.0 | 37.0 | 275.0 | 111.0 | 101.0 | Mobile Payment App
+120.0 | 23.0 | Female | Freshman | Psychology | 1083.0 | 10.0 | 5275.0 | 640.0 | 236.0 | 153.0 | 257.0 | 62.0 | 87.0 | 188.0 | 55.0 | 59.0 | Mobile Payment App
+121.0 | 24.0 | Freshman | Biology | 1487.0 | 940.0 | 3167.0 | 765.0 | 202.0 | 146.0 | 183.0 | 145.0 | 23.0 | 233.0 | 120.0 | 44.0 | Mobile Payment App
+122.0 | 25.0 | Junior | Computer Science | 1327.0 | 196.0 | 5067.0 | 613.0 | 278.0 | 179.0 | 187.0 | 149.0 | 38.0 | 227.0 | 162.0 | 104.0 | Cash
+123.0 | 22.0 | Senior | Economics | 1095.0 | 165.0 | 4532.0 | 801.0 | 253.0 | 167.0 | 243.0 | 73.0 | 33.0 | 110.0 | 66.0 | 98.0 | Credit/Debit Card
+124.0 | 23.0 | Male | Senior | Biology | 1460.0 | 436.0 | 3230.0 | 787.0 | 377.0 | 176.0 | 158.0 | 117.0 | 78.0 | 299.0 | 84.0 | 43.0 | Mobile Payment App
+125.0 | 20.0 | Female | Freshman | Engineering | 1354.0 | 427.0 | 3691.0 | 515.0 | 224.0 | 120.0 | 125.0 | 71.0 | 46.0 | 140.0 | 184.0 | 177.0 | Credit/Debit Card
+126.0 | 20.0 | Male | Sophomore | Biology | 836.0 | 620.0 | 4311.0 | 584.0 | 301.0 | 160.0 | 193.0 | 91.0 | 46.0 | 143.0 | 120.0 | 53.0 | Cash
+127.0 | 22.0 | Male | Junior | Engineering | 1212.0 | 529.0 | 4012.0 | 897.0 | 400.0 | 53.0 | 120.0 | 117.0 | 88.0 | 284.0 | 119.0 | 105.0 | Credit/Debit Card
+128.0 | 20.0 | Senior | Engineering | 1483.0 | 277.0 | 3413.0 | 554.0 | 182.0 | 138.0 | 275.0 | 72.0 | 35.0 | 160.0 | 74.0 | 190.0 | Credit/Debit Card
+129.0 | 22.0 | Sophomore | Computer Science | 998.0 | 935.0 | 5420.0 | 516.0 | 297.0 | 96.0 | 103.0 | 129.0 | 78.0 | 251.0 | 109.0 | 63.0 | Credit/Debit Card
+130.0 | 22.0 | Senior | Biology | 885.0 | 325.0 | 4389.0 | 907.0 | 317.0 | 144.0 | 126.0 | 149.0 | 89.0 | 243.0 | 156.0 | 81.0 | Credit/Debit Card
+131.0 | 25.0 | Male | Senior | Engineering | 726.0 | 333.0 | 3854.0 | 738.0 | 177.0 | 195.0 | 110.0 | 92.0 | 77.0 | 117.0 | 30.0 | 50.0 | Credit/Debit Card
+132.0 | 25.0 | Female | Junior | Psychology | 1037.0 | 990.0 | 4885.0 | 481.0 | 367.0 | 130.0 | 272.0 | 56.0 | 57.0 | 150.0 | 92.0 | 22.0 | Mobile Payment App
+133.0 | 22.0 | Female | Freshman | Engineering | 1456.0 | 993.0 | 3377.0 | 733.0 | 201.0 | 94.0 | 284.0 | 123.0 | 34.0 | 59.0 | 77.0 | 97.0 | Mobile Payment App
+134.0 | 24.0 | Male | Junior | Economics | 676.0 | 183.0 | 4129.0 | 600.0 | 135.0 | 75.0 | 227.0 | 25.0 | 22.0 | 200.0 | 164.0 | 133.0 | Mobile Payment App
+135.0 | 24.0 | Female | Senior | Psychology | 571.0 | 215.0 | 5579.0 | 424.0 | 133.0 | 149.0 | 139.0 | 29.0 | 58.0 | 275.0 | 173.0 | 109.0 | Mobile Payment App
+136.0 | 23.0 | Male | Junior | Computer Science | 1213.0 | 761.0 | 5944.0 | 768.0 | 246.0 | 196.0 | 165.0 | 52.0 | 68.0 | 198.0 | 180.0 | 40.0 | Mobile Payment App
+137.0 | 24.0 | Female | Sophomore | Psychology | 1112.0 | 547.0 | 5305.0 | 498.0 | 357.0 | 170.0 | 183.0 | 92.0 | 84.0 | 138.0 | 92.0 | 197.0 | Cash
+138.0 | 18.0 | Female | Sophomore | Economics | 1100.0 | 535.0 | 4834.0 | 593.0 | 201.0 | 197.0 | 78.0 | 92.0 | 44.0 | 178.0 | 198.0 | 45.0 | Credit/Debit Card
+139.0 | 21.0 | Male | Sophomore | Psychology | 526.0 | 375.0 | 4279.0 | 747.0 | 159.0 | 183.0 | 197.0 | 67.0 | 21.0 | 88.0 | 58.0 | 108.0 | Cash
+140.0 | 22.0 | Male | Junior | Computer Science | 951.0 | 202.0 | 3172.0 | 818.0 | 158.0 | 68.0 | 95.0 | 76.0 | 63.0 | 122.0 | 47.0 | 96.0 | Mobile Payment App
+141.0 | 23.0 | Male | Sophomore | Computer Science | 1301.0 | 163.0 | 5696.0 | 899.0 | 117.0 | 51.0 | 278.0 | 22.0 | 22.0 | 153.0 | 70.0 | 150.0 | Cash
+142.0 | 25.0 | Male | Junior | Psychology | 1103.0 | 5.0 | 5960.0 | 676.0 | 375.0 | 149.0 | 133.0 | 76.0 | 33.0 | 212.0 | 165.0 | 169.0 | Mobile Payment App
+143.0 | 24.0 | Male | Senior | Computer Science | 1083.0 | 466.0 | 5692.0 | 644.0 | 111.0 | 80.0 | 235.0 | 76.0 | 42.0 | 108.0 | 65.0 | 73.0 | Cash
+144.0 | 23.0 | Female | Senior | Engineering | 860.0 | 47.0 | 3057.0 | 614.0 | 235.0 | 115.0 | 117.0 | 71.0 | 72.0 | 226.0 | 94.0 | 126.0 | Cash
+145.0 | 18.0 | Male | Senior | Biology | 1354.0 | 882.0 | 3341.0 | 969.0 | 348.0 | 75.0 | 126.0 | 49.0 | 93.0 | 201.0 | 116.0 | 178.0 | Cash
+146.0 | 23.0 | Male | Senior | Biology | 877.0 | 847.0 | 4768.0 | 465.0 | 221.0 | 96.0 | 52.0 | 39.0 | 73.0 | 94.0 | 141.0 | 64.0 | Credit/Debit Card
+147.0 | 21.0 | Male | Freshman | Engineering | 649.0 | 577.0 | 3046.0 | 931.0 | 224.0 | 161.0 | 200.0 | 24.0 | 80.0 | 213.0 | 135.0 | 180.0 | Credit/Debit Card
+148.0 | 24.0 | Male | Sophomore | Computer Science | 897.0 | 220.0 | 4655.0 | 799.0 | 358.0 | 125.0 | 290.0 | 80.0 | 23.0 | 156.0 | 177.0 | 46.0 | Credit/Debit Card
+149.0 | 21.0 | Freshman | Psychology | 1147.0 | 872.0 | 3709.0 | 581.0 | 102.0 | 188.0 | 225.0 | 98.0 | 72.0 | 273.0 | 126.0 | 166.0 | Mobile Payment App
+150.0 | 23.0 | Senior | Biology | 1367.0 | 606.0 | 5577.0 | 916.0 | 260.0 | 78.0 | 213.0 | 145.0 | 71.0 | 223.0 | 123.0 | 199.0 | Credit/Debit Card
+151.0 | 21.0 | Male | Freshman | Computer Science | 647.0 | 382.0 | 4943.0 | 807.0 | 149.0 | 61.0 | 214.0 | 136.0 | 26.0 | 191.0 | 102.0 | 107.0 | Cash
+152.0 | 21.0 | Female | Senior | Engineering | 656.0 | 725.0 | 3360.0 | 931.0 | 329.0 | 188.0 | 95.0 | 120.0 | 92.0 | 102.0 | 59.0 | 198.0 | Credit/Debit Card
+153.0 | 19.0 | Junior | Economics | 1131.0 | 315.0 | 3194.0 | 468.0 | 328.0 | 177.0 | 118.0 | 26.0 | 69.0 | 66.0 | 161.0 | 120.0 | Mobile Payment App
+154.0 | 19.0 | Female | Freshman | Psychology | 1319.0 | 803.0 | 4160.0 | 677.0 | 159.0 | 73.0 | 229.0 | 140.0 | 38.0 | 108.0 | 175.0 | 31.0 | Cash
+155.0 | 22.0 | Female | Freshman | Economics | 917.0 | 856.0 | 5010.0 | 434.0 | 128.0 | 184.0 | 277.0 | 98.0 | 29.0 | 115.0 | 61.0 | 66.0 | Credit/Debit Card
+156.0 | 19.0 | Female | Sophomore | Biology | 872.0 | 206.0 | 5309.0 | 944.0 | 232.0 | 166.0 | 153.0 | 58.0 | 64.0 | 67.0 | 167.0 | 86.0 | Credit/Debit Card
+157.0 | 20.0 | Male | Sophomore | Economics | 901.0 | 115.0 | 3388.0 | 737.0 | 295.0 | 84.0 | 297.0 | 66.0 | 80.0 | 146.0 | 100.0 | 93.0 | Mobile Payment App
+158.0 | 18.0 | Male | Junior | Engineering | 536.0 | 535.0 | 5547.0 | 676.0 | 255.0 | 82.0 | 111.0 | 128.0 | 35.0 | 252.0 | 160.0 | 79.0 | Credit/Debit Card
+159.0 | 25.0 | Female | Senior | Psychology | 506.0 | 931.0 | 4087.0 | 998.0 | 251.0 | 175.0 | 80.0 | 82.0 | 82.0 | 76.0 | 152.0 | 56.0 | Mobile Payment App
+160.0 | 23.0 | Female | Junior | Economics | 1201.0 | 635.0 | 3748.0 | 459.0 | 291.0 | 56.0 | 199.0 | 100.0 | 81.0 | 290.0 | 135.0 | 131.0 | Credit/Debit Card
+161.0 | 25.0 | Senior | Computer Science | 1189.0 | 48.0 | 5568.0 | 815.0 | 159.0 | 79.0 | 66.0 | 113.0 | 68.0 | 91.0 | 94.0 | 37.0 | Cash
+162.0 | 23.0 | Female | Junior | Economics | 546.0 | 387.0 | 3890.0 | 747.0 | 282.0 | 140.0 | 53.0 | 35.0 | 38.0 | 67.0 | 75.0 | 181.0 | Credit/Debit Card
+163.0 | 19.0 | Senior | Biology | 1181.0 | 989.0 | 3162.0 | 559.0 | 196.0 | 137.0 | 89.0 | 46.0 | 60.0 | 249.0 | 134.0 | 200.0 | Cash
+164.0 | 18.0 | Female | Sophomore | Economics | 810.0 | 292.0 | 3953.0 | 771.0 | 340.0 | 51.0 | 98.0 | 120.0 | 88.0 | 133.0 | 58.0 | 113.0 | Cash
+165.0 | 19.0 | Freshman | Engineering | 855.0 | 397.0 | 4028.0 | 633.0 | 400.0 | 146.0 | 174.0 | 148.0 | 42.0 | 77.0 | 153.0 | 122.0 | Cash
+166.0 | 23.0 | Male | Sophomore | Biology | 1354.0 | 17.0 | 5911.0 | 631.0 | 385.0 | 160.0 | 112.0 | 34.0 | 32.0 | 225.0 | 173.0 | 60.0 | Cash
+167.0 | 20.0 | Male | Freshman | Psychology | 1056.0 | 861.0 | 5433.0 | 405.0 | 183.0 | 194.0 | 187.0 | 61.0 | 66.0 | 144.0 | 107.0 | 22.0 | Cash
+168.0 | 19.0 | Male | Freshman | Economics | 620.0 | 215.0 | 4981.0 | 704.0 | 243.0 | 197.0 | 285.0 | 135.0 | 83.0 | 192.0 | 36.0 | 197.0 | Credit/Debit Card
+169.0 | 24.0 | Female | Freshman | Economics | 1207.0 | 339.0 | 4361.0 | 638.0 | 201.0 | 143.0 | 241.0 | 112.0 | 29.0 | 86.0 | 139.0 | 110.0 | Cash
+170.0 | 21.0 | Sophomore | Psychology | 621.0 | 456.0 | 5893.0 | 960.0 | 199.0 | 124.0 | 278.0 | 115.0 | 48.0 | 193.0 | 178.0 | 68.0 | Cash
+171.0 | 25.0 | Female | Senior | Engineering | 1033.0 | 64.0 | 4249.0 | 517.0 | 104.0 | 64.0 | 259.0 | 131.0 | 66.0 | 234.0 | 63.0 | 104.0 | Mobile Payment App
+172.0 | 19.0 | Freshman | Psychology | 722.0 | 2.0 | 3701.0 | 450.0 | 102.0 | 82.0 | 267.0 | 38.0 | 65.0 | 129.0 | 186.0 | 125.0 | Mobile Payment App
+173.0 | 20.0 | Male | Freshman | Psychology | 1304.0 | 76.0 | 3564.0 | 847.0 | 180.0 | 92.0 | 300.0 | 90.0 | 64.0 | 113.0 | 34.0 | 113.0 | Mobile Payment App
+174.0 | 21.0 | Junior | Biology | 912.0 | 970.0 | 3424.0 | 991.0 | 348.0 | 181.0 | 86.0 | 134.0 | 70.0 | 175.0 | 40.0 | 184.0 | Credit/Debit Card
+175.0 | 23.0 | Male | Sophomore | Biology | 963.0 | 871.0 | 4951.0 | 778.0 | 253.0 | 105.0 | 135.0 | 124.0 | 46.0 | 185.0 | 164.0 | 160.0 | Cash
+176.0 | 18.0 | Female | Junior | Engineering | 1286.0 | 618.0 | 3015.0 | 925.0 | 103.0 | 129.0 | 56.0 | 50.0 | 93.0 | 215.0 | 43.0 | 105.0 | Mobile Payment App
+177.0 | 18.0 | Male | Freshman | Economics | 1104.0 | 180.0 | 4653.0 | 683.0 | 362.0 | 185.0 | 90.0 | 79.0 | 91.0 | 91.0 | 99.0 | 64.0 | Credit/Debit Card
+178.0 | 23.0 | Senior | Economics | 697.0 | 927.0 | 3756.0 | 734.0 | 394.0 | 192.0 | 109.0 | 80.0 | 73.0 | 247.0 | 69.0 | 195.0 | Cash
+179.0 | 21.0 | Male | Freshman | Engineering | 1230.0 | 968.0 | 4254.0 | 540.0 | 285.0 | 99.0 | 169.0 | 101.0 | 57.0 | 77.0 | 87.0 | 43.0 | Cash
+180.0 | 25.0 | Female | Junior | Engineering | 1345.0 | 649.0 | 3889.0 | 919.0 | 311.0 | 133.0 | 68.0 | 149.0 | 66.0 | 69.0 | 159.0 | 162.0 | Mobile Payment App
+181.0 | 20.0 | Female | Junior | Biology | 1411.0 | 517.0 | 3074.0 | 874.0 | 151.0 | 77.0 | 219.0 | 21.0 | 44.0 | 280.0 | 57.0 | 176.0 | Mobile Payment App
+182.0 | 24.0 | Female | Freshman | Economics | 1355.0 | 282.0 | 5998.0 | 617.0 | 311.0 | 79.0 | 264.0 | 35.0 | 73.0 | 254.0 | 131.0 | 164.0 | Credit/Debit Card
+183.0 | 24.0 | Junior | Economics | 608.0 | 918.0 | 4056.0 | 568.0 | 336.0 | 186.0 | 159.0 | 82.0 | 89.0 | 251.0 | 166.0 | 142.0 | Mobile Payment App
+184.0 | 22.0 | Female | Senior | Biology | 566.0 | 480.0 | 3542.0 | 834.0 | 360.0 | 64.0 | 289.0 | 48.0 | 86.0 | 226.0 | 132.0 | 120.0 | Credit/Debit Card
+185.0 | 25.0 | Female | Junior | Economics | 1310.0 | 982.0 | 4548.0 | 837.0 | 219.0 | 60.0 | 72.0 | 82.0 | 51.0 | 260.0 | 30.0 | 171.0 | Mobile Payment App
+186.0 | 24.0 | Female | Sophomore | Biology | 1354.0 | 52.0 | 3169.0 | 849.0 | 335.0 | 60.0 | 199.0 | 77.0 | 45.0 | 101.0 | 195.0 | 125.0 | Credit/Debit Card
+187.0 | 23.0 | Male | Sophomore | Economics | 1020.0 | 17.0 | 4645.0 | 943.0 | 305.0 | 156.0 | 240.0 | 123.0 | 53.0 | 290.0 | 77.0 | 63.0 | Cash
+188.0 | 24.0 | Senior | Engineering | 1394.0 | 871.0 | 4450.0 | 416.0 | 268.0 | 133.0 | 146.0 | 22.0 | 68.0 | 172.0 | 126.0 | 185.0 | Cash
+189.0 | 22.0 | Sophomore | Psychology | 954.0 | 337.0 | 5756.0 | 717.0 | 159.0 | 195.0 | 196.0 | 138.0 | 26.0 | 154.0 | 160.0 | 85.0 | Credit/Debit Card
+190.0 | 21.0 | Male | Senior | Biology | 1448.0 | 794.0 | 3959.0 | 624.0 | 171.0 | 172.0 | 103.0 | 59.0 | 89.0 | 206.0 | 182.0 | 158.0 | Mobile Payment App
+191.0 | 21.0 | Sophomore | Biology | 968.0 | 8.0 | 4078.0 | 670.0 | 108.0 | 56.0 | 129.0 | 26.0 | 66.0 | 272.0 | 64.0 | 151.0 | Credit/Debit Card
+192.0 | 19.0 | Male | Freshman | Economics | 1450.0 | 809.0 | 4103.0 | 845.0 | 255.0 | 89.0 | 136.0 | 110.0 | 85.0 | 183.0 | 85.0 | 110.0 | Credit/Debit Card
+193.0 | 22.0 | Female | Freshman | Computer Science | 1316.0 | 938.0 | 4316.0 | 953.0 | 153.0 | 179.0 | 229.0 | 105.0 | 66.0 | 184.0 | 151.0 | 137.0 | Credit/Debit Card
+194.0 | 24.0 | Male | Freshman | Computer Science | 904.0 | 955.0 | 4075.0 | 875.0 | 310.0 | 197.0 | 201.0 | 91.0 | 83.0 | 224.0 | 186.0 | 101.0 | Cash
+195.0 | 23.0 | Female | Junior | Computer Science | 1488.0 | 77.0 | 5418.0 | 545.0 | 112.0 | 193.0 | 158.0 | 21.0 | 64.0 | 257.0 | 168.0 | 86.0 | Cash
+196.0 | 20.0 | Female | Junior | Psychology | 893.0 | 258.0 | 5877.0 | 469.0 | 131.0 | 192.0 | 222.0 | 73.0 | 84.0 | 125.0 | 176.0 | 74.0 | Cash
+197.0 | 21.0 | Male | Freshman | Biology | 527.0 | 851.0 | 4464.0 | 683.0 | 390.0 | 194.0 | 185.0 | 127.0 | 65.0 | 188.0 | 168.0 | 193.0 | Credit/Debit Card
+198.0 | 24.0 | Male | Senior | Biology | 804.0 | 640.0 | 3043.0 | 927.0 | 347.0 | 167.0 | 151.0 | 114.0 | 35.0 | 206.0 | 94.0 | 169.0 | Credit/Debit Card
+199.0 | 25.0 | Female | Junior | Engineering | 547.0 | 233.0 | 5070.0 | 633.0 | 164.0 | 94.0 | 147.0 | 123.0 | 25.0 | 236.0 | 116.0 | 37.0 | Credit/Debit Card
+200.0 | 19.0 | Female | Freshman | Computer Science | 523.0 | 892.0 | 4683.0 | 438.0 | 180.0 | 65.0 | 208.0 | 108.0 | 59.0 | 192.0 | 92.0 | 132.0 | Cash
+200.0 | 19.0 | Female | Freshman | Computer Science | 523.0 | 892.0 | 4683.0 | 438.0 | 180.0 | 65.0 | 208.0 | 108.0 | 59.0 | 192.0 | 92.0 | 132.0 | Cash
+200.0 | 19.0 | Female | Freshman | Computer Science | 523.0 | 892.0 | 4683.0 | 438.0 | 180.0 | 65.0 | 208.0 | 108.0 | 59.0 | 192.0 | 92.0 | 132.0 | Cash
+200.0 | 19.0 | Female | Freshman | Computer Science | 523.0 | 892.0 | 4683.0 | 438.0 | 180.0 | 65.0 | 208.0 | 108.0 | 59.0 | 192.0 | 92.0 | 132.0 | Cash
+200.0 | 19.0 | Female | Freshman | Computer Science | 523.0 | 892.0 | 4683.0 | 438.0 | 180.0 | 65.0 | 208.0 | 108.0 | 59.0 | 192.0 | 92.0 | 132.0 | Cash
+201.0 | 24.0 | Female | Senior | Economics | 1040.0 | 970.0 | 5293.0 | 701.0 | 323.0 | 97.0 | 196.0 | 93.0 | 62.0 | 170.0 | 90.0 | 64.0 | Credit/Debit Card
+202.0 | 24.0 | Male | Freshman | Computer Science | 918.0 | 273.0 | 3012.0 | 759.0 | 113.0 | 181.0 | 62.0 | 99.0 | 81.0 | 226.0 | 155.0 | 199.0 | Credit/Debit Card
+203.0 | 23.0 | Female | Junior | Biology | 504.0 | 775.0 | 4132.0 | 997.0 | 237.0 | 69.0 | 199.0 | 111.0 | 58.0 | 62.0 | 195.0 | 195.0 | Credit/Debit Card
+204.0 | 24.0 | Female | Senior | Economics | 1203.0 | 115.0 | 3234.0 | 858.0 | 249.0 | 157.0 | 292.0 | 132.0 | 94.0 | 278.0 | 66.0 | 49.0 | Cash
+205.0 | 20.0 | Female | Senior | Psychology | 951.0 | 279.0 | 4004.0 | 453.0 | 366.0 | 121.0 | 287.0 | 71.0 | 65.0 | 207.0 | 129.0 | 122.0 | Mobile Payment App
+206.0 | 24.0 | Sophomore | Psychology | 857.0 | 583.0 | 3939.0 | 587.0 | 147.0 | 126.0 | 160.0 | 117.0 | 85.0 | 98.0 | 69.0 | 143.0 | Mobile Payment App
+207.0 | 19.0 | Male | Senior | Psychology | 812.0 | 539.0 | 3191.0 | 744.0 | 108.0 | 189.0 | 296.0 | 31.0 | 81.0 | 204.0 | 87.0 | 34.0 | Cash
+208.0 | 18.0 | Male | Sophomore | Computer Science | 540.0 | 649.0 | 5188.0 | 746.0 | 173.0 | 147.0 | 113.0 | 139.0 | 29.0 | 103.0 | 73.0 | 118.0 | Credit/Debit Card
+209.0 | 19.0 | Junior | Psychology | 889.0 | 483.0 | 3007.0 | 673.0 | 225.0 | 113.0 | 113.0 | 148.0 | 40.0 | 256.0 | 171.0 | 175.0 | Cash
+210.0 | 18.0 | Freshman | Psychology | 992.0 | 680.0 | 5718.0 | 533.0 | 241.0 | 84.0 | 276.0 | 65.0 | 81.0 | 141.0 | 171.0 | 51.0 | Credit/Debit Card
+211.0 | 21.0 | Male | Junior | Biology | 760.0 | 869.0 | 3712.0 | 567.0 | 291.0 | 94.0 | 86.0 | 141.0 | 97.0 | 55.0 | 165.0 | 44.0 | Mobile Payment App
+212.0 | 25.0 | Male | Sophomore | Biology | 1199.0 | 996.0 | 4865.0 | 533.0 | 207.0 | 123.0 | 70.0 | 104.0 | 76.0 | 256.0 | 189.0 | 192.0 | Credit/Debit Card
+213.0 | 20.0 | Female | Junior | Biology | 578.0 | 460.0 | 4893.0 | 488.0 | 139.0 | 168.0 | 58.0 | 105.0 | 92.0 | 177.0 | 183.0 | 92.0 | Credit/Debit Card
+214.0 | 24.0 | Female | Senior | Economics | 994.0 | 940.0 | 4885.0 | 487.0 | 143.0 | 54.0 | 79.0 | 74.0 | 53.0 | 77.0 | 66.0 | 22.0 | Cash
+215.0 | 18.0 | Junior | Economics | 552.0 | 481.0 | 5312.0 | 937.0 | 307.0 | 77.0 | 71.0 | 21.0 | 52.0 | 127.0 | 46.0 | 77.0 | Mobile Payment App
+216.0 | 21.0 | Male | Junior | Computer Science | 1444.0 | 792.0 | 5866.0 | 607.0 | 396.0 | 189.0 | 125.0 | 76.0 | 80.0 | 59.0 | 79.0 | 78.0 | Credit/Debit Card
+217.0 | 19.0 | Female | Junior | Psychology | 1203.0 | 550.0 | 3282.0 | 654.0 | 182.0 | 108.0 | 288.0 | 147.0 | 38.0 | 92.0 | 182.0 | 128.0 | Mobile Payment App
+218.0 | 25.0 | Female | Sophomore | Computer Science | 1481.0 | 50.0 | 4898.0 | 982.0 | 157.0 | 162.0 | 159.0 | 30.0 | 76.0 | 225.0 | 99.0 | 166.0 | Credit/Debit Card
+219.0 | 25.0 | Sophomore | Economics | 700.0 | 174.0 | 5318.0 | 846.0 | 206.0 | 108.0 | 284.0 | 70.0 | 23.0 | 220.0 | 169.0 | 142.0 | Credit/Debit Card
+220.0 | 25.0 | Female | Junior | Economics | 1087.0 | 415.0 | 5282.0 | 503.0 | 155.0 | 186.0 | 116.0 | 31.0 | 31.0 | 108.0 | 141.0 | 200.0 | Mobile Payment App
+221.0 | 23.0 | Male | Senior | Economics | 672.0 | 699.0 | 4520.0 | 435.0 | 153.0 | 180.0 | 61.0 | 75.0 | 56.0 | 248.0 | 195.0 | 82.0 | Mobile Payment App
+222.0 | 21.0 | Male | Sophomore | Computer Science | 825.0 | 882.0 | 4307.0 | 589.0 | 181.0 | 54.0 | 89.0 | 113.0 | 55.0 | 266.0 | 34.0 | 176.0 | Credit/Debit Card
+223.0 | 24.0 | Male | Sophomore | Computer Science | 1033.0 | 267.0 | 5997.0 | 806.0 | 374.0 | 86.0 | 229.0 | 78.0 | 31.0 | 139.0 | 153.0 | 77.0 | Cash
+224.0 | 25.0 | Freshman | Engineering | 774.0 | 250.0 | 5306.0 | 942.0 | 324.0 | 73.0 | 271.0 | 107.0 | 77.0 | 92.0 | 80.0 | 66.0 | Credit/Debit Card
+225.0 | 23.0 | Male | Junior | Engineering | 1365.0 | 744.0 | 3066.0 | 936.0 | 265.0 | 52.0 | 121.0 | 46.0 | 85.0 | 292.0 | 128.0 | 115.0 | Credit/Debit Card
+226.0 | 25.0 | Sophomore | Economics | 810.0 | 826.0 | 3709.0 | 938.0 | 206.0 | 180.0 | 112.0 | 82.0 | 45.0 | 165.0 | 110.0 | 98.0 | Mobile Payment App
+227.0 | 22.0 | Male | Sophomore | Economics | 856.0 | 33.0 | 5420.0 | 967.0 | 391.0 | 112.0 | 196.0 | 43.0 | 71.0 | 294.0 | 91.0 | 139.0 | Mobile Payment App
+228.0 | 21.0 | Female | Senior | Psychology | 985.0 | 586.0 | 4345.0 | 481.0 | 110.0 | 141.0 | 135.0 | 103.0 | 42.0 | 270.0 | 194.0 | 196.0 | Credit/Debit Card
+229.0 | 22.0 | Junior | Biology | 919.0 | 369.0 | 4599.0 | 788.0 | 119.0 | 170.0 | 58.0 | 124.0 | 34.0 | 97.0 | 64.0 | 185.0 | Credit/Debit Card
+230.0 | 18.0 | Female | Sophomore | Biology | 637.0 | 130.0 | 5152.0 | 559.0 | 340.0 | 62.0 | 226.0 | 42.0 | 72.0 | 244.0 | 197.0 | 42.0 | Cash
+231.0 | 20.0 | Male | Freshman | Economics | 894.0 | 327.0 | 3535.0 | 689.0 | 213.0 | 127.0 | 69.0 | 116.0 | 50.0 | 143.0 | 81.0 | 51.0 | Credit/Debit Card
+232.0 | 22.0 | Female | Senior | Economics | 874.0 | 561.0 | 3452.0 | 504.0 | 299.0 | 111.0 | 237.0 | 113.0 | 71.0 | 104.0 | 45.0 | 62.0 | Cash
+233.0 | 22.0 | Female | Junior | Computer Science | 850.0 | 699.0 | 3180.0 | 777.0 | 196.0 | 102.0 | 212.0 | 98.0 | 75.0 | 192.0 | 48.0 | 106.0 | Credit/Debit Card
+234.0 | 24.0 | Junior | Engineering | 879.0 | 865.0 | 5743.0 | 921.0 | 249.0 | 189.0 | 222.0 | 111.0 | 71.0 | 112.0 | 60.0 | 133.0 | Credit/Debit Card
+235.0 | 24.0 | Female | Junior | Economics | 811.0 | 346.0 | 3527.0 | 795.0 | 308.0 | 106.0 | 74.0 | 126.0 | 23.0 | 299.0 | 111.0 | 152.0 | Credit/Debit Card
+236.0 | 21.0 | Male | Sophomore | Computer Science | 809.0 | 768.0 | 4079.0 | 505.0 | 186.0 | 176.0 | 217.0 | 70.0 | 81.0 | 194.0 | 193.0 | 91.0 | Cash
+237.0 | 18.0 | Senior | Psychology | 596.0 | 316.0 | 5494.0 | 567.0 | 308.0 | 54.0 | 126.0 | 149.0 | 46.0 | 278.0 | 134.0 | 21.0 | Credit/Debit Card
+238.0 | 25.0 | Male | Sophomore | Economics | 856.0 | 102.0 | 3647.0 | 500.0 | 341.0 | 123.0 | 198.0 | 85.0 | 73.0 | 208.0 | 58.0 | 21.0 | Mobile Payment App
+239.0 | 25.0 | Male | Senior | Computer Science | 886.0 | 143.0 | 3489.0 | 676.0 | 219.0 | 61.0 | 198.0 | 99.0 | 95.0 | 178.0 | 46.0 | 188.0 | Mobile Payment App
+240.0 | 24.0 | Female | Sophomore | Psychology | 1205.0 | 715.0 | 5781.0 | 428.0 | 346.0 | 190.0 | 79.0 | 37.0 | 28.0 | 57.0 | 182.0 | 133.0 | Mobile Payment App
+241.0 | 21.0 | Freshman | Biology | 1353.0 | 444.0 | 4343.0 | 622.0 | 341.0 | 198.0 | 152.0 | 106.0 | 44.0 | 236.0 | 60.0 | 171.0 | Cash
+242.0 | 22.0 | Male | Junior | Computer Science | 1268.0 | 886.0 | 4960.0 | 917.0 | 100.0 | 53.0 | 102.0 | 98.0 | 66.0 | 228.0 | 124.0 | 176.0 | Cash
+243.0 | 23.0 | Sophomore | Psychology | 1112.0 | 5.0 | 3873.0 | 737.0 | 188.0 | 101.0 | 266.0 | 46.0 | 76.0 | 73.0 | 190.0 | 159.0 | Cash
+244.0 | 20.0 | Female | Junior | Engineering | 1206.0 | 639.0 | 5211.0 | 720.0 | 363.0 | 66.0 | 120.0 | 134.0 | 85.0 | 152.0 | 52.0 | 30.0 | Cash
+245.0 | 24.0 | Male | Junior | Biology | 1159.0 | 465.0 | 3153.0 | 891.0 | 226.0 | 55.0 | 95.0 | 46.0 | 58.0 | 284.0 | 41.0 | 88.0 | Mobile Payment App
+246.0 | 19.0 | Male | Sophomore | Biology | 1250.0 | 113.0 | 4859.0 | 521.0 | 305.0 | 92.0 | 133.0 | 77.0 | 92.0 | 69.0 | 108.0 | 116.0 | Mobile Payment App
+247.0 | 20.0 | Male | Freshman | Computer Science | 1120.0 | 327.0 | 5509.0 | 670.0 | 120.0 | 130.0 | 178.0 | 52.0 | 71.0 | 267.0 | 38.0 | 63.0 | Mobile Payment App
+248.0 | 24.0 | Male | Senior | Computer Science | 1277.0 | 520.0 | 4706.0 | 538.0 | 374.0 | 183.0 | 243.0 | 80.0 | 74.0 | 246.0 | 152.0 | 46.0 | Cash
+249.0 | 19.0 | Male | Freshman | Psychology | 1442.0 | 463.0 | 5284.0 | 537.0 | 307.0 | 157.0 | 113.0 | 60.0 | 39.0 | 261.0 | 178.0 | 115.0 | Mobile Payment App
+250.0 | 24.0 | Junior | Biology | 776.0 | 16.0 | 4353.0 | 460.0 | 358.0 | 95.0 | 219.0 | 27.0 | 61.0 | 178.0 | 173.0 | 168.0 | Cash
+251.0 | 21.0 | Female | Sophomore | Biology | 800.0 | 311.0 | 3641.0 | 438.0 | 331.0 | 60.0 | 125.0 | 22.0 | 41.0 | 253.0 | 45.0 | 78.0 | Mobile Payment App
+252.0 | 18.0 | Female | Junior | Computer Science | 1078.0 | 910.0 | 5416.0 | 507.0 | 232.0 | 175.0 | 64.0 | 129.0 | 55.0 | 136.0 | 156.0 | 52.0 | Credit/Debit Card
+253.0 | 20.0 | Male | Junior | Computer Science | 1404.0 | 747.0 | 3920.0 | 760.0 | 237.0 | 104.0 | 122.0 | 28.0 | 82.0 | 115.0 | 75.0 | 56.0 | Mobile Payment App
+254.0 | 21.0 | Junior | Psychology | 1097.0 | 70.0 | 4255.0 | 447.0 | 101.0 | 125.0 | 267.0 | 119.0 | 58.0 | 76.0 | 37.0 | 94.0 | Credit/Debit Card
+255.0 | 22.0 | Freshman | Biology | 835.0 | 244.0 | 3098.0 | 834.0 | 380.0 | 95.0 | 243.0 | 39.0 | 51.0 | 178.0 | 101.0 | 110.0 | Credit/Debit Card
+256.0 | 18.0 | Senior | Economics | 755.0 | 757.0 | 3221.0 | 820.0 | 301.0 | 126.0 | 231.0 | 77.0 | 71.0 | 284.0 | 99.0 | 111.0 | Credit/Debit Card
+257.0 | 19.0 | Male | Freshman | Engineering | 1087.0 | 133.0 | 5170.0 | 872.0 | 133.0 | 86.0 | 177.0 | 73.0 | 63.0 | 198.0 | 167.0 | 32.0 | Credit/Debit Card
+258.0 | 23.0 | Male | Sophomore | Computer Science | 931.0 | 950.0 | 3012.0 | 636.0 | 329.0 | 187.0 | 96.0 | 141.0 | 96.0 | 246.0 | 193.0 | 121.0 | Cash
+259.0 | 20.0 | Female | Sophomore | Psychology | 983.0 | 321.0 | 4912.0 | 761.0 | 350.0 | 177.0 | 256.0 | 61.0 | 73.0 | 206.0 | 63.0 | 179.0 | Credit/Debit Card
+260.0 | 21.0 | Sophomore | Engineering | 639.0 | 854.0 | 4160.0 | 676.0 | 174.0 | 107.0 | 208.0 | 71.0 | 48.0 | 231.0 | 192.0 | 169.0 | Mobile Payment App
+261.0 | 20.0 | Male | Junior | Engineering | 527.0 | 438.0 | 4231.0 | 961.0 | 212.0 | 60.0 | 287.0 | 57.0 | 31.0 | 80.0 | 162.0 | 40.0 | Mobile Payment App
+262.0 | 24.0 | Male | Junior | Computer Science | 744.0 | 666.0 | 4930.0 | 853.0 | 134.0 | 115.0 | 197.0 | 107.0 | 73.0 | 256.0 | 117.0 | 34.0 | Mobile Payment App
+263.0 | 21.0 | Male | Freshman | Economics | 1118.0 | 367.0 | 3821.0 | 956.0 | 287.0 | 112.0 | 267.0 | 65.0 | 92.0 | 147.0 | 149.0 | 50.0 | Mobile Payment App
+264.0 | 22.0 | Male | Senior | Engineering | 1276.0 | 606.0 | 3809.0 | 970.0 | 124.0 | 97.0 | 271.0 | 96.0 | 81.0 | 110.0 | 136.0 | 42.0 | Credit/Debit Card
+265.0 | 25.0 | Female | Junior | Engineering | 880.0 | 863.0 | 4771.0 | 903.0 | 291.0 | 100.0 | 292.0 | 108.0 | 55.0 | 217.0 | 164.0 | 51.0 | Cash
+266.0 | 23.0 | Male | Freshman | Engineering | 1424.0 | 887.0 | 4645.0 | 854.0 | 140.0 | 145.0 | 156.0 | 35.0 | 36.0 | 50.0 | 114.0 | 153.0 | Mobile Payment App
+267.0 | 22.0 | Female | Senior | Psychology | 1276.0 | 500.0 | 3568.0 | 785.0 | 338.0 | 144.0 | 298.0 | 91.0 | 64.0 | 173.0 | 98.0 | 109.0 | Mobile Payment App
+268.0 | 19.0 | Junior | Computer Science | 697.0 | 943.0 | 5958.0 | 824.0 | 274.0 | 200.0 | 89.0 | 56.0 | 31.0 | 268.0 | 175.0 | 96.0 | Mobile Payment App
+269.0 | 23.0 | Senior | Computer Science | 1379.0 | 500.0 | 3665.0 | 946.0 | 114.0 | 143.0 | 211.0 | 92.0 | 20.0 | 83.0 | 113.0 | 110.0 | Mobile Payment App
+270.0 | 20.0 | Female | Freshman | Computer Science | 1466.0 | 977.0 | 5400.0 | 698.0 | 283.0 | 135.0 | 58.0 | 135.0 | 96.0 | 171.0 | 30.0 | 85.0 | Credit/Debit Card
+271.0 | 24.0 | Male | Junior | Biology | 1126.0 | 649.0 | 3565.0 | 483.0 | 259.0 | 63.0 | 53.0 | 57.0 | 43.0 | 65.0 | 40.0 | 86.0 | Cash
+272.0 | 23.0 | Male | Senior | Biology | 1126.0 | 9.0 | 5535.0 | 1000.0 | 206.0 | 135.0 | 84.0 | 70.0 | 95.0 | 295.0 | 120.0 | 73.0 | Cash
+273.0 | 21.0 | Male | Senior | Biology | 618.0 | 916.0 | 4952.0 | 459.0 | 192.0 | 145.0 | 202.0 | 86.0 | 81.0 | 122.0 | 150.0 | 113.0 | Cash
+274.0 | 22.0 | Male | Junior | Biology | 785.0 | 303.0 | 3495.0 | 407.0 | 245.0 | 64.0 | 92.0 | 47.0 | 82.0 | 94.0 | 104.0 | 184.0 | Mobile Payment App
+275.0 | 18.0 | Male | Senior | Computer Science | 770.0 | 554.0 | 3535.0 | 468.0 | 171.0 | 104.0 | 93.0 | 75.0 | 22.0 | 74.0 | 191.0 | 182.0 | Cash
+276.0 | 25.0 | Male | Sophomore | Psychology | 1431.0 | 856.0 | 5216.0 | 528.0 | 377.0 | 155.0 | 191.0 | 149.0 | 56.0 | 117.0 | 124.0 | 173.0 | Credit/Debit Card
+277.0 | 18.0 | Female | Freshman | Biology | 1338.0 | 491.0 | 3955.0 | 781.0 | 100.0 | 139.0 | 175.0 | 129.0 | 24.0 | 167.0 | 149.0 | 137.0 | Credit/Debit Card
+278.0 | 25.0 | Female | Sophomore | Psychology | 1121.0 | 794.0 | 3517.0 | 407.0 | 363.0 | 101.0 | 170.0 | 60.0 | 30.0 | 168.0 | 101.0 | 124.0 | Mobile Payment App
+279.0 | 24.0 | Female | Freshman | Engineering | 1245.0 | 675.0 | 5833.0 | 944.0 | 195.0 | 107.0 | 88.0 | 79.0 | 95.0 | 166.0 | 199.0 | 122.0 | Credit/Debit Card
+280.0 | 20.0 | Female | Senior | Computer Science | 748.0 | 223.0 | 3343.0 | 919.0 | 100.0 | 142.0 | 266.0 | 77.0 | 60.0 | 103.0 | 199.0 | 87.0 | Mobile Payment App
+281.0 | 20.0 | Female | Junior | Biology | 1389.0 | 477.0 | 3610.0 | 811.0 | 152.0 | 91.0 | 234.0 | 82.0 | 33.0 | 171.0 | 96.0 | 31.0 | Credit/Debit Card
+282.0 | 19.0 | Female | Junior | Engineering | 1122.0 | 790.0 | 5969.0 | 840.0 | 365.0 | 104.0 | 134.0 | 64.0 | 98.0 | 201.0 | 57.0 | 168.0 | Credit/Debit Card
+283.0 | 23.0 | Male | Senior | Psychology | 1113.0 | 955.0 | 5456.0 | 773.0 | 349.0 | 178.0 | 79.0 | 135.0 | 78.0 | 200.0 | 135.0 | 127.0 | Cash
+284.0 | 20.0 | Female | Sophomore | Economics | 879.0 | 547.0 | 5055.0 | 407.0 | 169.0 | 105.0 | 280.0 | 90.0 | 62.0 | 238.0 | 82.0 | 172.0 | Cash
+285.0 | 18.0 | Freshman | Economics | 1489.0 | 202.0 | 4710.0 | 921.0 | 101.0 | 187.0 | 122.0 | 130.0 | 38.0 | 246.0 | 96.0 | 193.0 | Mobile Payment App
+286.0 | 22.0 | Female | Freshman | Biology | 869.0 | 85.0 | 5866.0 | 754.0 | 379.0 | 127.0 | 214.0 | 111.0 | 64.0 | 276.0 | 37.0 | 105.0 | Cash
+287.0 | 23.0 | Male | Junior | Psychology | 1381.0 | 520.0 | 5066.0 | 624.0 | 356.0 | 65.0 | 97.0 | 55.0 | 84.0 | 106.0 | 65.0 | 51.0 | Mobile Payment App
+288.0 | 21.0 | Sophomore | Biology | 1325.0 | 735.0 | 4012.0 | 880.0 | 270.0 | 200.0 | 230.0 | 121.0 | 97.0 | 248.0 | 102.0 | 157.0 | Cash
+289.0 | 20.0 | Male | Senior | Psychology | 581.0 | 492.0 | 3705.0 | 448.0 | 318.0 | 114.0 | 186.0 | 129.0 | 85.0 | 215.0 | 188.0 | 100.0 | Cash
+290.0 | 22.0 | Senior | Engineering | 694.0 | 245.0 | 4140.0 | 692.0 | 398.0 | 92.0 | 215.0 | 25.0 | 92.0 | 247.0 | 135.0 | 28.0 | Mobile Payment App
+291.0 | 24.0 | Female | Sophomore | Economics | 615.0 | 563.0 | 3389.0 | 403.0 | 200.0 | 109.0 | 63.0 | 145.0 | 79.0 | 233.0 | 64.0 | 153.0 | Mobile Payment App
+292.0 | 25.0 | Female | Sophomore | Economics | 1394.0 | 519.0 | 4998.0 | 879.0 | 222.0 | 84.0 | 141.0 | 21.0 | 67.0 | 96.0 | 101.0 | 111.0 | Credit/Debit Card
+293.0 | 25.0 | Female | Freshman | Biology | 800.0 | 223.0 | 5867.0 | 828.0 | 298.0 | 94.0 | 166.0 | 127.0 | 81.0 | 229.0 | 48.0 | 71.0 | Credit/Debit Card
+294.0 | 20.0 | Male | Senior | Psychology | 913.0 | 634.0 | 3541.0 | 668.0 | 375.0 | 187.0 | 171.0 | 70.0 | 91.0 | 90.0 | 133.0 | 200.0 | Cash
+295.0 | 19.0 | Male | Sophomore | Psychology | 1243.0 | 882.0 | 5570.0 | 574.0 | 106.0 | 190.0 | 73.0 | 85.0 | 97.0 | 264.0 | 94.0 | 82.0 | Mobile Payment App
+296.0 | 20.0 | Female | Sophomore | Economics | 655.0 | 685.0 | 3115.0 | 481.0 | 270.0 | 157.0 | 133.0 | 97.0 | 22.0 | 112.0 | 80.0 | 98.0 | Credit/Debit Card
+297.0 | 18.0 | Male | Freshman | Biology | 667.0 | 647.0 | 4637.0 | 906.0 | 225.0 | 123.0 | 204.0 | 81.0 | 36.0 | 89.0 | 33.0 | 137.0 | Credit/Debit Card
+298.0 | 24.0 | Senior | Economics | 1458.0 | 7.0 | 5143.0 | 505.0 | 329.0 | 140.0 | 265.0 | 138.0 | 65.0 | 81.0 | 49.0 | 198.0 | Credit/Debit Card
+299.0 | 22.0 | Sophomore | Biology | 925.0 | 350.0 | 4445.0 | 529.0 | 227.0 | 51.0 | 173.0 | 132.0 | 24.0 | 58.0 | 183.0 | 74.0 | Mobile Payment App
+300.0 | 21.0 | Senior | Economics | 1105.0 | 35.0 | 4114.0 | 417.0 | 308.0 | 178.0 | 152.0 | 142.0 | 90.0 | 286.0 | 84.0 | 139.0 | Credit/Debit Card
+301.0 | 18.0 | Male | Junior | Biology | 737.0 | 490.0 | 5522.0 | 758.0 | 135.0 | 160.0 | 105.0 | 65.0 | 80.0 | 281.0 | 148.0 | 112.0 | Cash
+302.0 | 25.0 | Female | Freshman | Computer Science | 1495.0 | 892.0 | 5525.0 | 767.0 | 182.0 | 97.0 | 213.0 | 135.0 | 30.0 | 196.0 | 54.0 | 21.0 | Mobile Payment App
+303.0 | 20.0 | Male | Senior | Economics | 1298.0 | 971.0 | 5002.0 | 717.0 | 249.0 | 63.0 | 214.0 | 72.0 | 40.0 | 220.0 | 80.0 | 26.0 | Mobile Payment App
+304.0 | 21.0 | Male | Sophomore | Psychology | 1272.0 | 784.0 | 3708.0 | 810.0 | 364.0 | 90.0 | 119.0 | 32.0 | 67.0 | 91.0 | 146.0 | 150.0 | Credit/Debit Card
+305.0 | 19.0 | Female | Senior | Biology | 511.0 | 825.0 | 5383.0 | 917.0 | 201.0 | 152.0 | 117.0 | 147.0 | 42.0 | 244.0 | 75.0 | 126.0 | Credit/Debit Card
+306.0 | 21.0 | Female | Sophomore | Engineering | 1161.0 | 566.0 | 5178.0 | 653.0 | 381.0 | 155.0 | 213.0 | 116.0 | 45.0 | 208.0 | 139.0 | 174.0 | Credit/Debit Card
+307.0 | 21.0 | Male | Senior | Psychology | 1112.0 | 943.0 | 5832.0 | 881.0 | 292.0 | 93.0 | 288.0 | 135.0 | 82.0 | 67.0 | 102.0 | 157.0 | Mobile Payment App
+308.0 | 25.0 | Male | Junior | Economics | 958.0 | 451.0 | 5949.0 | 655.0 | 163.0 | 78.0 | 96.0 | 150.0 | 54.0 | 78.0 | 76.0 | 176.0 | Cash
+309.0 | 25.0 | Junior | Engineering | 1176.0 | 186.0 | 4044.0 | 615.0 | 319.0 | 93.0 | 108.0 | 46.0 | 96.0 | 184.0 | 61.0 | 37.0 | Credit/Debit Card
+310.0 | 20.0 | Senior | Engineering | 727.0 | 451.0 | 3325.0 | 570.0 | 253.0 | 76.0 | 98.0 | 55.0 | 49.0 | 229.0 | 96.0 | 97.0 | Cash
+311.0 | 25.0 | Senior | Biology | 1483.0 | 826.0 | 3048.0 | 733.0 | 136.0 | 103.0 | 278.0 | 114.0 | 22.0 | 282.0 | 110.0 | 60.0 | Credit/Debit Card
+312.0 | 24.0 | Male | Junior | Computer Science | 881.0 | 97.0 | 4884.0 | 857.0 | 340.0 | 166.0 | 147.0 | 34.0 | 32.0 | 298.0 | 115.0 | 38.0 | Credit/Debit Card
+313.0 | 21.0 | Male | Freshman | Engineering | 1347.0 | 634.0 | 5766.0 | 562.0 | 398.0 | 134.0 | 222.0 | 43.0 | 56.0 | 108.0 | 162.0 | 34.0 | Mobile Payment App
+314.0 | 22.0 | Female | Freshman | Psychology | 725.0 | 132.0 | 4477.0 | 822.0 | 150.0 | 61.0 | 192.0 | 133.0 | 89.0 | 204.0 | 133.0 | 95.0 | Mobile Payment App
+315.0 | 18.0 | Sophomore | Biology | 1000.0 | 270.0 | 4171.0 | 859.0 | 194.0 | 139.0 | 246.0 | 102.0 | 65.0 | 93.0 | 185.0 | 152.0 | Credit/Debit Card
+316.0 | 24.0 | Female | Sophomore | Engineering | 795.0 | 580.0 | 4126.0 | 454.0 | 226.0 | 132.0 | 114.0 | 117.0 | 72.0 | 158.0 | 133.0 | 132.0 | Credit/Debit Card
+317.0 | 18.0 | Male | Senior | Economics | 869.0 | 447.0 | 3962.0 | 416.0 | 369.0 | 112.0 | 71.0 | 44.0 | 51.0 | 160.0 | 74.0 | 43.0 | Mobile Payment App
+318.0 | 24.0 | Female | Freshman | Biology | 543.0 | 177.0 | 4823.0 | 976.0 | 295.0 | 153.0 | 86.0 | 107.0 | 36.0 | 143.0 | 118.0 | 172.0 | Credit/Debit Card
+319.0 | 25.0 | Male | Sophomore | Economics | 1470.0 | 403.0 | 5561.0 | 704.0 | 178.0 | 104.0 | 173.0 | 36.0 | 50.0 | 81.0 | 140.0 | 114.0 | Credit/Debit Card
+320.0 | 19.0 | Female | Freshman | Economics | 734.0 | 838.0 | 4441.0 | 437.0 | 185.0 | 79.0 | 53.0 | 129.0 | 21.0 | 149.0 | 120.0 | 53.0 | Cash
+321.0 | 20.0 | Female | Freshman | Computer Science | 669.0 | 638.0 | 5929.0 | 588.0 | 290.0 | 176.0 | 218.0 | 74.0 | 23.0 | 199.0 | 65.0 | 149.0 | Mobile Payment App
+322.0 | 19.0 | Female | Junior | Psychology | 1336.0 | 417.0 | 4533.0 | 809.0 | 268.0 | 131.0 | 237.0 | 96.0 | 88.0 | 289.0 | 113.0 | 120.0 | Cash
+323.0 | 21.0 | Female | Sophomore | Economics | 1436.0 | 435.0 | 5414.0 | 748.0 | 274.0 | 89.0 | 220.0 | 34.0 | 79.0 | 241.0 | 118.0 | 113.0 | Mobile Payment App
+324.0 | 21.0 | Freshman | Engineering | 1339.0 | 777.0 | 5292.0 | 509.0 | 245.0 | 113.0 | 70.0 | 101.0 | 47.0 | 297.0 | 156.0 | 41.0 | Mobile Payment App
+325.0 | 18.0 | Female | Freshman | Biology | 609.0 | 201.0 | 4477.0 | 930.0 | 260.0 | 178.0 | 272.0 | 98.0 | 83.0 | 138.0 | 129.0 | 52.0 | Credit/Debit Card
+326.0 | 21.0 | Sophomore | Economics | 1036.0 | 169.0 | 4582.0 | 426.0 | 206.0 | 189.0 | 237.0 | 140.0 | 70.0 | 59.0 | 105.0 | 123.0 | Mobile Payment App
+327.0 | 25.0 | Female | Senior | Engineering | 1309.0 | 840.0 | 5575.0 | 923.0 | 257.0 | 115.0 | 263.0 | 78.0 | 20.0 | 236.0 | 39.0 | 78.0 | Mobile Payment App
+328.0 | 25.0 | Male | Sophomore | Engineering | 1471.0 | 521.0 | 4388.0 | 504.0 | 341.0 | 113.0 | 76.0 | 34.0 | 67.0 | 216.0 | 78.0 | 36.0 | Cash
+329.0 | 19.0 | Male | Freshman | Engineering | 658.0 | 487.0 | 3579.0 | 705.0 | 292.0 | 172.0 | 198.0 | 20.0 | 50.0 | 209.0 | 68.0 | 21.0 | Mobile Payment App
+330.0 | 19.0 | Male | Junior | Engineering | 684.0 | 728.0 | 5407.0 | 953.0 | 162.0 | 107.0 | 117.0 | 64.0 | 54.0 | 260.0 | 166.0 | 168.0 | Mobile Payment App
+331.0 | 20.0 | Male | Sophomore | Computer Science | 907.0 | 468.0 | 3358.0 | 877.0 | 152.0 | 170.0 | 63.0 | 44.0 | 47.0 | 176.0 | 158.0 | 187.0 | Credit/Debit Card
+332.0 | 18.0 | Male | Freshman | Computer Science | 846.0 | 671.0 | 4827.0 | 928.0 | 256.0 | 61.0 | 114.0 | 21.0 | 77.0 | 160.0 | 133.0 | 143.0 | Mobile Payment App
+333.0 | 18.0 | Female | Sophomore | Biology | 1175.0 | 963.0 | 5461.0 | 498.0 | 218.0 | 81.0 | 182.0 | 26.0 | 60.0 | 296.0 | 143.0 | 24.0 | Cash
+334.0 | 25.0 | Male | Freshman | Biology | 659.0 | 893.0 | 5837.0 | 867.0 | 142.0 | 77.0 | 163.0 | 105.0 | 79.0 | 184.0 | 166.0 | 140.0 | Credit/Debit Card
+335.0 | 18.0 | Sophomore | Economics | 1488.0 | 492.0 | 5185.0 | 450.0 | 152.0 | 120.0 | 218.0 | 91.0 | 81.0 | 257.0 | 50.0 | 39.0 | Cash
+336.0 | 22.0 | Female | Senior | Psychology | 1190.0 | 194.0 | 5107.0 | 483.0 | 299.0 | 179.0 | 173.0 | 30.0 | 68.0 | 144.0 | 170.0 | 119.0 | Cash
+337.0 | 19.0 | Female | Junior | Psychology | 742.0 | 543.0 | 5288.0 | 772.0 | 125.0 | 162.0 | 123.0 | 126.0 | 51.0 | 94.0 | 113.0 | 71.0 | Credit/Debit Card
+338.0 | 23.0 | Freshman | Psychology | 914.0 | 663.0 | 3265.0 | 809.0 | 175.0 | 60.0 | 125.0 | 21.0 | 81.0 | 135.0 | 194.0 | 154.0 | Credit/Debit Card
+339.0 | 19.0 | Male | Freshman | Biology | 1485.0 | 53.0 | 3659.0 | 651.0 | 221.0 | 198.0 | 124.0 | 141.0 | 85.0 | 293.0 | 57.0 | 171.0 | Cash
+340.0 | 20.0 | Female | Junior | Biology | 582.0 | 678.0 | 4190.0 | 722.0 | 112.0 | 188.0 | 97.0 | 133.0 | 66.0 | 69.0 | 131.0 | 147.0 | Credit/Debit Card
+341.0 | 19.0 | Junior | Engineering | 1468.0 | 415.0 | 4764.0 | 613.0 | 115.0 | 157.0 | 121.0 | 31.0 | 88.0 | 77.0 | 56.0 | 117.0 | Credit/Debit Card
+342.0 | 25.0 | Female | Sophomore | Computer Science | 1021.0 | 93.0 | 3755.0 | 512.0 | 104.0 | 188.0 | 146.0 | 103.0 | 63.0 | 183.0 | 128.0 | 34.0 | Cash
+343.0 | 24.0 | Male | Freshman | Computer Science | 760.0 | 281.0 | 4727.0 | 822.0 | 394.0 | 88.0 | 191.0 | 50.0 | 48.0 | 160.0 | 188.0 | 81.0 | Mobile Payment App
+344.0 | 24.0 | Freshman | Economics | 969.0 | 371.0 | 3771.0 | 889.0 | 336.0 | 59.0 | 298.0 | 35.0 | 89.0 | 201.0 | 74.0 | 75.0 | Cash
+345.0 | 23.0 | Female | Senior | Biology | 990.0 | 431.0 | 3846.0 | 594.0 | 330.0 | 89.0 | 114.0 | 54.0 | 72.0 | 82.0 | 132.0 | 125.0 | Mobile Payment App
+346.0 | 23.0 | Sophomore | Engineering | 1304.0 | 457.0 | 4240.0 | 878.0 | 111.0 | 165.0 | 86.0 | 123.0 | 41.0 | 120.0 | 124.0 | 27.0 | Cash
+347.0 | 23.0 | Male | Sophomore | Biology | 805.0 | 4759.0 | 409.0 | 255.0 | 101.0 | 285.0 | 49.0 | 45.0 | 89.0 | 115.0 | 129.0 | Credit/Debit Card
+348.0 | 25.0 | Male | Senior | Engineering | 1179.0 | 223.0 | 4058.0 | 952.0 | 340.0 | 118.0 | 65.0 | 121.0 | 51.0 | 174.0 | 41.0 | 177.0 | Credit/Debit Card
+349.0 | 18.0 | Senior | Computer Science | 573.0 | 299.0 | 3003.0 | 878.0 | 229.0 | 131.0 | 157.0 | 58.0 | 88.0 | 53.0 | 182.0 | 190.0 | Mobile Payment App
+350.0 | 25.0 | Female | Senior | Psychology | 843.0 | 4.0 | 4906.0 | 869.0 | 226.0 | 196.0 | 66.0 | 82.0 | 98.0 | 289.0 | 58.0 | 148.0 | Mobile Payment App
+351.0 | 23.0 | Junior | Biology | 1085.0 | 795.0 | 3056.0 | 501.0 | 170.0 | 136.0 | 155.0 | 70.0 | 46.0 | 192.0 | 89.0 | 38.0 | Mobile Payment App
+352.0 | 23.0 | Female | Freshman | Biology | 580.0 | 771.0 | 3789.0 | 707.0 | 322.0 | 170.0 | 244.0 | 114.0 | 75.0 | 79.0 | 188.0 | 107.0 | Credit/Debit Card
+353.0 | 25.0 | Female | Sophomore | Computer Science | 975.0 | 630.0 | 4785.0 | 693.0 | 316.0 | 177.0 | 263.0 | 121.0 | 62.0 | 233.0 | 149.0 | 32.0 | Cash
+354.0 | 23.0 | Male | Senior | Psychology | 602.0 | 608.0 | 4542.0 | 830.0 | 378.0 | 83.0 | 229.0 | 131.0 | 54.0 | 166.0 | 145.0 | 160.0 | Credit/Debit Card
+355.0 | 23.0 | Senior | Economics | 1103.0 | 873.0 | 4761.0 | 671.0 | 394.0 | 121.0 | 215.0 | 112.0 | 47.0 | 118.0 | 119.0 | 115.0 | Cash
+356.0 | 20.0 | Freshman | Psychology | 816.0 | 233.0 | 3909.0 | 949.0 | 136.0 | 165.0 | 53.0 | 59.0 | 30.0 | 275.0 | 183.0 | 32.0 | Mobile Payment App
+357.0 | 24.0 | Male | Freshman | Engineering | 1016.0 | 201.0 | 5042.0 | 606.0 | 142.0 | 54.0 | 188.0 | 106.0 | 64.0 | 162.0 | 40.0 | 84.0 | Cash
+358.0 | 23.0 | Junior | Engineering | 969.0 | 327.0 | 3449.0 | 516.0 | 312.0 | 182.0 | 186.0 | 25.0 | 44.0 | 186.0 | 117.0 | 164.0 | Cash
+359.0 | 21.0 | Junior | Computer Science | 918.0 | 831.0 | 5934.0 | 949.0 | 391.0 | 81.0 | 127.0 | 121.0 | 64.0 | 275.0 | 141.0 | 159.0 | Credit/Debit Card
+360.0 | 23.0 | Senior | Computer Science | 982.0 | 207.0 | 4397.0 | 710.0 | 159.0 | 118.0 | 89.0 | 109.0 | 87.0 | 225.0 | 65.0 | 69.0 | Mobile Payment App
+361.0 | 25.0 | Male | Junior | Computer Science | 1021.0 | 912.0 | 5979.0 | 785.0 | 293.0 | 86.0 | 228.0 | 32.0 | 46.0 | 135.0 | 102.0 | 72.0 | Cash
+362.0 | 22.0 | Female | Sophomore | Psychology | 521.0 | 884.0 | 5701.0 | 916.0 | 342.0 | 175.0 | 221.0 | 86.0 | 46.0 | 57.0 | 112.0 | 27.0 | Mobile Payment App
+363.0 | 24.0 | Female | Freshman | Computer Science | 1444.0 | 881.0 | 3721.0 | 458.0 | 269.0 | 70.0 | 89.0 | 72.0 | 50.0 | 182.0 | 81.0 | 130.0 | Mobile Payment App
+364.0 | 21.0 | Male | Sophomore | Psychology | 646.0 | 487.0 | 4218.0 | 822.0 | 124.0 | 74.0 | 108.0 | 52.0 | 97.0 | 68.0 | 105.0 | 48.0 | Credit/Debit Card
+365.0 | 21.0 | Female | Freshman | Economics | 1296.0 | 133.0 | 3728.0 | 464.0 | 212.0 | 184.0 | 298.0 | 72.0 | 53.0 | 198.0 | 111.0 | 135.0 | Mobile Payment App
+366.0 | 18.0 | Freshman | Economics | 1360.0 | 222.0 | 5759.0 | 810.0 | 164.0 | 153.0 | 77.0 | 60.0 | 99.0 | 180.0 | 177.0 | 143.0 | Mobile Payment App
+367.0 | 19.0 | Female | Senior | Biology | 1123.0 | 5.0 | 5407.0 | 404.0 | 345.0 | 122.0 | 187.0 | 73.0 | 20.0 | 215.0 | 171.0 | 190.0 | Cash
+368.0 | 18.0 | Female | Senior | Psychology | 1020.0 | 74.0 | 5837.0 | 552.0 | 123.0 | 138.0 | 267.0 | 98.0 | 63.0 | 267.0 | 163.0 | 30.0 | Mobile Payment App
+369.0 | 21.0 | Female | Freshman | Computer Science | 736.0 | 628.0 | 3757.0 | 743.0 | 256.0 | 180.0 | 209.0 | 92.0 | 92.0 | 228.0 | 44.0 | 61.0 | Credit/Debit Card
+370.0 | 23.0 | Senior | Economics | 931.0 | 322.0 | 5865.0 | 490.0 | 155.0 | 146.0 | 175.0 | 79.0 | 95.0 | 113.0 | 142.0 | 139.0 | Cash
+371.0 | 24.0 | Male | Senior | Psychology | 1443.0 | 982.0 | 3807.0 | 814.0 | 364.0 | 169.0 | 299.0 | 126.0 | 20.0 | 102.0 | 193.0 | 127.0 | Mobile Payment App
+372.0 | 22.0 | Male | Freshman | Engineering | 730.0 | 374.0 | 3483.0 | 675.0 | 230.0 | 68.0 | 212.0 | 124.0 | 72.0 | 156.0 | 118.0 | 181.0 | Cash
+373.0 | 25.0 | Senior | Economics | 561.0 | 759.0 | 4229.0 | 781.0 | 147.0 | 88.0 | 144.0 | 55.0 | 95.0 | 114.0 | 142.0 | 56.0 | Mobile Payment App
+374.0 | 25.0 | Female | Sophomore | Economics | 1212.0 | 616.0 | 5867.0 | 728.0 | 378.0 | 65.0 | 159.0 | 92.0 | 79.0 | 289.0 | 35.0 | 75.0 | Cash
+375.0 | 25.0 | Freshman | Computer Science | 1282.0 | 416.0 | 5824.0 | 594.0 | 309.0 | 121.0 | 108.0 | 58.0 | 91.0 | 234.0 | 104.0 | 120.0 | Cash
+376.0 | 21.0 | Freshman | Biology | 1438.0 | 364.0 | 5133.0 | 617.0 | 392.0 | 127.0 | 249.0 | 37.0 | 28.0 | 154.0 | 170.0 | 174.0 | Mobile Payment App
+377.0 | 18.0 | Female | Senior | Psychology | 702.0 | 531.0 | 4901.0 | 497.0 | 237.0 | 150.0 | 298.0 | 46.0 | 62.0 | 225.0 | 123.0 | 130.0 | Credit/Debit Card
+378.0 | 20.0 | Male | Senior | Biology | 1433.0 | 764.0 | 5002.0 | 589.0 | 397.0 | 51.0 | 288.0 | 135.0 | 100.0 | 71.0 | 48.0 | 112.0 | Credit/Debit Card
+379.0 | 25.0 | Female | Freshman | Psychology | 1444.0 | 542.0 | 4680.0 | 829.0 | 207.0 | 122.0 | 260.0 | 109.0 | 37.0 | 127.0 | 43.0 | 69.0 | Cash
+380.0 | 22.0 | Female | Junior | Psychology | 536.0 | 484.0 | 5803.0 | 413.0 | 326.0 | 104.0 | 86.0 | 99.0 | 69.0 | 197.0 | 167.0 | 157.0 | Cash
+381.0 | 18.0 | Freshman | Engineering | 1260.0 | 68.0 | 3610.0 | 637.0 | 296.0 | 86.0 | 87.0 | 50.0 | 54.0 | 230.0 | 183.0 | 137.0 | Credit/Debit Card
+382.0 | 18.0 | Freshman | Biology | 701.0 | 340.0 | 3235.0 | 969.0 | 337.0 | 65.0 | 152.0 | 113.0 | 99.0 | 169.0 | 161.0 | 159.0 | Cash
+383.0 | 18.0 | Female | Freshman | Engineering | 1309.0 | 144.0 | 3419.0 | 728.0 | 171.0 | 116.0 | 152.0 | 107.0 | 85.0 | 124.0 | 76.0 | 78.0 | Cash
+384.0 | 18.0 | Sophomore | Economics | 842.0 | 491.0 | 4582.0 | 473.0 | 202.0 | 156.0 | 279.0 | 120.0 | 81.0 | 270.0 | 67.0 | 78.0 | Credit/Debit Card
+385.0 | 24.0 | Male | Freshman | Computer Science | 617.0 | 863.0 | 3795.0 | 837.0 | 231.0 | 152.0 | 256.0 | 41.0 | 74.0 | 221.0 | 130.0 | 106.0 | Credit/Debit Card
+386.0 | 21.0 | Junior | Engineering | 1134.0 | 490.0 | 5864.0 | 714.0 | 370.0 | 96.0 | 199.0 | 114.0 | 82.0 | 67.0 | 190.0 | 24.0 | Cash
+387.0 | 23.0 | Sophomore | Psychology | 992.0 | 242.0 | 4210.0 | 495.0 | 187.0 | 114.0 | 58.0 | 132.0 | 96.0 | 154.0 | 134.0 | 179.0 | Mobile Payment App
+388.0 | 18.0 | Freshman | Economics | 1408.0 | 572.0 | 4271.0 | 477.0 | 320.0 | 78.0 | 150.0 | 150.0 | 81.0 | 163.0 | 46.0 | 24.0 | Mobile Payment App
+389.0 | 21.0 | Female | Senior | Biology | 1368.0 | 940.0 | 3234.0 | 405.0 | 334.0 | 59.0 | 114.0 | 23.0 | 67.0 | 135.0 | 190.0 | 22.0 | Mobile Payment App
+390.0 | 22.0 | Male | Senior | Economics | 716.0 | 157.0 | 4056.0 | 789.0 | 358.0 | 186.0 | 216.0 | 78.0 | 74.0 | 175.0 | 169.0 | 109.0 | Cash
+391.0 | 22.0 | Freshman | Psychology | 1224.0 | 581.0 | 5309.0 | 936.0 | 264.0 | 55.0 | 188.0 | 126.0 | 47.0 | 194.0 | 79.0 | 26.0 | Credit/Debit Card
+392.0 | 19.0 | Senior | Biology | 1349.0 | 788.0 | 4273.0 | 421.0 | 106.0 | 160.0 | 147.0 | 39.0 | 89.0 | 235.0 | 182.0 | 43.0 | Cash
+393.0 | 24.0 | Female | Sophomore | Engineering | 802.0 | 552.0 | 3146.0 | 724.0 | 213.0 | 95.0 | 135.0 | 103.0 | 70.0 | 267.0 | 54.0 | 123.0 | Cash
+394.0 | 18.0 | Female | Senior | Psychology | 973.0 | 318.0 | 3600.0 | 913.0 | 375.0 | 183.0 | 178.0 | 122.0 | 94.0 | 129.0 | 66.0 | 148.0 | Cash
+395.0 | 19.0 | Female | Senior | Engineering | 736.0 | 660.0 | 5945.0 | 478.0 | 342.0 | 75.0 | 279.0 | 43.0 | 49.0 | 107.0 | 94.0 | 57.0 | Mobile Payment App
+396.0 | 22.0 | Male | Senior | Engineering | 571.0 | 498.0 | 3897.0 | 648.0 | 181.0 | 56.0 | 275.0 | 86.0 | 57.0 | 287.0 | 79.0 | 110.0 | Mobile Payment App
+397.0 | 25.0 | Female | Sophomore | Engineering | 833.0 | 56.0 | 3133.0 | 615.0 | 147.0 | 90.0 | 201.0 | 81.0 | 30.0 | 148.0 | 42.0 | 121.0 | Cash
+398.0 | 22.0 | Female | Freshman | Computer Science | 713.0 | 382.0 | 4116.0 | 592.0 | 329.0 | 120.0 | 269.0 | 46.0 | 53.0 | 230.0 | 57.0 | 153.0 | Credit/Debit Card
+399.0 | 20.0 | Male | Junior | Economics | 1268.0 | 475.0 | 5900.0 | 661.0 | 264.0 | 157.0 | 258.0 | 52.0 | 38.0 | 167.0 | 174.0 | 44.0 | Cash
+400.0 | 19.0 | Freshman | Biology | 819.0 | 615.0 | 5075.0 | 858.0 | 153.0 | 200.0 | 115.0 | 76.0 | 90.0 | 139.0 | 154.0 | 44.0 | Mobile Payment App
+401.0 | 18.0 | Male | Senior | Economics | 1268.0 | 324.0 | 3788.0 | 483.0 | 339.0 | 159.0 | 120.0 | 55.0 | 22.0 | 212.0 | 173.0 | 78.0 | Credit/Debit Card
+402.0 | 18.0 | Female | Senior | Engineering | 1486.0 | 705.0 | 4043.0 | 661.0 | 178.0 | 64.0 | 276.0 | 80.0 | 69.0 | 144.0 | 115.0 | 26.0 | Mobile Payment App
+403.0 | 24.0 | Male | Freshman | Computer Science | 1005.0 | 536.0 | 3944.0 | 687.0 | 262.0 | 148.0 | 200.0 | 138.0 | 53.0 | 146.0 | 194.0 | 80.0 | Cash
+404.0 | 25.0 | Female | Senior | Economics | 1205.0 | 837.0 | 3014.0 | 593.0 | 183.0 | 142.0 | 112.0 | 77.0 | 59.0 | 209.0 | 145.0 | 78.0 | Credit/Debit Card
+405.0 | 24.0 | Male | Senior | Engineering | 1356.0 | 858.0 | 5137.0 | 747.0 | 109.0 | 170.0 | 153.0 | 46.0 | 40.0 | 131.0 | 85.0 | 120.0 | Mobile Payment App
+406.0 | 22.0 | Male | Senior | Engineering | 817.0 | 555.0 | 5754.0 | 716.0 | 382.0 | 135.0 | 142.0 | 21.0 | 29.0 | 188.0 | 183.0 | 41.0 | Mobile Payment App
+407.0 | 22.0 | Male | Sophomore | Biology | 706.0 | 75.0 | 4080.0 | 874.0 | 139.0 | 183.0 | 93.0 | 41.0 | 47.0 | 136.0 | 164.0 | 109.0 | Cash
+408.0 | 18.0 | Junior | Economics | 1102.0 | 490.0 | 5853.0 | 669.0 | 230.0 | 122.0 | 118.0 | 41.0 | 74.0 | 276.0 | 69.0 | 140.0 | Cash
+409.0 | 22.0 | Male | Sophomore | Engineering | 1279.0 | 898.0 | 3980.0 | 471.0 | 265.0 | 148.0 | 77.0 | 68.0 | 37.0 | 132.0 | 192.0 | 157.0 | Credit/Debit Card
+410.0 | 18.0 | Male | Sophomore | Economics | 1457.0 | 998.0 | 4232.0 | 957.0 | 375.0 | 139.0 | 167.0 | 141.0 | 31.0 | 196.0 | 35.0 | 55.0 | Credit/Debit Card
+411.0 | 21.0 | Female | Freshman | Psychology | 1306.0 | 37.0 | 4943.0 | 569.0 | 326.0 | 100.0 | 277.0 | 91.0 | 85.0 | 246.0 | 48.0 | 79.0 | Cash
+412.0 | 25.0 | Male | Sophomore | Engineering | 1309.0 | 433.0 | 4563.0 | 495.0 | 309.0 | 152.0 | 290.0 | 84.0 | 99.0 | 256.0 | 37.0 | 93.0 | Credit/Debit Card
+413.0 | 19.0 | Male | Freshman | Biology | 1482.0 | 705.0 | 4973.0 | 433.0 | 294.0 | 144.0 | 233.0 | 149.0 | 59.0 | 167.0 | 130.0 | 96.0 | Credit/Debit Card
+414.0 | 23.0 | Male | Sophomore | Economics | 1468.0 | 333.0 | 4845.0 | 563.0 | 107.0 | 74.0 | 129.0 | 119.0 | 24.0 | 123.0 | 98.0 | 173.0 | Mobile Payment App
+415.0 | 25.0 | Female | Sophomore | Economics | 869.0 | 102.0 | 3556.0 | 544.0 | 387.0 | 161.0 | 158.0 | 48.0 | 80.0 | 163.0 | 93.0 | 129.0 | Credit/Debit Card
+416.0 | 18.0 | Male | Junior | Economics | 886.0 | 917.0 | 5448.0 | 808.0 | 155.0 | 169.0 | 150.0 | 24.0 | 60.0 | 129.0 | 127.0 | 195.0 | Mobile Payment App
+417.0 | 19.0 | Female | Freshman | Economics | 1443.0 | 831.0 | 4289.0 | 511.0 | 190.0 | 152.0 | 108.0 | 88.0 | 61.0 | 178.0 | 146.0 | 103.0 | Mobile Payment App
+418.0 | 23.0 | Female | Freshman | Biology | 766.0 | 95.0 | 4782.0 | 880.0 | 254.0 | 174.0 | 238.0 | 50.0 | 48.0 | 158.0 | 157.0 | 97.0 | Cash
+419.0 | 22.0 | Female | Senior | Biology | 1403.0 | 31.0 | 4595.0 | 761.0 | 331.0 | 179.0 | 57.0 | 97.0 | 67.0 | 273.0 | 179.0 | 56.0 | Cash
+420.0 | 24.0 | Female | Freshman | Engineering | 1372.0 | 803.0 | 4080.0 | 432.0 | 386.0 | 184.0 | 50.0 | 65.0 | 83.0 | 248.0 | 89.0 | 61.0 | Credit/Debit Card
+421.0 | 23.0 | Female | Freshman | Biology | 1428.0 | 597.0 | 5495.0 | 816.0 | 332.0 | 127.0 | 271.0 | 100.0 | 22.0 | 93.0 | 163.0 | 60.0 | Mobile Payment App
+422.0 | 19.0 | Male | Junior | Biology | 1303.0 | 60.0 | 4515.0 | 511.0 | 387.0 | 179.0 | 244.0 | 68.0 | 100.0 | 261.0 | 35.0 | 154.0 | Cash
+423.0 | 20.0 | Sophomore | Economics | 572.0 | 823.0 | 5879.0 | 438.0 | 360.0 | 72.0 | 118.0 | 80.0 | 45.0 | 265.0 | 48.0 | 30.0 | Credit/Debit Card
+424.0 | 23.0 | Junior | Economics | 558.0 | 194.0 | 4648.0 | 865.0 | 183.0 | 60.0 | 113.0 | 128.0 | 38.0 | 265.0 | 42.0 | 167.0 | Credit/Debit Card
+425.0 | 23.0 | Female | Junior | Engineering | 1049.0 | 476.0 | 5972.0 | 663.0 | 116.0 | 162.0 | 52.0 | 110.0 | 21.0 | 202.0 | 86.0 | 63.0 | Mobile Payment App
+426.0 | 18.0 | Female | Freshman | Computer Science | 923.0 | 108.0 | 3640.0 | 409.0 | 384.0 | 117.0 | 249.0 | 76.0 | 68.0 | 152.0 | 86.0 | 128.0 | Credit/Debit Card
+427.0 | 18.0 | Female | Freshman | Engineering | 621.0 | 35.0 | 5779.0 | 558.0 | 252.0 | 109.0 | 289.0 | 82.0 | 51.0 | 98.0 | 53.0 | 100.0 | Cash
+428.0 | 21.0 | Junior | Economics | 660.0 | 348.0 | 5689.0 | 731.0 | 123.0 | 88.0 | 89.0 | 67.0 | 64.0 | 186.0 | 39.0 | 26.0 | Mobile Payment App
+429.0 | 21.0 | Freshman | Biology | 528.0 | 92.0 | 3863.0 | 899.0 | 127.0 | 184.0 | 100.0 | 21.0 | 55.0 | 195.0 | 125.0 | 134.0 | Mobile Payment App
+430.0 | 23.0 | Female | Freshman | Psychology | 640.0 | 618.0 | 3719.0 | 513.0 | 195.0 | 144.0 | 275.0 | 33.0 | 63.0 | 150.0 | 192.0 | 90.0 | Mobile Payment App
+431.0 | 18.0 | Female | Senior | Computer Science | 1427.0 | 573.0 | 4307.0 | 797.0 | 224.0 | 161.0 | 136.0 | 87.0 | 59.0 | 159.0 | 87.0 | 20.0 | Mobile Payment App
+432.0 | 18.0 | Male | Sophomore | Computer Science | 527.0 | 405.0 | 4577.0 | 532.0 | 133.0 | 134.0 | 292.0 | 62.0 | 50.0 | 164.0 | 33.0 | 127.0 | Cash
+433.0 | 25.0 | Female | Freshman | Psychology | 1295.0 | 787.0 | 4591.0 | 764.0 | 358.0 | 142.0 | 190.0 | 121.0 | 77.0 | 244.0 | 75.0 | 113.0 | Cash
+434.0 | 23.0 | Female | Sophomore | Economics | 1219.0 | 491.0 | 5149.0 | 551.0 | 168.0 | 126.0 | 184.0 | 41.0 | 67.0 | 203.0 | 83.0 | 35.0 | Cash
+435.0 | 24.0 | Female | Senior | Engineering | 959.0 | 696.0 | 3200.0 | 593.0 | 318.0 | 188.0 | 153.0 | 150.0 | 89.0 | 285.0 | 54.0 | 102.0 | Cash
+436.0 | 18.0 | Female | Sophomore | Biology | 1483.0 | 995.0 | 3770.0 | 569.0 | 328.0 | 159.0 | 103.0 | 126.0 | 92.0 | 284.0 | 193.0 | 20.0 | Credit/Debit Card
+437.0 | 19.0 | Female | Sophomore | Psychology | 646.0 | 986.0 | 5700.0 | 857.0 | 309.0 | 77.0 | 88.0 | 66.0 | 98.0 | 174.0 | 126.0 | 153.0 | Mobile Payment App
+438.0 | 23.0 | Male | Senior | Biology | 818.0 | 353.0 | 5174.0 | 662.0 | 222.0 | 160.0 | 194.0 | 28.0 | 98.0 | 193.0 | 177.0 | 166.0 | Credit/Debit Card
+439.0 | 18.0 | Male | Senior | Engineering | 1268.0 | 598.0 | 3398.0 | 483.0 | 304.0 | 119.0 | 168.0 | 34.0 | 95.0 | 261.0 | 107.0 | 172.0 | Credit/Debit Card
+440.0 | 22.0 | Freshman | Biology | 563.0 | 345.0 | 4713.0 | 953.0 | 249.0 | 181.0 | 128.0 | 54.0 | 54.0 | 273.0 | 40.0 | 122.0 | Mobile Payment App
+441.0 | 21.0 | Male | Freshman | Psychology | 1253.0 | 464.0 | 5096.0 | 404.0 | 278.0 | 178.0 | 235.0 | 58.0 | 69.0 | 89.0 | 161.0 | 101.0 | Credit/Debit Card
+442.0 | 18.0 | Sophomore | Engineering | 791.0 | 739.0 | 5601.0 | 628.0 | 269.0 | 116.0 | 102.0 | 55.0 | 58.0 | 179.0 | 66.0 | 136.0 | Cash
+443.0 | 22.0 | Sophomore | Psychology | 847.0 | 964.0 | 3374.0 | 999.0 | 375.0 | 165.0 | 172.0 | 44.0 | 51.0 | 180.0 | 30.0 | 125.0 | Cash
+444.0 | 24.0 | Male | Junior | Economics | 668.0 | 36.0 | 5962.0 | 635.0 | 280.0 | 166.0 | 176.0 | 112.0 | 83.0 | 191.0 | 115.0 | 41.0 | Mobile Payment App
+445.0 | 24.0 | Male | Freshman | Computer Science | 1022.0 | 883.0 | 3174.0 | 832.0 | 121.0 | 137.0 | 142.0 | 54.0 | 65.0 | 93.0 | 47.0 | 170.0 | Cash
+446.0 | 20.0 | Senior | Economics | 725.0 | 704.0 | 3181.0 | 440.0 | 363.0 | 85.0 | 219.0 | 24.0 | 73.0 | 189.0 | 190.0 | 33.0 | Cash
+447.0 | 24.0 | Junior | Biology | 733.0 | 144.0 | 3556.0 | 427.0 | 214.0 | 71.0 | 212.0 | 136.0 | 73.0 | 296.0 | 157.0 | 157.0 | Credit/Debit Card
+448.0 | 18.0 | Freshman | Engineering | 684.0 | 745.0 | 4569.0 | 884.0 | 322.0 | 140.0 | 265.0 | 20.0 | 99.0 | 201.0 | 132.0 | 164.0 | Mobile Payment App
+449.0 | 20.0 | Male | Senior | Psychology | 604.0 | 494.0 | 3326.0 | 622.0 | 216.0 | 141.0 | 54.0 | 90.0 | 98.0 | 268.0 | 56.0 | 137.0 | Mobile Payment App
+450.0 | 23.0 | Male | Sophomore | Engineering | 1346.0 | 83.0 | 5626.0 | 799.0 | 120.0 | 125.0 | 292.0 | 140.0 | 47.0 | 62.0 | 35.0 | 74.0 | Mobile Payment App
+451.0 | 23.0 | Junior | Biology | 1464.0 | 750.0 | 3907.0 | 493.0 | 364.0 | 61.0 | 170.0 | 93.0 | 23.0 | 88.0 | 113.0 | 191.0 | Credit/Debit Card
+452.0 | 18.0 | Male | Sophomore | Psychology | 1258.0 | 333.0 | 5189.0 | 537.0 | 370.0 | 195.0 | 195.0 | 84.0 | 57.0 | 126.0 | 125.0 | 71.0 | Cash
+453.0 | 22.0 | Male | Freshman | Economics | 925.0 | 476.0 | 3755.0 | 718.0 | 227.0 | 80.0 | 173.0 | 70.0 | 88.0 | 185.0 | 35.0 | 43.0 | Cash
+454.0 | 18.0 | Male | Sophomore | Computer Science | 927.0 | 880.0 | 5715.0 | 748.0 | 217.0 | 146.0 | 227.0 | 97.0 | 46.0 | 220.0 | 162.0 | 38.0 | Mobile Payment App
+455.0 | 20.0 | Freshman | Engineering | 1230.0 | 967.0 | 3784.0 | 430.0 | 216.0 | 55.0 | 247.0 | 74.0 | 90.0 | 171.0 | 52.0 | 162.0 | Mobile Payment App
+456.0 | 23.0 | Freshman | Psychology | 1437.0 | 777.0 | 5522.0 | 852.0 | 375.0 | 99.0 | 55.0 | 150.0 | 21.0 | 195.0 | 53.0 | 68.0 | Credit/Debit Card
+457.0 | 21.0 | Female | Sophomore | Computer Science | 989.0 | 158.0 | 3913.0 | 919.0 | 377.0 | 159.0 | 152.0 | 115.0 | 40.0 | 299.0 | 58.0 | 176.0 | Credit/Debit Card
+458.0 | 19.0 | Male | Senior | Biology | 910.0 | 724.0 | 5884.0 | 422.0 | 365.0 | 164.0 | 294.0 | 146.0 | 34.0 | 258.0 | 152.0 | 24.0 | Cash
+459.0 | 18.0 | Male | Freshman | Computer Science | 1323.0 | 441.0 | 3373.0 | 701.0 | 369.0 | 60.0 | 235.0 | 44.0 | 78.0 | 276.0 | 38.0 | 139.0 | Cash
+460.0 | 20.0 | Female | Sophomore | Engineering | 668.0 | 33.0 | 4067.0 | 453.0 | 243.0 | 84.0 | 283.0 | 132.0 | 72.0 | 294.0 | 50.0 | 99.0 | Mobile Payment App
+461.0 | 25.0 | Female | Senior | Biology | 1004.0 | 465.0 | 5665.0 | 835.0 | 126.0 | 179.0 | 297.0 | 23.0 | 52.0 | 238.0 | 79.0 | 104.0 | Credit/Debit Card
+462.0 | 21.0 | Female | Junior | Economics | 1415.0 | 561.0 | 3083.0 | 967.0 | 347.0 | 114.0 | 175.0 | 100.0 | 30.0 | 166.0 | 162.0 | 120.0 | Credit/Debit Card
+463.0 | 18.0 | Male | Freshman | Engineering | 948.0 | 739.0 | 3799.0 | 812.0 | 344.0 | 111.0 | 205.0 | 139.0 | 94.0 | 249.0 | 107.0 | 43.0 | Credit/Debit Card
+464.0 | 21.0 | Junior | Biology | 1010.0 | 248.0 | 3146.0 | 972.0 | 356.0 | 170.0 | 60.0 | 67.0 | 54.0 | 77.0 | 124.0 | 100.0 | Mobile Payment App
+465.0 | 19.0 | Female | Sophomore | Biology | 873.0 | 549.0 | 3887.0 | 423.0 | 111.0 | 120.0 | 166.0 | 116.0 | 68.0 | 255.0 | 137.0 | 30.0 | Credit/Debit Card
+466.0 | 19.0 | Female | Sophomore | Computer Science | 921.0 | 148.0 | 4073.0 | 677.0 | 212.0 | 78.0 | 173.0 | 52.0 | 33.0 | 141.0 | 161.0 | 69.0 | Cash
+467.0 | 19.0 | Female | Freshman | Engineering | 1459.0 | 285.0 | 4511.0 | 619.0 | 299.0 | 145.0 | 295.0 | 96.0 | 71.0 | 95.0 | 35.0 | 170.0 | Mobile Payment App
+468.0 | 25.0 | Male | Freshman | Biology | 672.0 | 213.0 | 3980.0 | 420.0 | 362.0 | 64.0 | 290.0 | 131.0 | 53.0 | 201.0 | 102.0 | 83.0 | Credit/Debit Card
+469.0 | 23.0 | Senior | Engineering | 1461.0 | 299.0 | 4335.0 | 500.0 | 120.0 | 65.0 | 112.0 | 83.0 | 41.0 | 83.0 | 54.0 | 107.0 | Mobile Payment App
+470.0 | 24.0 | Male | Senior | Psychology | 1492.0 | 644.0 | 4495.0 | 468.0 | 234.0 | 76.0 | 205.0 | 58.0 | 80.0 | 159.0 | 157.0 | 66.0 | Credit/Debit Card
+471.0 | 19.0 | Male | Senior | Computer Science | 627.0 | 995.0 | 5863.0 | 937.0 | 188.0 | 177.0 | 155.0 | 137.0 | 97.0 | 117.0 | 172.0 | 180.0 | Cash
+472.0 | 23.0 | Male | Freshman | Computer Science | 961.0 | 87.0 | 5819.0 | 781.0 | 393.0 | 56.0 | 155.0 | 64.0 | 86.0 | 146.0 | 63.0 | 48.0 | Mobile Payment App
+473.0 | 22.0 | Male | Senior | Engineering | 954.0 | 134.0 | 3455.0 | 664.0 | 332.0 | 183.0 | 227.0 | 36.0 | 69.0 | 180.0 | 45.0 | 68.0 | Credit/Debit Card
+474.0 | 20.0 | Junior | Biology | 1486.0 | 958.0 | 5843.0 | 757.0 | 119.0 | 135.0 | 72.0 | 114.0 | 47.0 | 82.0 | 93.0 | 136.0 | Mobile Payment App
+475.0 | 24.0 | Female | Freshman | Psychology | 1331.0 | 681.0 | 5918.0 | 949.0 | 335.0 | 125.0 | 258.0 | 94.0 | 94.0 | 171.0 | 34.0 | 127.0 | Mobile Payment App
+476.0 | 21.0 | Female | Senior | Computer Science | 551.0 | 492.0 | 3257.0 | 930.0 | 335.0 | 59.0 | 61.0 | 41.0 | 60.0 | 59.0 | 146.0 | 151.0 | Cash
+477.0 | 18.0 | Senior | Biology | 1352.0 | 475.0 | 5868.0 | 718.0 | 264.0 | 196.0 | 151.0 | 114.0 | 26.0 | 244.0 | 65.0 | 57.0 | Credit/Debit Card
+478.0 | 22.0 | Female | Senior | Engineering | 1437.0 | 204.0 | 3820.0 | 497.0 | 319.0 | 161.0 | 217.0 | 23.0 | 81.0 | 67.0 | 125.0 | 149.0 | Mobile Payment App
+479.0 | 25.0 | Sophomore | Biology | 1146.0 | 504.0 | 4965.0 | 707.0 | 295.0 | 127.0 | 114.0 | 97.0 | 30.0 | 141.0 | 63.0 | 24.0 | Mobile Payment App
+480.0 | 21.0 | Male | Freshman | Biology | 1341.0 | 899.0 | 3133.0 | 850.0 | 364.0 | 183.0 | 262.0 | 129.0 | 26.0 | 188.0 | 94.0 | 130.0 | Credit/Debit Card
+481.0 | 25.0 | Female | Sophomore | Biology | 1331.0 | 227.0 | 5479.0 | 750.0 | 155.0 | 184.0 | 88.0 | 87.0 | 72.0 | 87.0 | 157.0 | 53.0 | Mobile Payment App
+482.0 | 25.0 | Male | Freshman | Computer Science | 1195.0 | 845.0 | 3900.0 | 624.0 | 258.0 | 183.0 | 178.0 | 122.0 | 91.0 | 271.0 | 53.0 | 94.0 | Mobile Payment App
+483.0 | 24.0 | Sophomore | Psychology | 1247.0 | 269.0 | 5692.0 | 638.0 | 158.0 | 196.0 | 190.0 | 92.0 | 88.0 | 174.0 | 100.0 | 68.0 | Cash
+484.0 | 25.0 | Female | Senior | Biology | 663.0 | 798.0 | 5418.0 | 420.0 | 389.0 | 97.0 | 282.0 | 144.0 | 84.0 | 149.0 | 123.0 | 167.0 | Cash
+485.0 | 23.0 | Female | Senior | Engineering | 861.0 | 776.0 | 4227.0 | 924.0 | 143.0 | 190.0 | 208.0 | 114.0 | 82.0 | 119.0 | 172.0 | 71.0 | Credit/Debit Card
+486.0 | 23.0 | Male | Senior | Economics | 568.0 | 340.0 | 3025.0 | 620.0 | 300.0 | 92.0 | 233.0 | 75.0 | 52.0 | 296.0 | 191.0 | 109.0 | Credit/Debit Card
+487.0 | 20.0 | Female | Senior | Psychology | 802.0 | 254.0 | 4626.0 | 568.0 | 179.0 | 64.0 | 265.0 | 124.0 | 51.0 | 117.0 | 158.0 | 123.0 | Credit/Debit Card
+488.0 | 24.0 | Male | Freshman | Economics | 821.0 | 414.0 | 5858.0 | 719.0 | 174.0 | 133.0 | 52.0 | 76.0 | 65.0 | 142.0 | 66.0 | 39.0 | Cash
+489.0 | 19.0 | Female | Freshman | Computer Science | 1009.0 | 770.0 | 4354.0 | 511.0 | 300.0 | 189.0 | 156.0 | 150.0 | 54.0 | 270.0 | 146.0 | 46.0 | Credit/Debit Card
+490.0 | 19.0 | Junior | Computer Science | 526.0 | 633.0 | 3093.0 | 940.0 | 215.0 | 109.0 | 54.0 | 31.0 | 80.0 | 193.0 | 192.0 | 42.0 | Mobile Payment App
+491.0 | 22.0 | Female | Junior | Computer Science | 502.0 | 755.0 | 3717.0 | 473.0 | 153.0 | 54.0 | 53.0 | 92.0 | 50.0 | 290.0 | 144.0 | 70.0 | Mobile Payment App
+492.0 | 19.0 | Freshman | Biology | 860.0 | 550.0 | 5703.0 | 503.0 | 203.0 | 171.0 | 117.0 | 29.0 | 31.0 | 87.0 | 82.0 | 196.0 | Mobile Payment App
+493.0 | 18.0 | Junior | Economics | 1420.0 | 576.0 | 5141.0 | 835.0 | 168.0 | 102.0 | 277.0 | 57.0 | 47.0 | 260.0 | 86.0 | 196.0 | Cash
+494.0 | 21.0 | Female | Senior | Computer Science | 540.0 | 931.0 | 4582.0 | 651.0 | 221.0 | 135.0 | 100.0 | 21.0 | 39.0 | 75.0 | 72.0 | 183.0 | Mobile Payment App
+495.0 | 25.0 | Freshman | Psychology | 737.0 | 995.0 | 4234.0 | 562.0 | 288.0 | 62.0 | 293.0 | 103.0 | 89.0 | 281.0 | 31.0 | 162.0 | Mobile Payment App
+496.0 | 22.0 | Freshman | Psychology | 503.0 | 57.0 | 3138.0 | 843.0 | 276.0 | 177.0 | 175.0 | 37.0 | 26.0 | 258.0 | 105.0 | 165.0 | Cash
+497.0 | 22.0 | Female | Freshman | Computer Science | 673.0 | 972.0 | 5357.0 | 828.0 | 279.0 | 95.0 | 298.0 | 97.0 | 21.0 | 154.0 | 34.0 | 162.0 | Mobile Payment App
+498.0 | 25.0 | Female | Freshman | Psychology | 681.0 | 115.0 | 5355.0 | 848.0 | 209.0 | 118.0 | 51.0 | 112.0 | 83.0 | 240.0 | 188.0 | 172.0 | Cash
+499.0 | 22.0 | Male | Freshman | Computer Science | 1356.0 | 766.0 | 5387.0 | 599.0 | 347.0 | 200.0 | 238.0 | 77.0 | 65.0 | 190.0 | 72.0 | 196.0 | Mobile Payment App
+500.0 | 25.0 | Female | Sophomore | Computer Science | 1062.0 | 390.0 | 3394.0 | 946.0 | 298.0 | 117.0 | 191.0 | 116.0 | 36.0 | 102.0 | 73.0 | 159.0 | Credit/Debit Card
+501.0 | 18.0 | Male | Sophomore | Economics | 1399.0 | 653.0 | 3413.0 | 703.0 | 157.0 | 182.0 | 67.0 | 41.0 | 81.0 | 108.0 | 154.0 | 28.0 | Cash
+502.0 | 19.0 | Female | Junior | Engineering | 1402.0 | 705.0 | 3268.0 | 715.0 | 305.0 | 134.0 | 87.0 | 100.0 | 100.0 | 228.0 | 103.0 | 144.0 | Cash
+503.0 | 24.0 | Sophomore | Engineering | 1184.0 | 260.0 | 5610.0 | 490.0 | 376.0 | 168.0 | 183.0 | 102.0 | 73.0 | 183.0 | 85.0 | 123.0 | Cash
+504.0 | 21.0 | Male | Senior | Economics | 743.0 | 351.0 | 3735.0 | 746.0 | 305.0 | 51.0 | 201.0 | 55.0 | 74.0 | 284.0 | 117.0 | 91.0 | Cash
+505.0 | 25.0 | Male | Sophomore | Biology | 1384.0 | 490.0 | 3253.0 | 462.0 | 286.0 | 158.0 | 240.0 | 90.0 | 24.0 | 296.0 | 191.0 | 115.0 | Mobile Payment App
+506.0 | 20.0 | Male | Junior | Biology | 997.0 | 641.0 | 4000.0 | 589.0 | 167.0 | 130.0 | 142.0 | 24.0 | 70.0 | 179.0 | 130.0 | 57.0 | Credit/Debit Card
+507.0 | 24.0 | Male | Senior | Engineering | 618.0 | 109.0 | 4178.0 | 626.0 | 335.0 | 118.0 | 184.0 | 22.0 | 75.0 | 139.0 | 85.0 | 65.0 | Credit/Debit Card
+508.0 | 25.0 | Female | Junior | Psychology | 1320.0 | 498.0 | 5329.0 | 559.0 | 236.0 | 122.0 | 262.0 | 95.0 | 61.0 | 164.0 | 108.0 | 65.0 | Cash
+509.0 | 25.0 | Male | Sophomore | Computer Science | 959.0 | 522.0 | 4611.0 | 402.0 | 369.0 | 67.0 | 162.0 | 106.0 | 24.0 | 141.0 | 45.0 | 87.0 | Cash
+510.0 | 20.0 | Junior | Psychology | 950.0 | 656.0 | 4369.0 | 916.0 | 207.0 | 97.0 | 90.0 | 42.0 | 78.0 | 284.0 | 75.0 | 48.0 | Mobile Payment App
+511.0 | 24.0 | Senior | Economics | 1286.0 | 456.0 | 5916.0 | 973.0 | 263.0 | 60.0 | 108.0 | 115.0 | 22.0 | 116.0 | 63.0 | 168.0 | Credit/Debit Card
+512.0 | 19.0 | Freshman | Computer Science | 893.0 | 312.0 | 4417.0 | 981.0 | 156.0 | 141.0 | 240.0 | 125.0 | 59.0 | 161.0 | 118.0 | 26.0 | Cash
+513.0 | 18.0 | Female | Freshman | Psychology | 1126.0 | 891.0 | 4242.0 | 624.0 | 182.0 | 100.0 | 136.0 | 86.0 | 66.0 | 243.0 | 83.0 | 30.0 | Cash
+514.0 | 22.0 | Male | Sophomore | Biology | 679.0 | 481.0 | 5466.0 | 674.0 | 180.0 | 152.0 | 147.0 | 133.0 | 58.0 | 67.0 | 130.0 | 159.0 | Mobile Payment App
+515.0 | 25.0 | Male | Freshman | Psychology | 803.0 | 201.0 | 5914.0 | 859.0 | 143.0 | 173.0 | 143.0 | 142.0 | 96.0 | 170.0 | 103.0 | 30.0 | Credit/Debit Card
+516.0 | 18.0 | Female | Senior | Biology | 664.0 | 115.0 | 3692.0 | 963.0 | 213.0 | 70.0 | 230.0 | 150.0 | 74.0 | 199.0 | 167.0 | 113.0 | Credit/Debit Card
+517.0 | 18.0 | Male | Senior | Computer Science | 1500.0 | 777.0 | 5326.0 | 772.0 | 298.0 | 182.0 | 173.0 | 112.0 | 66.0 | 170.0 | 41.0 | 103.0 | Cash
+518.0 | 22.0 | Male | Junior | Psychology | 1005.0 | 777.0 | 5596.0 | 865.0 | 158.0 | 56.0 | 113.0 | 102.0 | 71.0 | 249.0 | 148.0 | 196.0 | Credit/Debit Card
+519.0 | 22.0 | Female | Sophomore | Biology | 883.0 | 640.0 | 5515.0 | 751.0 | 243.0 | 168.0 | 240.0 | 138.0 | 20.0 | 102.0 | 55.0 | 93.0 | Credit/Debit Card
+520.0 | 18.0 | Female | Freshman | Biology | 1428.0 | 327.0 | 5183.0 | 822.0 | 118.0 | 184.0 | 209.0 | 27.0 | 50.0 | 212.0 | 89.0 | 129.0 | Cash
+521.0 | 21.0 | Female | Sophomore | Economics | 906.0 | 449.0 | 3883.0 | 713.0 | 338.0 | 126.0 | 300.0 | 86.0 | 46.0 | 55.0 | 64.0 | 122.0 | Cash
+522.0 | 18.0 | Female | Freshman | Computer Science | 991.0 | 836.0 | 3317.0 | 518.0 | 315.0 | 98.0 | 82.0 | 139.0 | 94.0 | 130.0 | 145.0 | 151.0 | Cash
+523.0 | 23.0 | Female | Freshman | Engineering | 1246.0 | 754.0 | 5420.0 | 504.0 | 372.0 | 107.0 | 222.0 | 104.0 | 31.0 | 163.0 | 116.0 | 182.0 | Mobile Payment App
+524.0 | 22.0 | Female | Freshman | Biology | 1273.0 | 10.0 | 4229.0 | 887.0 | 168.0 | 197.0 | 134.0 | 140.0 | 60.0 | 236.0 | 95.0 | 136.0 | Credit/Debit Card
+525.0 | 22.0 | Male | Junior | Psychology | 880.0 | 184.0 | 4706.0 | 415.0 | 105.0 | 182.0 | 266.0 | 58.0 | 68.0 | 277.0 | 176.0 | 36.0 | Credit/Debit Card
+526.0 | 24.0 | Junior | Computer Science | 1356.0 | 328.0 | 5658.0 | 901.0 | 369.0 | 156.0 | 284.0 | 114.0 | 76.0 | 145.0 | 119.0 | 102.0 | Credit/Debit Card
+527.0 | 23.0 | Female | Junior | Economics | 916.0 | 927.0 | 5244.0 | 411.0 | 249.0 | 157.0 | 173.0 | 69.0 | 71.0 | 255.0 | 83.0 | 189.0 | Credit/Debit Card
+528.0 | 18.0 | Freshman | Economics | 1059.0 | 668.0 | 3940.0 | 836.0 | 175.0 | 131.0 | 168.0 | 30.0 | 81.0 | 215.0 | 178.0 | 31.0 | Credit/Debit Card
+529.0 | 24.0 | Female | Junior | Psychology | 941.0 | 203.0 | 3048.0 | 617.0 | 214.0 | 113.0 | 233.0 | 109.0 | 49.0 | 266.0 | 73.0 | 176.0 | Credit/Debit Card
+530.0 | 24.0 | Male | Senior | Psychology | 764.0 | 521.0 | 4504.0 | 828.0 | 142.0 | 117.0 | 163.0 | 73.0 | 32.0 | 299.0 | 51.0 | 51.0 | Mobile Payment App
+531.0 | 25.0 | Sophomore | Economics | 983.0 | 670.0 | 4654.0 | 613.0 | 246.0 | 126.0 | 255.0 | 146.0 | 20.0 | 59.0 | 155.0 | 197.0 | Cash
+532.0 | 18.0 | Senior | Biology | 1295.0 | 263.0 | 4502.0 | 647.0 | 112.0 | 137.0 | 172.0 | 106.0 | 88.0 | 108.0 | 42.0 | 32.0 | Mobile Payment App
+533.0 | 22.0 | Female | Sophomore | Computer Science | 1301.0 | 883.0 | 4856.0 | 519.0 | 141.0 | 57.0 | 99.0 | 76.0 | 70.0 | 60.0 | 116.0 | 199.0 | Cash
+534.0 | 22.0 | Junior | Biology | 829.0 | 369.0 | 5246.0 | 702.0 | 146.0 | 88.0 | 286.0 | 144.0 | 37.0 | 268.0 | 85.0 | 191.0 | Cash
+535.0 | 22.0 | Sophomore | Psychology | 1296.0 | 1.0 | 4574.0 | 759.0 | 147.0 | 143.0 | 56.0 | 128.0 | 72.0 | 202.0 | 49.0 | 190.0 | Credit/Debit Card
+536.0 | 21.0 | Male | Freshman | Biology | 1278.0 | 506.0 | 3566.0 | 513.0 | 360.0 | 81.0 | 145.0 | 48.0 | 70.0 | 252.0 | 94.0 | 140.0 | Credit/Debit Card
+537.0 | 18.0 | Female | Senior | Biology | 725.0 | 148.0 | 4782.0 | 643.0 | 169.0 | 164.0 | 59.0 | 137.0 | 76.0 | 207.0 | 189.0 | 42.0 | Credit/Debit Card
+538.0 | 20.0 | Male | Senior | Biology | 525.0 | 41.0 | 4603.0 | 889.0 | 187.0 | 85.0 | 118.0 | 24.0 | 85.0 | 75.0 | 158.0 | 108.0 | Cash
+539.0 | 25.0 | Junior | Biology | 1006.0 | 293.0 | 3397.0 | 583.0 | 167.0 | 74.0 | 195.0 | 22.0 | 75.0 | 77.0 | 174.0 | 107.0 | Mobile Payment App
+540.0 | 20.0 | Male | Sophomore | Biology | 872.0 | 661.0 | 5328.0 | 470.0 | 220.0 | 167.0 | 249.0 | 122.0 | 47.0 | 152.0 | 51.0 | 128.0 | Mobile Payment App
+541.0 | 20.0 | Senior | Engineering | 549.0 | 302.0 | 5909.0 | 409.0 | 270.0 | 66.0 | 117.0 | 61.0 | 75.0 | 278.0 | 132.0 | 30.0 | Credit/Debit Card
+542.0 | 20.0 | Junior | Engineering | 885.0 | 380.0 | 5717.0 | 726.0 | 135.0 | 60.0 | 60.0 | 69.0 | 27.0 | 127.0 | 87.0 | 179.0 | Cash
+543.0 | 19.0 | Female | Senior | Computer Science | 1197.0 | 772.0 | 4227.0 | 695.0 | 180.0 | 91.0 | 104.0 | 106.0 | 31.0 | 177.0 | 48.0 | 21.0 | Mobile Payment App
+544.0 | 25.0 | Male | Senior | Psychology | 539.0 | 429.0 | 5598.0 | 869.0 | 209.0 | 71.0 | 106.0 | 116.0 | 41.0 | 120.0 | 149.0 | 36.0 | Cash
+545.0 | 22.0 | Male | Sophomore | Computer Science | 804.0 | 911.0 | 3810.0 | 577.0 | 291.0 | 167.0 | 294.0 | 64.0 | 64.0 | 266.0 | 134.0 | 137.0 | Cash
+546.0 | 25.0 | Sophomore | Economics | 1109.0 | 289.0 | 3324.0 | 946.0 | 359.0 | 123.0 | 272.0 | 88.0 | 27.0 | 141.0 | 107.0 | 125.0 | Mobile Payment App
+547.0 | 25.0 | Female | Senior | Computer Science | 1126.0 | 771.0 | 3126.0 | 823.0 | 374.0 | 125.0 | 215.0 | 90.0 | 77.0 | 242.0 | 112.0 | 99.0 | Credit/Debit Card
+548.0 | 22.0 | Junior | Economics | 849.0 | 229.0 | 5145.0 | 830.0 | 364.0 | 113.0 | 118.0 | 60.0 | 35.0 | 237.0 | 175.0 | 192.0 | Cash
+549.0 | 23.0 | Sophomore | Psychology | 503.0 | 158.0 | 4627.0 | 696.0 | 361.0 | 121.0 | 136.0 | 141.0 | 60.0 | 95.0 | 139.0 | 72.0 | Credit/Debit Card
+550.0 | 20.0 | Male | Senior | Biology | 1293.0 | 449.0 | 3734.0 | 913.0 | 324.0 | 149.0 | 134.0 | 103.0 | 86.0 | 288.0 | 131.0 | 120.0 | Mobile Payment App
+551.0 | 20.0 | Male | Junior | Biology | 903.0 | 96.0 | 4215.0 | 502.0 | 294.0 | 77.0 | 160.0 | 96.0 | 23.0 | 87.0 | 161.0 | 73.0 | Credit/Debit Card
+552.0 | 23.0 | Male | Junior | Psychology | 1149.0 | 685.0 | 5510.0 | 503.0 | 308.0 | 171.0 | 206.0 | 144.0 | 82.0 | 109.0 | 196.0 | 60.0 | Credit/Debit Card
+553.0 | 20.0 | Male | Freshman | Biology | 1363.0 | 536.0 | 3639.0 | 536.0 | 132.0 | 137.0 | 231.0 | 107.0 | 91.0 | 208.0 | 185.0 | 72.0 | Mobile Payment App
+554.0 | 19.0 | Male | Junior | Engineering | 1056.0 | 959.0 | 4665.0 | 593.0 | 100.0 | 157.0 | 214.0 | 113.0 | 50.0 | 286.0 | 87.0 | 200.0 | Cash
+555.0 | 18.0 | Male | Senior | Engineering | 1245.0 | 80.0 | 3063.0 | 836.0 | 397.0 | 136.0 | 89.0 | 110.0 | 29.0 | 155.0 | 59.0 | 186.0 | Mobile Payment App
+556.0 | 25.0 | Female | Senior | Computer Science | 1149.0 | 387.0 | 5744.0 | 849.0 | 301.0 | 112.0 | 162.0 | 141.0 | 74.0 | 89.0 | 107.0 | 108.0 | Mobile Payment App
+557.0 | 19.0 | Female | Freshman | Psychology | 1226.0 | 798.0 | 4066.0 | 494.0 | 350.0 | 192.0 | 159.0 | 34.0 | 52.0 | 226.0 | 136.0 | 62.0 | Cash
+558.0 | 22.0 | Freshman | Engineering | 965.0 | 387.0 | 3983.0 | 466.0 | 205.0 | 191.0 | 116.0 | 65.0 | 61.0 | 192.0 | 96.0 | 188.0 | Mobile Payment App
+559.0 | 21.0 | Male | Freshman | Engineering | 1338.0 | 889.0 | 4956.0 | 658.0 | 179.0 | 79.0 | 151.0 | 116.0 | 30.0 | 116.0 | 191.0 | 24.0 | Credit/Debit Card
+560.0 | 20.0 | Male | Senior | Engineering | 1414.0 | 811.0 | 5141.0 | 752.0 | 186.0 | 139.0 | 170.0 | 64.0 | 46.0 | 148.0 | 31.0 | 96.0 | Credit/Debit Card
+561.0 | 24.0 | Junior | Psychology | 1232.0 | 648.0 | 5249.0 | 485.0 | 248.0 | 52.0 | 64.0 | 94.0 | 75.0 | 280.0 | 48.0 | 46.0 | Mobile Payment App
+562.0 | 18.0 | Male | Freshman | Engineering | 528.0 | 612.0 | 4015.0 | 477.0 | 286.0 | 87.0 | 93.0 | 29.0 | 76.0 | 292.0 | 175.0 | 65.0 | Cash
+563.0 | 22.0 | Male | Sophomore | Computer Science | 1377.0 | 500.0 | 4846.0 | 482.0 | 335.0 | 133.0 | 87.0 | 33.0 | 57.0 | 161.0 | 82.0 | 98.0 | Credit/Debit Card
+564.0 | 23.0 | Freshman | Computer Science | 1078.0 | 857.0 | 4983.0 | 887.0 | 248.0 | 152.0 | 211.0 | 52.0 | 24.0 | 180.0 | 106.0 | 130.0 | Credit/Debit Card
+565.0 | 20.0 | Male | Sophomore | Computer Science | 766.0 | 926.0 | 5019.0 | 898.0 | 226.0 | 60.0 | 174.0 | 86.0 | 22.0 | 188.0 | 147.0 | 111.0 | Cash
+566.0 | 22.0 | Senior | Engineering | 1289.0 | 253.0 | 4960.0 | 529.0 | 229.0 | 59.0 | 182.0 | 35.0 | 64.0 | 96.0 | 123.0 | 77.0 | Credit/Debit Card
+567.0 | 21.0 | Male | Sophomore | Economics | 887.0 | 825.0 | 4948.0 | 731.0 | 309.0 | 194.0 | 60.0 | 109.0 | 86.0 | 126.0 | 177.0 | 140.0 | Cash
+568.0 | 18.0 | Male | Sophomore | Biology | 1040.0 | 721.0 | 3004.0 | 919.0 | 206.0 | 81.0 | 197.0 | 48.0 | 60.0 | 159.0 | 132.0 | 70.0 | Cash
+569.0 | 21.0 | Female | Senior | Engineering | 940.0 | 973.0 | 5912.0 | 951.0 | 352.0 | 108.0 | 62.0 | 62.0 | 70.0 | 249.0 | 98.0 | 150.0 | Credit/Debit Card
+570.0 | 25.0 | Male | Sophomore | Biology | 895.0 | 924.0 | 5734.0 | 489.0 | 157.0 | 94.0 | 92.0 | 21.0 | 23.0 | 261.0 | 57.0 | 113.0 | Mobile Payment App
+571.0 | 25.0 | Male | Sophomore | Psychology | 1113.0 | 378.0 | 3901.0 | 533.0 | 201.0 | 133.0 | 156.0 | 146.0 | 61.0 | 144.0 | 81.0 | 87.0 | Credit/Debit Card
+572.0 | 24.0 | Freshman | Biology | 982.0 | 563.0 | 5027.0 | 830.0 | 264.0 | 126.0 | 213.0 | 52.0 | 62.0 | 296.0 | 157.0 | 54.0 | Cash
+573.0 | 22.0 | Male | Freshman | Psychology | 1401.0 | 392.0 | 5008.0 | 769.0 | 331.0 | 149.0 | 280.0 | 38.0 | 33.0 | 100.0 | 150.0 | 167.0 | Credit/Debit Card
+574.0 | 18.0 | Male | Sophomore | Psychology | 772.0 | 72.0 | 5891.0 | 765.0 | 359.0 | 133.0 | 51.0 | 23.0 | 61.0 | 250.0 | 128.0 | 171.0 | Mobile Payment App
+575.0 | 20.0 | Male | Senior | Economics | 912.0 | 387.0 | 3866.0 | 487.0 | 261.0 | 199.0 | 225.0 | 115.0 | 34.0 | 184.0 | 197.0 | 144.0 | Credit/Debit Card
+576.0 | 23.0 | Female | Sophomore | Economics | 946.0 | 859.0 | 5240.0 | 409.0 | 380.0 | 179.0 | 148.0 | 81.0 | 59.0 | 101.0 | 139.0 | 96.0 | Cash
+577.0 | 23.0 | Junior | Biology | 834.0 | 858.0 | 4874.0 | 565.0 | 127.0 | 102.0 | 216.0 | 119.0 | 93.0 | 143.0 | 144.0 | 82.0 | Mobile Payment App
+578.0 | 24.0 | Male | Freshman | Psychology | 695.0 | 457.0 | 3265.0 | 438.0 | 340.0 | 77.0 | 109.0 | 63.0 | 24.0 | 201.0 | 137.0 | 82.0 | Cash
+579.0 | 20.0 | Male | Sophomore | Biology | 1479.0 | 398.0 | 5517.0 | 854.0 | 238.0 | 93.0 | 254.0 | 118.0 | 22.0 | 143.0 | 36.0 | 67.0 | Cash
+580.0 | 21.0 | Sophomore | Economics | 994.0 | 469.0 | 3783.0 | 415.0 | 144.0 | 172.0 | 133.0 | 41.0 | 88.0 | 284.0 | 116.0 | 199.0 | Mobile Payment App
+581.0 | 25.0 | Female | Sophomore | Biology | 843.0 | 555.0 | 5071.0 | 604.0 | 126.0 | 195.0 | 193.0 | 107.0 | 53.0 | 159.0 | 49.0 | 72.0 | Mobile Payment App
+582.0 | 21.0 | Junior | Biology | 1412.0 | 671.0 | 6000.0 | 917.0 | 295.0 | 191.0 | 103.0 | 22.0 | 85.0 | 297.0 | 62.0 | 140.0 | Mobile Payment App
+583.0 | 22.0 | Male | Junior | Computer Science | 727.0 | 238.0 | 5354.0 | 733.0 | 325.0 | 182.0 | 155.0 | 42.0 | 81.0 | 220.0 | 199.0 | 176.0 | Credit/Debit Card
+584.0 | 25.0 | Male | Sophomore | Computer Science | 622.0 | 642.0 | 4637.0 | 862.0 | 290.0 | 200.0 | 266.0 | 21.0 | 44.0 | 229.0 | 168.0 | 77.0 | Mobile Payment App
+585.0 | 23.0 | Female | Senior | Computer Science | 1392.0 | 197.0 | 3161.0 | 954.0 | 287.0 | 101.0 | 168.0 | 55.0 | 52.0 | 180.0 | 135.0 | 99.0 | Credit/Debit Card
+586.0 | 19.0 | Male | Sophomore | Computer Science | 1491.0 | 809.0 | 4924.0 | 792.0 | 191.0 | 144.0 | 287.0 | 81.0 | 36.0 | 223.0 | 104.0 | 186.0 | Credit/Debit Card
+587.0 | 22.0 | Junior | Engineering | 1038.0 | 540.0 | 4378.0 | 791.0 | 202.0 | 93.0 | 184.0 | 105.0 | 48.0 | 254.0 | 79.0 | 160.0 | Mobile Payment App
+588.0 | 24.0 | Female | Junior | Biology | 854.0 | 501.0 | 3269.0 | 990.0 | 249.0 | 198.0 | 247.0 | 135.0 | 27.0 | 53.0 | 98.0 | 67.0 | Mobile Payment App
+589.0 | 21.0 | Male | Sophomore | Biology | 1415.0 | 688.0 | 5211.0 | 857.0 | 254.0 | 156.0 | 275.0 | 148.0 | 54.0 | 227.0 | 119.0 | 87.0 | Cash
+590.0 | 18.0 | Male | Senior | Economics | 1136.0 | 434.0 | 4522.0 | 642.0 | 144.0 | 121.0 | 219.0 | 149.0 | 80.0 | 188.0 | 54.0 | 146.0 | Mobile Payment App
+591.0 | 22.0 | Male | Senior | Computer Science | 971.0 | 100.0 | 3645.0 | 979.0 | 163.0 | 134.0 | 50.0 | 85.0 | 86.0 | 267.0 | 193.0 | 80.0 | Credit/Debit Card
+592.0 | 20.0 | Male | Senior | Economics | 1115.0 | 31.0 | 5206.0 | 442.0 | 332.0 | 149.0 | 229.0 | 116.0 | 69.0 | 272.0 | 103.0 | 160.0 | Mobile Payment App
+593.0 | 20.0 | Male | Freshman | Biology | 523.0 | 279.0 | 4777.0 | 417.0 | 256.0 | 188.0 | 156.0 | 105.0 | 77.0 | 191.0 | 137.0 | 41.0 | Cash
+594.0 | 24.0 | Male | Junior | Psychology | 533.0 | 815.0 | 5620.0 | 850.0 | 203.0 | 166.0 | 220.0 | 91.0 | 34.0 | 235.0 | 39.0 | 138.0 | Credit/Debit Card
+595.0 | 19.0 | Female | Sophomore | Psychology | 1129.0 | 832.0 | 3885.0 | 691.0 | 131.0 | 147.0 | 218.0 | 38.0 | 38.0 | 292.0 | 168.0 | 100.0 | Cash
+596.0 | 22.0 | Senior | Economics | 739.0 | 883.0 | 3099.0 | 900.0 | 281.0 | 111.0 | 108.0 | 121.0 | 29.0 | 161.0 | 137.0 | 46.0 | Credit/Debit Card
+597.0 | 18.0 | Female | Senior | Engineering | 1099.0 | 423.0 | 3690.0 | 973.0 | 287.0 | 98.0 | 270.0 | 146.0 | 100.0 | 136.0 | 128.0 | 129.0 | Mobile Payment App
+598.0 | 25.0 | Junior | Psychology | 610.0 | 148.0 | 5414.0 | 887.0 | 256.0 | 57.0 | 209.0 | 84.0 | 76.0 | 220.0 | 184.0 | 104.0 | Mobile Payment App
+599.0 | 23.0 | Male | Junior | Biology | 1305.0 | 642.0 | 5566.0 | 844.0 | 274.0 | 120.0 | 178.0 | 28.0 | 28.0 | 179.0 | 122.0 | 73.0 | Credit/Debit Card
+600.0 | 23.0 | Female | Freshman | Engineering | 1263.0 | 744.0 | 3369.0 | 825.0 | 141.0 | 117.0 | 135.0 | 45.0 | 39.0 | 159.0 | 158.0 | 114.0 | Cash
+601.0 | 23.0 | Female | Freshman | Engineering | 656.0 | 836.0 | 3586.0 | 770.0 | 172.0 | 111.0 | 261.0 | 78.0 | 99.0 | 177.0 | 145.0 | 74.0 | Cash
+602.0 | 22.0 | Female | Junior | Economics | 975.0 | 406.0 | 3855.0 | 752.0 | 249.0 | 93.0 | 122.0 | 125.0 | 56.0 | 181.0 | 103.0 | 50.0 | Credit/Debit Card
+603.0 | 25.0 | Male | Freshman | Computer Science | 1459.0 | 996.0 | 4957.0 | 892.0 | 142.0 | 51.0 | 243.0 | 128.0 | 83.0 | 131.0 | 64.0 | 35.0 | Mobile Payment App
+604.0 | 25.0 | Junior | Biology | 1302.0 | 115.0 | 3265.0 | 561.0 | 252.0 | 88.0 | 196.0 | 84.0 | 27.0 | 158.0 | 125.0 | 121.0 | Mobile Payment App
+605.0 | 18.0 | Female | Senior | Computer Science | 1115.0 | 709.0 | 4745.0 | 733.0 | 262.0 | 118.0 | 197.0 | 97.0 | 79.0 | 182.0 | 32.0 | 52.0 | Mobile Payment App
+606.0 | 24.0 | Freshman | Engineering | 816.0 | 658.0 | 4614.0 | 498.0 | 181.0 | 103.0 | 54.0 | 67.0 | 68.0 | 288.0 | 163.0 | 141.0 | Mobile Payment App
+607.0 | 24.0 | Freshman | Engineering | 1358.0 | 32.0 | 5658.0 | 696.0 | 136.0 | 77.0 | 216.0 | 70.0 | 89.0 | 103.0 | 90.0 | 163.0 | Mobile Payment App
+608.0 | 20.0 | Female | Junior | Psychology | 1054.0 | 87.0 | 5634.0 | 998.0 | 266.0 | 170.0 | 191.0 | 137.0 | 100.0 | 175.0 | 94.0 | 81.0 | Cash
+609.0 | 24.0 | Freshman | Engineering | 1372.0 | 208.0 | 4545.0 | 669.0 | 262.0 | 76.0 | 211.0 | 138.0 | 83.0 | 291.0 | 73.0 | 109.0 | Credit/Debit Card
+610.0 | 24.0 | Sophomore | Engineering | 1101.0 | 508.0 | 3718.0 | 423.0 | 341.0 | 155.0 | 291.0 | 111.0 | 75.0 | 263.0 | 122.0 | 52.0 | Mobile Payment App
+611.0 | 23.0 | Male | Junior | Engineering | 1258.0 | 939.0 | 4662.0 | 745.0 | 250.0 | 121.0 | 238.0 | 101.0 | 60.0 | 263.0 | 34.0 | 113.0 | Cash
+612.0 | 23.0 | Male | Freshman | Biology | 1399.0 | 663.0 | 4775.0 | 612.0 | 289.0 | 169.0 | 116.0 | 148.0 | 74.0 | 239.0 | 199.0 | 82.0 | Cash
+613.0 | 21.0 | Male | Senior | Biology | 1469.0 | 592.0 | 5685.0 | 505.0 | 272.0 | 56.0 | 239.0 | 23.0 | 57.0 | 161.0 | 107.0 | 183.0 | Cash
+614.0 | 23.0 | Male | Sophomore | Engineering | 560.0 | 300.0 | 4954.0 | 554.0 | 100.0 | 122.0 | 174.0 | 109.0 | 92.0 | 188.0 | 68.0 | 115.0 | Cash
+615.0 | 24.0 | Male | Freshman | Engineering | 527.0 | 337.0 | 5328.0 | 462.0 | 349.0 | 171.0 | 288.0 | 145.0 | 92.0 | 241.0 | 120.0 | 125.0 | Credit/Debit Card
+616.0 | 20.0 | Male | Freshman | Biology | 1165.0 | 282.0 | 3264.0 | 869.0 | 132.0 | 91.0 | 255.0 | 56.0 | 37.0 | 85.0 | 187.0 | 61.0 | Mobile Payment App
+617.0 | 25.0 | Male | Junior | Computer Science | 996.0 | 692.0 | 4653.0 | 765.0 | 351.0 | 148.0 | 243.0 | 31.0 | 58.0 | 74.0 | 191.0 | 176.0 | Credit/Debit Card
+618.0 | 24.0 | Male | Junior | Engineering | 630.0 | 528.0 | 4001.0 | 921.0 | 377.0 | 193.0 | 87.0 | 142.0 | 60.0 | 155.0 | 51.0 | 58.0 | Cash
+619.0 | 19.0 | Male | Junior | Engineering | 542.0 | 205.0 | 4638.0 | 838.0 | 332.0 | 67.0 | 237.0 | 74.0 | 80.0 | 205.0 | 116.0 | 175.0 | Mobile Payment App
+620.0 | 19.0 | Freshman | Psychology | 648.0 | 929.0 | 4294.0 | 696.0 | 267.0 | 104.0 | 215.0 | 79.0 | 96.0 | 286.0 | 35.0 | 44.0 | Credit/Debit Card
+621.0 | 22.0 | Senior | Computer Science | 639.0 | 699.0 | 4625.0 | 463.0 | 338.0 | 80.0 | 265.0 | 51.0 | 80.0 | 295.0 | 103.0 | 137.0 | Credit/Debit Card
+622.0 | 18.0 | Sophomore | Engineering | 729.0 | 665.0 | 4464.0 | 670.0 | 378.0 | 122.0 | 191.0 | 145.0 | 94.0 | 198.0 | 169.0 | 101.0 | Cash
+623.0 | 19.0 | Male | Junior | Computer Science | 1021.0 | 473.0 | 4614.0 | 875.0 | 282.0 | 57.0 | 191.0 | 42.0 | 40.0 | 153.0 | 106.0 | 157.0 | Mobile Payment App
+624.0 | 23.0 | Male | Senior | Economics | 1229.0 | 794.0 | 4968.0 | 953.0 | 216.0 | 85.0 | 85.0 | 143.0 | 37.0 | 280.0 | 94.0 | 185.0 | Credit/Debit Card
+625.0 | 21.0 | Male | Junior | Engineering | 660.0 | 207.0 | 5365.0 | 547.0 | 194.0 | 59.0 | 112.0 | 98.0 | 23.0 | 229.0 | 168.0 | 64.0 | Credit/Debit Card
+626.0 | 21.0 | Freshman | Computer Science | 1343.0 | 6.0 | 3103.0 | 759.0 | 238.0 | 75.0 | 289.0 | 107.0 | 41.0 | 170.0 | 89.0 | 44.0 | Cash
+627.0 | 25.0 | Junior | Computer Science | 833.0 | 410.0 | 4562.0 | 525.0 | 330.0 | 50.0 | 245.0 | 112.0 | 89.0 | 132.0 | 137.0 | 155.0 | Cash
+628.0 | 22.0 | Male | Freshman | Computer Science | 555.0 | 51.0 | 5060.0 | 534.0 | 354.0 | 69.0 | 64.0 | 33.0 | 48.0 | 76.0 | 42.0 | 26.0 | Cash
+629.0 | 22.0 | Male | Freshman | Engineering | 541.0 | 94.0 | 5373.0 | 409.0 | 264.0 | 79.0 | 288.0 | 59.0 | 43.0 | 113.0 | 175.0 | 33.0 | Credit/Debit Card
+630.0 | 22.0 | Senior | Economics | 748.0 | 296.0 | 3962.0 | 721.0 | 389.0 | 71.0 | 108.0 | 89.0 | 93.0 | 106.0 | 186.0 | 170.0 | Credit/Debit Card
+631.0 | 21.0 | Female | Sophomore | Engineering | 1477.0 | 497.0 | 4287.0 | 851.0 | 296.0 | 53.0 | 95.0 | 134.0 | 61.0 | 143.0 | 87.0 | 134.0 | Cash
+632.0 | 22.0 | Senior | Biology | 1236.0 | 189.0 | 5655.0 | 773.0 | 175.0 | 145.0 | 256.0 | 122.0 | 60.0 | 143.0 | 118.0 | 169.0 | Credit/Debit Card
+633.0 | 25.0 | Male | Freshman | Biology | 592.0 | 657.0 | 3801.0 | 939.0 | 137.0 | 127.0 | 280.0 | 59.0 | 75.0 | 265.0 | 70.0 | 85.0 | Cash
+634.0 | 25.0 | Female | Senior | Computer Science | 558.0 | 830.0 | 4642.0 | 895.0 | 349.0 | 89.0 | 273.0 | 45.0 | 83.0 | 79.0 | 122.0 | 143.0 | Mobile Payment App
+635.0 | 23.0 | Male | Sophomore | Engineering | 925.0 | 414.0 | 4123.0 | 776.0 | 178.0 | 106.0 | 268.0 | 105.0 | 39.0 | 201.0 | 144.0 | 108.0 | Credit/Debit Card
+636.0 | 18.0 | Male | Senior | Computer Science | 719.0 | 498.0 | 3780.0 | 494.0 | 312.0 | 149.0 | 111.0 | 126.0 | 73.0 | 60.0 | 57.0 | 169.0 | Mobile Payment App
+637.0 | 24.0 | Female | Junior | Engineering | 981.0 | 875.0 | 3266.0 | 852.0 | 201.0 | 167.0 | 102.0 | 118.0 | 72.0 | 124.0 | 62.0 | 110.0 | Credit/Debit Card
+638.0 | 25.0 | Senior | Economics | 1381.0 | 882.0 | 3704.0 | 464.0 | 269.0 | 88.0 | 257.0 | 105.0 | 47.0 | 106.0 | 135.0 | 66.0 | Credit/Debit Card
+639.0 | 18.0 | Sophomore | Biology | 929.0 | 126.0 | 3357.0 | 615.0 | 324.0 | 73.0 | 162.0 | 150.0 | 58.0 | 211.0 | 87.0 | 77.0 | Cash
+640.0 | 24.0 | Male | Junior | Biology | 1245.0 | 906.0 | 5452.0 | 459.0 | 255.0 | 128.0 | 95.0 | 44.0 | 47.0 | 288.0 | 195.0 | 191.0 | Mobile Payment App
+641.0 | 20.0 | Female | Junior | Economics | 691.0 | 340.0 | 3798.0 | 748.0 | 152.0 | 53.0 | 262.0 | 118.0 | 91.0 | 112.0 | 163.0 | 71.0 | Mobile Payment App
+642.0 | 24.0 | Female | Freshman | Psychology | 1326.0 | 499.0 | 5353.0 | 852.0 | 129.0 | 166.0 | 183.0 | 91.0 | 85.0 | 291.0 | 54.0 | 141.0 | Credit/Debit Card
+643.0 | 18.0 | Junior | Psychology | 1000.0 | 203.0 | 5199.0 | 559.0 | 371.0 | 104.0 | 144.0 | 70.0 | 63.0 | 102.0 | 95.0 | 105.0 | Credit/Debit Card
+644.0 | 25.0 | Male | Junior | Computer Science | 592.0 | 662.0 | 5221.0 | 694.0 | 119.0 | 93.0 | 275.0 | 92.0 | 58.0 | 52.0 | 180.0 | 160.0 | Credit/Debit Card
+645.0 | 22.0 | Male | Senior | Economics | 1227.0 | 226.0 | 3658.0 | 951.0 | 218.0 | 199.0 | 238.0 | 73.0 | 79.0 | 112.0 | 196.0 | 67.0 | Mobile Payment App
+646.0 | 20.0 | Female | Sophomore | Engineering | 575.0 | 534.0 | 5231.0 | 506.0 | 378.0 | 66.0 | 141.0 | 66.0 | 75.0 | 56.0 | 153.0 | 99.0 | Cash
+647.0 | 19.0 | Female | Junior | Engineering | 1298.0 | 323.0 | 3510.0 | 444.0 | 222.0 | 168.0 | 221.0 | 98.0 | 61.0 | 175.0 | 133.0 | 69.0 | Credit/Debit Card
+648.0 | 23.0 | Male | Sophomore | Engineering | 1141.0 | 482.0 | 3621.0 | 572.0 | 121.0 | 184.0 | 108.0 | 41.0 | 55.0 | 93.0 | 126.0 | 86.0 | Cash
+649.0 | 25.0 | Male | Senior | Biology | 703.0 | 654.0 | 5926.0 | 735.0 | 295.0 | 100.0 | 278.0 | 39.0 | 80.0 | 139.0 | 178.0 | 190.0 | Credit/Debit Card
+650.0 | 23.0 | Female | Freshman | Economics | 929.0 | 160.0 | 3445.0 | 418.0 | 213.0 | 83.0 | 159.0 | 87.0 | 54.0 | 55.0 | 198.0 | 135.0 | Mobile Payment App
+651.0 | 23.0 | Junior | Engineering | 1415.0 | 970.0 | 3694.0 | 513.0 | 148.0 | 157.0 | 297.0 | 104.0 | 42.0 | 294.0 | 154.0 | 161.0 | Mobile Payment App
+652.0 | 18.0 | Senior | Engineering | 1359.0 | 387.0 | 5747.0 | 995.0 | 263.0 | 193.0 | 246.0 | 32.0 | 23.0 | 152.0 | 110.0 | 120.0 | Credit/Debit Card
+653.0 | 23.0 | Male | Freshman | Biology | 1162.0 | 720.0 | 5880.0 | 630.0 | 259.0 | 117.0 | 113.0 | 127.0 | 94.0 | 126.0 | 89.0 | 130.0 | Cash
+654.0 | 18.0 | Female | Sophomore | Biology | 663.0 | 304.0 | 5655.0 | 632.0 | 176.0 | 89.0 | 215.0 | 57.0 | 61.0 | 51.0 | 56.0 | 107.0 | Credit/Debit Card
+655.0 | 18.0 | Freshman | Economics | 1432.0 | 9.0 | 5568.0 | 929.0 | 224.0 | 108.0 | 265.0 | 69.0 | 22.0 | 102.0 | 120.0 | 151.0 | Credit/Debit Card
+656.0 | 20.0 | Freshman | Computer Science | 663.0 | 823.0 | 3637.0 | 695.0 | 191.0 | 147.0 | 277.0 | 23.0 | 73.0 | 212.0 | 188.0 | 179.0 | Mobile Payment App
+657.0 | 18.0 | Senior | Economics | 1327.0 | 109.0 | 3975.0 | 940.0 | 363.0 | 153.0 | 157.0 | 88.0 | 98.0 | 119.0 | 52.0 | 20.0 | Credit/Debit Card
+658.0 | 22.0 | Male | Senior | Psychology | 1045.0 | 359.0 | 5381.0 | 610.0 | 269.0 | 71.0 | 209.0 | 49.0 | 83.0 | 291.0 | 168.0 | 183.0 | Credit/Debit Card
+659.0 | 21.0 | Male | Junior | Computer Science | 619.0 | 605.0 | 3238.0 | 793.0 | 380.0 | 89.0 | 87.0 | 135.0 | 36.0 | 209.0 | 92.0 | 84.0 | Credit/Debit Card
+660.0 | 21.0 | Freshman | Economics | 815.0 | 905.0 | 3053.0 | 433.0 | 355.0 | 84.0 | 241.0 | 89.0 | 67.0 | 262.0 | 141.0 | 41.0 | Cash
+661.0 | 20.0 | Freshman | Biology | 728.0 | 399.0 | 5128.0 | 967.0 | 152.0 | 139.0 | 293.0 | 96.0 | 39.0 | 287.0 | 184.0 | 157.0 | Cash
+662.0 | 21.0 | Male | Senior | Economics | 941.0 | 831.0 | 3687.0 | 722.0 | 390.0 | 135.0 | 81.0 | 131.0 | 69.0 | 124.0 | 107.0 | 38.0 | Mobile Payment App
+663.0 | 18.0 | Male | Freshman | Psychology | 1176.0 | 43.0 | 3352.0 | 838.0 | 211.0 | 60.0 | 278.0 | 121.0 | 21.0 | 108.0 | 87.0 | 164.0 | Credit/Debit Card
+664.0 | 22.0 | Sophomore | Computer Science | 1092.0 | 574.0 | 3997.0 | 731.0 | 187.0 | 93.0 | 151.0 | 63.0 | 55.0 | 96.0 | 169.0 | 118.0 | Credit/Debit Card
+665.0 | 18.0 | Female | Sophomore | Biology | 1439.0 | 526.0 | 3394.0 | 896.0 | 176.0 | 86.0 | 134.0 | 63.0 | 52.0 | 150.0 | 175.0 | 129.0 | Mobile Payment App
+666.0 | 22.0 | Male | Senior | Economics | 816.0 | 616.0 | 3461.0 | 543.0 | 350.0 | 101.0 | 90.0 | 103.0 | 24.0 | 245.0 | 44.0 | 150.0 | Credit/Debit Card
+667.0 | 18.0 | Male | Junior | Biology | 1413.0 | 775.0 | 4715.0 | 457.0 | 264.0 | 71.0 | 250.0 | 127.0 | 54.0 | 152.0 | 91.0 | 120.0 | Cash
+668.0 | 24.0 | Female | Sophomore | Biology | 1076.0 | 355.0 | 4596.0 | 464.0 | 134.0 | 99.0 | 167.0 | 97.0 | 34.0 | 77.0 | 51.0 | 149.0 | Cash
+669.0 | 21.0 | Female | Sophomore | Economics | 559.0 | 169.0 | 5303.0 | 431.0 | 222.0 | 103.0 | 237.0 | 80.0 | 56.0 | 188.0 | 78.0 | 176.0 | Credit/Debit Card
+670.0 | 23.0 | Male | Sophomore | Engineering | 1144.0 | 800.0 | 3881.0 | 405.0 | 381.0 | 130.0 | 179.0 | 106.0 | 94.0 | 216.0 | 82.0 | 50.0 | Credit/Debit Card
+671.0 | 20.0 | Junior | Psychology | 1296.0 | 113.0 | 5452.0 | 462.0 | 191.0 | 69.0 | 238.0 | 93.0 | 51.0 | 155.0 | 187.0 | 102.0 | Credit/Debit Card
+672.0 | 24.0 | Male | Senior | Engineering | 958.0 | 902.0 | 4579.0 | 425.0 | 262.0 | 156.0 | 72.0 | 137.0 | 21.0 | 282.0 | 82.0 | 135.0 | Cash
+673.0 | 25.0 | Male | Junior | Economics | 775.0 | 709.0 | 4195.0 | 680.0 | 115.0 | 182.0 | 84.0 | 128.0 | 26.0 | 106.0 | 112.0 | 93.0 | Credit/Debit Card
+674.0 | 25.0 | Junior | Economics | 1483.0 | 519.0 | 4676.0 | 970.0 | 145.0 | 168.0 | 270.0 | 23.0 | 39.0 | 72.0 | 106.0 | 186.0 | Mobile Payment App
+675.0 | 19.0 | Male | Junior | Biology | 1304.0 | 232.0 | 4540.0 | 651.0 | 184.0 | 102.0 | 191.0 | 148.0 | 67.0 | 268.0 | 45.0 | 50.0 | Mobile Payment App
+676.0 | 24.0 | Female | Sophomore | Biology | 1400.0 | 892.0 | 4726.0 | 749.0 | 359.0 | 163.0 | 294.0 | 132.0 | 20.0 | 208.0 | 148.0 | 82.0 | Mobile Payment App
+677.0 | 24.0 | Freshman | Computer Science | 1440.0 | 869.0 | 5852.0 | 759.0 | 271.0 | 75.0 | 187.0 | 77.0 | 66.0 | 295.0 | 196.0 | 71.0 | Mobile Payment App
+678.0 | 22.0 | Female | Freshman | Economics | 1460.0 | 650.0 | 3562.0 | 771.0 | 311.0 | 62.0 | 265.0 | 53.0 | 96.0 | 112.0 | 37.0 | 77.0 | Credit/Debit Card
+679.0 | 20.0 | Junior | Biology | 1379.0 | 714.0 | 4758.0 | 927.0 | 192.0 | 119.0 | 288.0 | 137.0 | 59.0 | 95.0 | 194.0 | 33.0 | Credit/Debit Card
+680.0 | 18.0 | Female | Junior | Computer Science | 942.0 | 545.0 | 5805.0 | 914.0 | 108.0 | 50.0 | 206.0 | 24.0 | 56.0 | 54.0 | 188.0 | 70.0 | Mobile Payment App
+681.0 | 25.0 | Junior | Biology | 740.0 | 871.0 | 4194.0 | 473.0 | 366.0 | 83.0 | 156.0 | 62.0 | 33.0 | 86.0 | 81.0 | 78.0 | Cash
+682.0 | 18.0 | Female | Sophomore | Psychology | 1186.0 | 733.0 | 5923.0 | 541.0 | 291.0 | 111.0 | 114.0 | 42.0 | 49.0 | 73.0 | 166.0 | 131.0 | Cash
+683.0 | 23.0 | Male | Junior | Biology | 731.0 | 812.0 | 5637.0 | 582.0 | 148.0 | 74.0 | 234.0 | 27.0 | 68.0 | 158.0 | 81.0 | 48.0 | Cash
+684.0 | 20.0 | Male | Junior | Economics | 1347.0 | 735.0 | 5563.0 | 974.0 | 310.0 | 98.0 | 167.0 | 35.0 | 43.0 | 298.0 | 182.0 | 37.0 | Cash
+685.0 | 19.0 | Female | Freshman | Biology | 1085.0 | 417.0 | 4680.0 | 705.0 | 159.0 | 182.0 | 295.0 | 132.0 | 66.0 | 105.0 | 185.0 | 54.0 | Cash
+686.0 | 22.0 | Male | Senior | Biology | 665.0 | 401.0 | 3645.0 | 967.0 | 151.0 | 50.0 | 232.0 | 118.0 | 75.0 | 182.0 | 181.0 | 148.0 | Mobile Payment App
+687.0 | 22.0 | Male | Freshman | Economics | 1422.0 | 674.0 | 5030.0 | 663.0 | 332.0 | 148.0 | 251.0 | 130.0 | 61.0 | 187.0 | 124.0 | 117.0 | Cash
+688.0 | 24.0 | Male | Freshman | Biology | 1366.0 | 319.0 | 3549.0 | 921.0 | 389.0 | 127.0 | 146.0 | 44.0 | 93.0 | 224.0 | 151.0 | 30.0 | Mobile Payment App
+689.0 | 21.0 | Female | Sophomore | Engineering | 714.0 | 645.0 | 3751.0 | 853.0 | 149.0 | 66.0 | 184.0 | 35.0 | 21.0 | 219.0 | 176.0 | 72.0 | Mobile Payment App
+690.0 | 25.0 | Male | Freshman | Psychology | 1259.0 | 139.0 | 4943.0 | 747.0 | 200.0 | 94.0 | 226.0 | 142.0 | 39.0 | 140.0 | 95.0 | 65.0 | Credit/Debit Card
+691.0 | 19.0 | Female | Senior | Economics | 975.0 | 939.0 | 3256.0 | 936.0 | 368.0 | 179.0 | 165.0 | 144.0 | 89.0 | 52.0 | 48.0 | 120.0 | Mobile Payment App
+692.0 | 24.0 | Female | Senior | Engineering | 1420.0 | 235.0 | 3609.0 | 841.0 | 151.0 | 190.0 | 175.0 | 20.0 | 97.0 | 57.0 | 154.0 | 71.0 | Cash
+693.0 | 24.0 | Female | Sophomore | Engineering | 604.0 | 751.0 | 3687.0 | 554.0 | 217.0 | 66.0 | 188.0 | 122.0 | 32.0 | 169.0 | 69.0 | 150.0 | Cash
+694.0 | 25.0 | Female | Senior | Economics | 1250.0 | 509.0 | 4288.0 | 679.0 | 125.0 | 98.0 | 92.0 | 120.0 | 39.0 | 109.0 | 146.0 | 188.0 | Cash
+695.0 | 20.0 | Female | Freshman | Computer Science | 567.0 | 906.0 | 3748.0 | 842.0 | 375.0 | 96.0 | 144.0 | 112.0 | 47.0 | 278.0 | 173.0 | 48.0 | Mobile Payment App
+696.0 | 25.0 | Female | Freshman | Computer Science | 546.0 | 691.0 | 5457.0 | 978.0 | 286.0 | 100.0 | 237.0 | 60.0 | 58.0 | 206.0 | 158.0 | 137.0 | Cash
+697.0 | 18.0 | Senior | Economics | 1169.0 | 836.0 | 5537.0 | 996.0 | 334.0 | 83.0 | 288.0 | 78.0 | 56.0 | 105.0 | 166.0 | 180.0 | Mobile Payment App
+698.0 | 23.0 | Freshman | Economics | 834.0 | 607.0 | 3582.0 | 692.0 | 350.0 | 88.0 | 298.0 | 150.0 | 90.0 | 248.0 | 51.0 | 34.0 | Credit/Debit Card
+699.0 | 19.0 | Sophomore | Computer Science | 1117.0 | 234.0 | 3366.0 | 940.0 | 212.0 | 87.0 | 121.0 | 139.0 | 41.0 | 298.0 | 119.0 | 158.0 | Mobile Payment App
+700.0 | 25.0 | Male | Freshman | Economics | 677.0 | 894.0 | 5595.0 | 841.0 | 313.0 | 52.0 | 219.0 | 66.0 | 42.0 | 92.0 | 120.0 | 84.0 | Mobile Payment App
+701.0 | 20.0 | Freshman | Engineering | 1433.0 | 964.0 | 4777.0 | 904.0 | 327.0 | 77.0 | 112.0 | 146.0 | 71.0 | 97.0 | 167.0 | 117.0 | Cash
+702.0 | 20.0 | Female | Freshman | Biology | 889.0 | 633.0 | 3100.0 | 524.0 | 247.0 | 82.0 | 201.0 | 102.0 | 92.0 | 103.0 | 96.0 | 30.0 | Credit/Debit Card
+703.0 | 21.0 | Male | Junior | Biology | 670.0 | 708.0 | 5934.0 | 649.0 | 386.0 | 146.0 | 182.0 | 132.0 | 48.0 | 175.0 | 59.0 | 155.0 | Credit/Debit Card
+704.0 | 19.0 | Male | Senior | Economics | 645.0 | 616.0 | 4694.0 | 904.0 | 158.0 | 69.0 | 148.0 | 60.0 | 98.0 | 114.0 | 40.0 | 72.0 | Credit/Debit Card
+705.0 | 21.0 | Female | Junior | Psychology | 1107.0 | 971.0 | 5997.0 | 720.0 | 289.0 | 124.0 | 210.0 | 35.0 | 51.0 | 157.0 | 101.0 | 168.0 | Mobile Payment App
+706.0 | 22.0 | Female | Sophomore | Psychology | 750.0 | 572.0 | 4144.0 | 563.0 | 104.0 | 191.0 | 58.0 | 22.0 | 97.0 | 53.0 | 41.0 | 99.0 | Cash
+707.0 | 21.0 | Male | Sophomore | Biology | 654.0 | 261.0 | 3359.0 | 802.0 | 124.0 | 56.0 | 57.0 | 41.0 | 56.0 | 111.0 | 62.0 | 196.0 | Mobile Payment App
+708.0 | 20.0 | Male | Freshman | Psychology | 1141.0 | 57.0 | 5734.0 | 696.0 | 284.0 | 83.0 | 204.0 | 63.0 | 46.0 | 56.0 | 125.0 | 55.0 | Cash
+709.0 | 22.0 | Female | Sophomore | Biology | 811.0 | 815.0 | 4724.0 | 815.0 | 300.0 | 120.0 | 126.0 | 22.0 | 93.0 | 104.0 | 119.0 | 152.0 | Cash
+710.0 | 23.0 | Female | Senior | Engineering | 1452.0 | 520.0 | 3463.0 | 822.0 | 317.0 | 77.0 | 148.0 | 91.0 | 61.0 | 166.0 | 133.0 | 122.0 | Mobile Payment App
+711.0 | 20.0 | Junior | Psychology | 1255.0 | 82.0 | 4739.0 | 465.0 | 400.0 | 68.0 | 190.0 | 24.0 | 70.0 | 246.0 | 132.0 | 160.0 | Mobile Payment App
+712.0 | 24.0 | Female | Junior | Computer Science | 737.0 | 266.0 | 4964.0 | 780.0 | 303.0 | 111.0 | 199.0 | 62.0 | 94.0 | 193.0 | 97.0 | 57.0 | Credit/Debit Card
+713.0 | 25.0 | Male | Freshman | Engineering | 1419.0 | 253.0 | 4089.0 | 444.0 | 220.0 | 148.0 | 114.0 | 65.0 | 29.0 | 136.0 | 34.0 | 35.0 | Credit/Debit Card
+714.0 | 23.0 | Freshman | Computer Science | 815.0 | 76.0 | 4461.0 | 446.0 | 132.0 | 165.0 | 165.0 | 58.0 | 99.0 | 135.0 | 174.0 | 111.0 | Cash
+715.0 | 25.0 | Male | Senior | Engineering | 1034.0 | 602.0 | 3444.0 | 517.0 | 238.0 | 110.0 | 255.0 | 86.0 | 77.0 | 281.0 | 150.0 | 56.0 | Credit/Debit Card
+716.0 | 24.0 | Freshman | Computer Science | 1022.0 | 626.0 | 4797.0 | 413.0 | 139.0 | 167.0 | 165.0 | 75.0 | 57.0 | 219.0 | 126.0 | 43.0 | Mobile Payment App
+717.0 | 23.0 | Female | Sophomore | Biology | 1341.0 | 839.0 | 3033.0 | 514.0 | 300.0 | 122.0 | 137.0 | 40.0 | 61.0 | 170.0 | 65.0 | 100.0 | Cash
+718.0 | 20.0 | Female | Senior | Engineering | 999.0 | 919.0 | 5819.0 | 507.0 | 269.0 | 119.0 | 228.0 | 99.0 | 49.0 | 55.0 | 115.0 | 53.0 | Mobile Payment App
+719.0 | 21.0 | Male | Freshman | Psychology | 1218.0 | 162.0 | 5467.0 | 684.0 | 280.0 | 131.0 | 186.0 | 103.0 | 85.0 | 91.0 | 89.0 | 126.0 | Mobile Payment App
+720.0 | 24.0 | Male | Sophomore | Economics | 1332.0 | 705.0 | 3512.0 | 796.0 | 399.0 | 199.0 | 79.0 | 54.0 | 86.0 | 206.0 | 99.0 | 129.0 | Cash
+721.0 | 20.0 | Freshman | Biology | 903.0 | 371.0 | 4230.0 | 798.0 | 319.0 | 60.0 | 90.0 | 101.0 | 24.0 | 147.0 | 70.0 | 170.0 | Credit/Debit Card
+722.0 | 25.0 | Freshman | Biology | 932.0 | 887.0 | 5307.0 | 472.0 | 345.0 | 61.0 | 190.0 | 119.0 | 69.0 | 235.0 | 67.0 | 40.0 | Mobile Payment App
+723.0 | 21.0 | Female | Junior | Biology | 634.0 | 330.0 | 5961.0 | 774.0 | 334.0 | 193.0 | 105.0 | 83.0 | 46.0 | 166.0 | 200.0 | 150.0 | Cash
+724.0 | 25.0 | Male | Senior | Biology | 553.0 | 268.0 | 3130.0 | 736.0 | 140.0 | 68.0 | 150.0 | 99.0 | 33.0 | 288.0 | 51.0 | 199.0 | Credit/Debit Card
+725.0 | 21.0 | Male | Junior | Economics | 547.0 | 678.0 | 5610.0 | 510.0 | 192.0 | 123.0 | 248.0 | 57.0 | 28.0 | 252.0 | 141.0 | 122.0 | Cash
+726.0 | 18.0 | Male | Senior | Computer Science | 867.0 | 646.0 | 3014.0 | 944.0 | 320.0 | 165.0 | 232.0 | 96.0 | 73.0 | 298.0 | 142.0 | 183.0 | Cash
+727.0 | 20.0 | Male | Sophomore | Economics | 863.0 | 844.0 | 3088.0 | 966.0 | 371.0 | 66.0 | 227.0 | 117.0 | 32.0 | 245.0 | 55.0 | 83.0 | Mobile Payment App
+728.0 | 25.0 | Sophomore | Biology | 603.0 | 321.0 | 4879.0 | 420.0 | 231.0 | 126.0 | 248.0 | 74.0 | 32.0 | 172.0 | 80.0 | 193.0 | Mobile Payment App
+729.0 | 21.0 | Female | Junior | Computer Science | 1480.0 | 555.0 | 3534.0 | 799.0 | 259.0 | 100.0 | 254.0 | 93.0 | 66.0 | 279.0 | 191.0 | 55.0 | Credit/Debit Card
+730.0 | 18.0 | Male | Freshman | Engineering | 522.0 | 448.0 | 3744.0 | 706.0 | 174.0 | 80.0 | 284.0 | 90.0 | 61.0 | 228.0 | 66.0 | 181.0 | Mobile Payment App
+731.0 | 22.0 | Female | Junior | Biology | 1376.0 | 510.0 | 3318.0 | 460.0 | 132.0 | 159.0 | 59.0 | 88.0 | 38.0 | 87.0 | 88.0 | 76.0 | Cash
+732.0 | 22.0 | Junior | Computer Science | 1195.0 | 988.0 | 5729.0 | 455.0 | 115.0 | 117.0 | 74.0 | 129.0 | 93.0 | 154.0 | 155.0 | 190.0 | Credit/Debit Card
+733.0 | 24.0 | Freshman | Psychology | 1223.0 | 785.0 | 3521.0 | 821.0 | 128.0 | 50.0 | 135.0 | 96.0 | 67.0 | 182.0 | 139.0 | 196.0 | Credit/Debit Card
+734.0 | 21.0 | Female | Junior | Computer Science | 613.0 | 524.0 | 3640.0 | 834.0 | 219.0 | 57.0 | 71.0 | 89.0 | 39.0 | 241.0 | 66.0 | 93.0 | Cash
+735.0 | 25.0 | Sophomore | Engineering | 844.0 | 766.0 | 4017.0 | 840.0 | 179.0 | 189.0 | 230.0 | 128.0 | 74.0 | 157.0 | 38.0 | 131.0 | Mobile Payment App
+736.0 | 24.0 | Female | Junior | Computer Science | 620.0 | 192.0 | 4213.0 | 726.0 | 332.0 | 144.0 | 289.0 | 92.0 | 24.0 | 195.0 | 135.0 | 127.0 | Cash
+737.0 | 22.0 | Male | Freshman | Psychology | 983.0 | 944.0 | 4216.0 | 978.0 | 114.0 | 103.0 | 58.0 | 123.0 | 72.0 | 114.0 | 76.0 | 63.0 | Credit/Debit Card
+738.0 | 25.0 | Male | Sophomore | Biology | 996.0 | 250.0 | 5975.0 | 520.0 | 317.0 | 121.0 | 115.0 | 47.0 | 89.0 | 241.0 | 45.0 | 81.0 | Mobile Payment App
+739.0 | 18.0 | Male | Junior | Engineering | 1106.0 | 794.0 | 3075.0 | 881.0 | 165.0 | 166.0 | 260.0 | 23.0 | 32.0 | 135.0 | 49.0 | 34.0 | Cash
+740.0 | 23.0 | Senior | Engineering | 1032.0 | 809.0 | 4359.0 | 987.0 | 364.0 | 176.0 | 67.0 | 74.0 | 52.0 | 56.0 | 166.0 | 67.0 | Credit/Debit Card
+741.0 | 20.0 | Female | Senior | Biology | 1419.0 | 991.0 | 4647.0 | 648.0 | 261.0 | 151.0 | 78.0 | 55.0 | 31.0 | 222.0 | 135.0 | 72.0 | Credit/Debit Card
+742.0 | 22.0 | Male | Sophomore | Economics | 610.0 | 100.0 | 5142.0 | 473.0 | 298.0 | 164.0 | 139.0 | 45.0 | 67.0 | 77.0 | 32.0 | 113.0 | Cash
+743.0 | 19.0 | Female | Junior | Economics | 1449.0 | 599.0 | 4790.0 | 885.0 | 109.0 | 57.0 | 293.0 | 70.0 | 90.0 | 267.0 | 164.0 | 33.0 | Cash
+744.0 | 25.0 | Male | Senior | Engineering | 1270.0 | 504.0 | 3467.0 | 484.0 | 286.0 | 132.0 | 291.0 | 138.0 | 48.0 | 155.0 | 162.0 | 41.0 | Credit/Debit Card
+745.0 | 18.0 | Freshman | Computer Science | 770.0 | 637.0 | 5055.0 | 814.0 | 273.0 | 55.0 | 140.0 | 134.0 | 61.0 | 131.0 | 128.0 | 39.0 | Mobile Payment App
+746.0 | 25.0 | Sophomore | Psychology | 911.0 | 929.0 | 4595.0 | 578.0 | 338.0 | 122.0 | 165.0 | 25.0 | 87.0 | 275.0 | 176.0 | 94.0 | Credit/Debit Card
+747.0 | 18.0 | Female | Junior | Biology | 1303.0 | 299.0 | 5031.0 | 701.0 | 242.0 | 183.0 | 249.0 | 103.0 | 79.0 | 107.0 | 74.0 | 52.0 | Credit/Debit Card
+748.0 | 19.0 | Junior | Engineering | 1367.0 | 688.0 | 3603.0 | 452.0 | 372.0 | 162.0 | 177.0 | 29.0 | 66.0 | 243.0 | 30.0 | 155.0 | Credit/Debit Card
+749.0 | 25.0 | Sophomore | Computer Science | 509.0 | 664.0 | 3449.0 | 779.0 | 243.0 | 153.0 | 281.0 | 108.0 | 52.0 | 70.0 | 145.0 | 192.0 | Credit/Debit Card
+750.0 | 22.0 | Male | Junior | Engineering | 804.0 | 582.0 | 5299.0 | 892.0 | 153.0 | 173.0 | 199.0 | 32.0 | 84.0 | 289.0 | 126.0 | 46.0 | Cash
+751.0 | 23.0 | Female | Freshman | Computer Science | 1268.0 | 271.0 | 5323.0 | 898.0 | 204.0 | 187.0 | 215.0 | 113.0 | 81.0 | 212.0 | 111.0 | 57.0 | Credit/Debit Card
+752.0 | 22.0 | Junior | Engineering | 1492.0 | 82.0 | 3720.0 | 823.0 | 277.0 | 186.0 | 275.0 | 141.0 | 61.0 | 167.0 | 65.0 | 34.0 | Cash
+753.0 | 23.0 | Senior | Biology | 1402.0 | 461.0 | 3827.0 | 904.0 | 321.0 | 138.0 | 147.0 | 114.0 | 33.0 | 198.0 | 188.0 | 179.0 | Cash
+754.0 | 24.0 | Junior | Psychology | 673.0 | 606.0 | 4035.0 | 818.0 | 355.0 | 103.0 | 257.0 | 35.0 | 47.0 | 56.0 | 149.0 | 48.0 | Credit/Debit Card
+755.0 | 22.0 | Female | Sophomore | Biology | 1174.0 | 962.0 | 4894.0 | 426.0 | 329.0 | 191.0 | 175.0 | 29.0 | 34.0 | 113.0 | 156.0 | 171.0 | Cash
+756.0 | 20.0 | Female | Freshman | Biology | 635.0 | 827.0 | 4125.0 | 969.0 | 194.0 | 196.0 | 228.0 | 81.0 | 68.0 | 120.0 | 112.0 | 185.0 | Credit/Debit Card
+757.0 | 23.0 | Male | Sophomore | Engineering | 792.0 | 584.0 | 4401.0 | 631.0 | 224.0 | 100.0 | 72.0 | 73.0 | 28.0 | 98.0 | 101.0 | 140.0 | Credit/Debit Card
+758.0 | 22.0 | Male | Sophomore | Biology | 998.0 | 928.0 | 3199.0 | 565.0 | 151.0 | 71.0 | 270.0 | 78.0 | 98.0 | 291.0 | 124.0 | 125.0 | Mobile Payment App
+759.0 | 21.0 | Male | Junior | Biology | 866.0 | 581.0 | 5775.0 | 773.0 | 267.0 | 100.0 | 252.0 | 32.0 | 26.0 | 97.0 | 42.0 | 82.0 | Credit/Debit Card
+760.0 | 23.0 | Male | Sophomore | Biology | 1408.0 | 566.0 | 3714.0 | 905.0 | 223.0 | 168.0 | 262.0 | 124.0 | 31.0 | 123.0 | 58.0 | 189.0 | Cash
+761.0 | 25.0 | Male | Freshman | Biology | 732.0 | 103.0 | 3335.0 | 742.0 | 395.0 | 154.0 | 245.0 | 130.0 | 73.0 | 178.0 | 100.0 | 80.0 | Credit/Debit Card
+762.0 | 18.0 | Male | Junior | Engineering | 1107.0 | 511.0 | 5507.0 | 738.0 | 144.0 | 131.0 | 213.0 | 53.0 | 38.0 | 156.0 | 137.0 | 47.0 | Cash
+763.0 | 24.0 | Female | Freshman | Engineering | 1165.0 | 68.0 | 4126.0 | 859.0 | 333.0 | 196.0 | 124.0 | 109.0 | 49.0 | 185.0 | 179.0 | 29.0 | Cash
+764.0 | 19.0 | Female | Freshman | Computer Science | 1316.0 | 867.0 | 4432.0 | 627.0 | 110.0 | 185.0 | 226.0 | 25.0 | 34.0 | 90.0 | 190.0 | 135.0 | Credit/Debit Card
+765.0 | 21.0 | Junior | Psychology | 1471.0 | 280.0 | 4104.0 | 862.0 | 312.0 | 180.0 | 241.0 | 70.0 | 90.0 | 84.0 | 182.0 | 121.0 | Cash
+766.0 | 18.0 | Sophomore | Psychology | 536.0 | 557.0 | 3744.0 | 498.0 | 375.0 | 128.0 | 185.0 | 63.0 | 97.0 | 298.0 | 45.0 | 36.0 | Cash
+767.0 | 21.0 | Male | Sophomore | Economics | 1045.0 | 542.0 | 4154.0 | 937.0 | 157.0 | 164.0 | 246.0 | 25.0 | 29.0 | 99.0 | 46.0 | 77.0 | Credit/Debit Card
+768.0 | 24.0 | Junior | Biology | 609.0 | 389.0 | 4329.0 | 934.0 | 393.0 | 68.0 | 77.0 | 33.0 | 96.0 | 235.0 | 48.0 | 186.0 | Mobile Payment App
+769.0 | 20.0 | Male | Senior | Psychology | 581.0 | 964.0 | 4975.0 | 775.0 | 106.0 | 86.0 | 84.0 | 22.0 | 68.0 | 84.0 | 39.0 | 172.0 | Mobile Payment App
+770.0 | 20.0 | Female | Sophomore | Biology | 1106.0 | 212.0 | 3376.0 | 461.0 | 130.0 | 175.0 | 231.0 | 135.0 | 37.0 | 59.0 | 197.0 | 168.0 | Credit/Debit Card
+771.0 | 22.0 | Freshman | Psychology | 1316.0 | 710.0 | 3548.0 | 682.0 | 382.0 | 69.0 | 268.0 | 62.0 | 95.0 | 251.0 | 118.0 | 22.0 | Credit/Debit Card
+772.0 | 19.0 | Senior | Computer Science | 574.0 | 103.0 | 5976.0 | 605.0 | 372.0 | 82.0 | 296.0 | 39.0 | 42.0 | 287.0 | 153.0 | 133.0 | Credit/Debit Card
+773.0 | 19.0 | Male | Sophomore | Biology | 1115.0 | 12.0 | 3779.0 | 482.0 | 306.0 | 161.0 | 281.0 | 150.0 | 76.0 | 265.0 | 170.0 | 193.0 | Mobile Payment App
+774.0 | 25.0 | Male | Sophomore | Engineering | 1257.0 | 45.0 | 3653.0 | 809.0 | 373.0 | 147.0 | 246.0 | 78.0 | 36.0 | 275.0 | 158.0 | 197.0 | Credit/Debit Card
+775.0 | 23.0 | Male | Junior | Economics | 1069.0 | 130.0 | 5452.0 | 503.0 | 218.0 | 83.0 | 93.0 | 72.0 | 65.0 | 170.0 | 89.0 | 144.0 | Cash
+776.0 | 22.0 | Junior | Biology | 757.0 | 471.0 | 3362.0 | 719.0 | 359.0 | 69.0 | 253.0 | 145.0 | 48.0 | 159.0 | 63.0 | 79.0 | Credit/Debit Card
+777.0 | 21.0 | Sophomore | Psychology | 794.0 | 166.0 | 3624.0 | 908.0 | 371.0 | 73.0 | 222.0 | 103.0 | 41.0 | 283.0 | 152.0 | 109.0 | Cash
+778.0 | 22.0 | Male | Freshman | Computer Science | 1139.0 | 845.0 | 4743.0 | 893.0 | 356.0 | 126.0 | 255.0 | 20.0 | 65.0 | 62.0 | 195.0 | 25.0 | Credit/Debit Card
+779.0 | 23.0 | Sophomore | Engineering | 598.0 | 125.0 | 5824.0 | 413.0 | 278.0 | 130.0 | 91.0 | 88.0 | 60.0 | 152.0 | 82.0 | 27.0 | Cash
+780.0 | 21.0 | Female | Freshman | Economics | 514.0 | 402.0 | 4642.0 | 494.0 | 395.0 | 92.0 | 56.0 | 104.0 | 66.0 | 98.0 | 131.0 | 135.0 | Mobile Payment App
+781.0 | 23.0 | Male | Freshman | Psychology | 1479.0 | 418.0 | 3501.0 | 960.0 | 344.0 | 103.0 | 239.0 | 63.0 | 95.0 | 146.0 | 31.0 | 185.0 | Mobile Payment App
+782.0 | 24.0 | Junior | Biology | 633.0 | 361.0 | 4634.0 | 685.0 | 252.0 | 128.0 | 268.0 | 107.0 | 74.0 | 139.0 | 190.0 | 23.0 | Credit/Debit Card
+783.0 | 25.0 | Senior | Biology | 1437.0 | 150.0 | 4770.0 | 941.0 | 286.0 | 104.0 | 274.0 | 100.0 | 21.0 | 199.0 | 136.0 | 188.0 | Credit/Debit Card
+784.0 | 22.0 | Male | Sophomore | Biology | 1135.0 | 279.0 | 4825.0 | 793.0 | 370.0 | 115.0 | 87.0 | 93.0 | 36.0 | 102.0 | 111.0 | 41.0 | Credit/Debit Card
+785.0 | 21.0 | Female | Junior | Engineering | 1433.0 | 11.0 | 4125.0 | 832.0 | 313.0 | 123.0 | 187.0 | 134.0 | 62.0 | 61.0 | 200.0 | 102.0 | Cash
+786.0 | 20.0 | Female | Senior | Computer Science | 824.0 | 93.0 | 3471.0 | 538.0 | 249.0 | 127.0 | 224.0 | 72.0 | 76.0 | 90.0 | 169.0 | 183.0 | Credit/Debit Card
+787.0 | 24.0 | Male | Junior | Psychology | 967.0 | 288.0 | 4629.0 | 958.0 | 284.0 | 107.0 | 256.0 | 129.0 | 85.0 | 172.0 | 46.0 | 45.0 | Mobile Payment App
+788.0 | 25.0 | Male | Sophomore | Economics | 1126.0 | 708.0 | 3830.0 | 405.0 | 343.0 | 159.0 | 226.0 | 98.0 | 24.0 | 197.0 | 162.0 | 160.0 | Mobile Payment App
+789.0 | 21.0 | Female | Sophomore | Psychology | 885.0 | 513.0 | 5497.0 | 832.0 | 136.0 | 66.0 | 241.0 | 123.0 | 66.0 | 256.0 | 137.0 | 53.0 | Credit/Debit Card
+790.0 | 25.0 | Sophomore | Psychology | 525.0 | 984.0 | 4547.0 | 670.0 | 359.0 | 148.0 | 192.0 | 38.0 | 56.0 | 162.0 | 31.0 | 86.0 | Credit/Debit Card
+791.0 | 20.0 | Male | Senior | Psychology | 1009.0 | 14.0 | 4309.0 | 699.0 | 262.0 | 117.0 | 136.0 | 24.0 | 67.0 | 113.0 | 93.0 | 45.0 | Mobile Payment App
+792.0 | 18.0 | Senior | Psychology | 1478.0 | 46.0 | 5450.0 | 957.0 | 360.0 | 77.0 | 112.0 | 22.0 | 50.0 | 265.0 | 183.0 | 92.0 | Mobile Payment App
+793.0 | 19.0 | Male | Sophomore | Computer Science | 547.0 | 365.0 | 3465.0 | 645.0 | 316.0 | 58.0 | 186.0 | 120.0 | 54.0 | 196.0 | 135.0 | 119.0 | Mobile Payment App
+794.0 | 22.0 | Female | Freshman | Psychology | 549.0 | 410.0 | 4796.0 | 749.0 | 304.0 | 167.0 | 82.0 | 142.0 | 100.0 | 271.0 | 169.0 | 153.0 | Credit/Debit Card
+795.0 | 25.0 | Female | Junior | Engineering | 1326.0 | 611.0 | 5451.0 | 734.0 | 205.0 | 91.0 | 73.0 | 95.0 | 71.0 | 217.0 | 126.0 | 140.0 | Mobile Payment App
+796.0 | 21.0 | Male | Junior | Psychology | 761.0 | 9.0 | 4836.0 | 594.0 | 375.0 | 53.0 | 256.0 | 55.0 | 41.0 | 50.0 | 126.0 | 35.0 | Cash
+797.0 | 25.0 | Senior | Computer Science | 1344.0 | 494.0 | 5885.0 | 809.0 | 233.0 | 167.0 | 171.0 | 83.0 | 60.0 | 94.0 | 61.0 | 154.0 | Cash
+798.0 | 22.0 | Male | Junior | Biology | 895.0 | 885.0 | 5489.0 | 456.0 | 343.0 | 157.0 | 177.0 | 123.0 | 75.0 | 77.0 | 156.0 | 139.0 | Credit/Debit Card
+799.0 | 23.0 | Junior | Economics | 1036.0 | 811.0 | 4911.0 | 437.0 | 398.0 | 134.0 | 299.0 | 69.0 | 55.0 | 156.0 | 35.0 | 123.0 | Mobile Payment App
+800.0 | 22.0 | Senior | Computer Science | 664.0 | 538.0 | 3008.0 | 417.0 | 236.0 | 75.0 | 136.0 | 131.0 | 60.0 | 243.0 | 156.0 | 116.0 | Credit/Debit Card
+801.0 | 22.0 | Senior | Computer Science | 1403.0 | 789.0 | 5886.0 | 962.0 | 163.0 | 129.0 | 149.0 | 35.0 | 92.0 | 251.0 | 166.0 | 114.0 | Cash
+802.0 | 23.0 | Male | Senior | Engineering | 1094.0 | 360.0 | 4651.0 | 622.0 | 242.0 | 90.0 | 98.0 | 103.0 | 77.0 | 138.0 | 111.0 | 190.0 | Cash
+803.0 | 24.0 | Female | Sophomore | Computer Science | 789.0 | 413.0 | 3482.0 | 835.0 | 206.0 | 128.0 | 153.0 | 137.0 | 77.0 | 115.0 | 67.0 | 135.0 | Mobile Payment App
+804.0 | 25.0 | Sophomore | Biology | 587.0 | 756.0 | 5035.0 | 797.0 | 291.0 | 171.0 | 283.0 | 89.0 | 26.0 | 238.0 | 74.0 | 119.0 | Cash
+805.0 | 23.0 | Male | Junior | Biology | 509.0 | 395.0 | 3729.0 | 607.0 | 326.0 | 156.0 | 251.0 | 138.0 | 45.0 | 204.0 | 30.0 | 59.0 | Mobile Payment App
+806.0 | 19.0 | Male | Junior | Computer Science | 1382.0 | 935.0 | 4650.0 | 853.0 | 203.0 | 180.0 | 230.0 | 33.0 | 55.0 | 297.0 | 43.0 | 122.0 | Credit/Debit Card
+807.0 | 25.0 | Senior | Engineering | 1301.0 | 757.0 | 3811.0 | 664.0 | 121.0 | 115.0 | 239.0 | 126.0 | 48.0 | 121.0 | 172.0 | 114.0 | Mobile Payment App
+808.0 | 23.0 | Senior | Engineering | 777.0 | 53.0 | 4935.0 | 505.0 | 268.0 | 181.0 | 194.0 | 79.0 | 60.0 | 71.0 | 54.0 | 65.0 | Mobile Payment App
+809.0 | 19.0 | Male | Sophomore | Psychology | 505.0 | 646.0 | 4935.0 | 688.0 | 129.0 | 143.0 | 112.0 | 130.0 | 89.0 | 209.0 | 197.0 | 81.0 | Cash
+810.0 | 24.0 | Female | Junior | Engineering | 866.0 | 796.0 | 4865.0 | 756.0 | 274.0 | 181.0 | 260.0 | 141.0 | 47.0 | 237.0 | 125.0 | 67.0 | Cash
+811.0 | 19.0 | Male | Freshman | Biology | 1329.0 | 127.0 | 3321.0 | 836.0 | 277.0 | 92.0 | 108.0 | 27.0 | 67.0 | 251.0 | 87.0 | 87.0 | Mobile Payment App
+812.0 | 20.0 | Freshman | Economics | 1372.0 | 297.0 | 4227.0 | 505.0 | 142.0 | 144.0 | 264.0 | 20.0 | 64.0 | 195.0 | 34.0 | 74.0 | Cash
+813.0 | 24.0 | Male | Junior | Economics | 1004.0 | 883.0 | 5084.0 | 773.0 | 335.0 | 118.0 | 297.0 | 83.0 | 88.0 | 100.0 | 133.0 | 159.0 | Credit/Debit Card
+814.0 | 23.0 | Freshman | Biology | 1415.0 | 153.0 | 4526.0 | 880.0 | 111.0 | 167.0 | 171.0 | 90.0 | 78.0 | 205.0 | 113.0 | 125.0 | Cash
+815.0 | 20.0 | Female | Junior | Psychology | 639.0 | 13.0 | 4097.0 | 780.0 | 226.0 | 120.0 | 86.0 | 56.0 | 23.0 | 75.0 | 147.0 | 143.0 | Mobile Payment App
+816.0 | 19.0 | Male | Sophomore | Economics | 1397.0 | 854.0 | 3186.0 | 552.0 | 258.0 | 123.0 | 127.0 | 61.0 | 21.0 | 127.0 | 71.0 | 186.0 | Credit/Debit Card
+817.0 | 18.0 | Female | Freshman | Economics | 935.0 | 918.0 | 3901.0 | 724.0 | 128.0 | 122.0 | 56.0 | 39.0 | 53.0 | 152.0 | 108.0 | 134.0 | Mobile Payment App
+818.0 | 18.0 | Senior | Computer Science | 882.0 | 524.0 | 4983.0 | 502.0 | 196.0 | 153.0 | 63.0 | 131.0 | 80.0 | 274.0 | 140.0 | 86.0 | Credit/Debit Card
+819.0 | 20.0 | Female | Freshman | Psychology | 1398.0 | 912.0 | 4709.0 | 864.0 | 267.0 | 181.0 | 165.0 | 149.0 | 62.0 | 64.0 | 92.0 | 194.0 | Mobile Payment App
+820.0 | 24.0 | Sophomore | Biology | 1461.0 | 403.0 | 3664.0 | 519.0 | 137.0 | 127.0 | 286.0 | 115.0 | 29.0 | 84.0 | 121.0 | 127.0 | Cash
+821.0 | 24.0 | Male | Senior | Engineering | 1430.0 | 928.0 | 4968.0 | 682.0 | 336.0 | 89.0 | 135.0 | 76.0 | 66.0 | 289.0 | 82.0 | 95.0 | Mobile Payment App
+822.0 | 22.0 | Junior | Biology | 953.0 | 925.0 | 5135.0 | 924.0 | 148.0 | 56.0 | 61.0 | 33.0 | 70.0 | 156.0 | 126.0 | 33.0 | Credit/Debit Card
+823.0 | 19.0 | Male | Junior | Psychology | 1456.0 | 803.0 | 3431.0 | 636.0 | 136.0 | 177.0 | 131.0 | 112.0 | 28.0 | 249.0 | 116.0 | 128.0 | Mobile Payment App
+824.0 | 22.0 | Female | Junior | Computer Science | 892.0 | 563.0 | 5529.0 | 437.0 | 230.0 | 85.0 | 57.0 | 49.0 | 27.0 | 151.0 | 44.0 | 199.0 | Credit/Debit Card
+825.0 | 20.0 | Sophomore | Psychology | 539.0 | 494.0 | 4349.0 | 450.0 | 398.0 | 107.0 | 215.0 | 51.0 | 52.0 | 89.0 | 191.0 | 158.0 | Mobile Payment App
+826.0 | 25.0 | Junior | Economics | 1024.0 | 756.0 | 4532.0 | 798.0 | 328.0 | 112.0 | 159.0 | 69.0 | 24.0 | 275.0 | 31.0 | 87.0 | Cash
+827.0 | 22.0 | Female | Senior | Biology | 1405.0 | 544.0 | 5276.0 | 782.0 | 281.0 | 52.0 | 67.0 | 69.0 | 77.0 | 270.0 | 141.0 | 196.0 | Mobile Payment App
+828.0 | 21.0 | Male | Sophomore | Biology | 691.0 | 710.0 | 3636.0 | 478.0 | 342.0 | 58.0 | 136.0 | 65.0 | 75.0 | 277.0 | 170.0 | 136.0 | Credit/Debit Card
+829.0 | 19.0 | Female | Junior | Biology | 1157.0 | 333.0 | 3509.0 | 987.0 | 281.0 | 77.0 | 170.0 | 27.0 | 87.0 | 151.0 | 108.0 | 68.0 | Mobile Payment App
+830.0 | 21.0 | Junior | Computer Science | 555.0 | 980.0 | 5657.0 | 707.0 | 302.0 | 195.0 | 207.0 | 141.0 | 91.0 | 126.0 | 180.0 | 67.0 | Credit/Debit Card
+831.0 | 25.0 | Senior | Biology | 1245.0 | 803.0 | 4743.0 | 899.0 | 285.0 | 99.0 | 193.0 | 106.0 | 76.0 | 270.0 | 200.0 | 58.0 | Credit/Debit Card
+832.0 | 25.0 | Male | Senior | Biology | 1227.0 | 408.0 | 5607.0 | 759.0 | 365.0 | 137.0 | 247.0 | 97.0 | 56.0 | 162.0 | 136.0 | 173.0 | Credit/Debit Card
+833.0 | 18.0 | Female | Freshman | Biology | 825.0 | 403.0 | 5204.0 | 401.0 | 293.0 | 75.0 | 268.0 | 24.0 | 36.0 | 105.0 | 197.0 | 125.0 | Mobile Payment App
+834.0 | 18.0 | Female | Freshman | Economics | 1359.0 | 468.0 | 3900.0 | 401.0 | 283.0 | 190.0 | 183.0 | 60.0 | 78.0 | 153.0 | 64.0 | 195.0 | Credit/Debit Card
+835.0 | 22.0 | Male | Junior | Economics | 556.0 | 317.0 | 4429.0 | 834.0 | 166.0 | 130.0 | 174.0 | 86.0 | 46.0 | 222.0 | 33.0 | 145.0 | Mobile Payment App
+836.0 | 20.0 | Sophomore | Biology | 1110.0 | 400.0 | 5325.0 | 586.0 | 400.0 | 62.0 | 120.0 | 54.0 | 30.0 | 294.0 | 125.0 | 167.0 | Mobile Payment App
+837.0 | 21.0 | Sophomore | Engineering | 518.0 | 565.0 | 4940.0 | 783.0 | 157.0 | 97.0 | 129.0 | 122.0 | 20.0 | 71.0 | 175.0 | 115.0 | Mobile Payment App
+838.0 | 19.0 | Male | Senior | Engineering | 932.0 | 611.0 | 4386.0 | 833.0 | 159.0 | 84.0 | 184.0 | 63.0 | 80.0 | 223.0 | 73.0 | 179.0 | Mobile Payment App
+839.0 | 22.0 | Female | Senior | Computer Science | 683.0 | 651.0 | 5671.0 | 866.0 | 101.0 | 155.0 | 274.0 | 131.0 | 81.0 | 183.0 | 49.0 | 21.0 | Mobile Payment App
+840.0 | 24.0 | Male | Sophomore | Economics | 1397.0 | 375.0 | 5325.0 | 637.0 | 139.0 | 83.0 | 217.0 | 55.0 | 48.0 | 293.0 | 195.0 | 71.0 | Cash
+841.0 | 24.0 | Freshman | Biology | 1201.0 | 441.0 | 4212.0 | 864.0 | 140.0 | 83.0 | 97.0 | 85.0 | 89.0 | 90.0 | 115.0 | 141.0 | Credit/Debit Card
+842.0 | 22.0 | Junior | Psychology | 1402.0 | 519.0 | 3124.0 | 886.0 | 381.0 | 193.0 | 120.0 | 64.0 | 68.0 | 153.0 | 151.0 | 118.0 | Mobile Payment App
+843.0 | 25.0 | Male | Senior | Economics | 844.0 | 18.0 | 5452.0 | 910.0 | 220.0 | 71.0 | 109.0 | 75.0 | 91.0 | 244.0 | 105.0 | 123.0 | Credit/Debit Card
+844.0 | 19.0 | Female | Senior | Biology | 1366.0 | 142.0 | 5925.0 | 614.0 | 304.0 | 163.0 | 240.0 | 127.0 | 83.0 | 108.0 | 163.0 | 152.0 | Credit/Debit Card
+845.0 | 19.0 | Male | Senior | Biology | 923.0 | 734.0 | 4576.0 | 519.0 | 383.0 | 110.0 | 255.0 | 36.0 | 31.0 | 225.0 | 126.0 | 123.0 | Credit/Debit Card
+846.0 | 21.0 | Freshman | Biology | 542.0 | 905.0 | 3434.0 | 987.0 | 297.0 | 160.0 | 189.0 | 150.0 | 26.0 | 286.0 | 185.0 | 86.0 | Cash
+847.0 | 23.0 | Female | Junior | Biology | 1130.0 | 49.0 | 4833.0 | 415.0 | 100.0 | 160.0 | 262.0 | 98.0 | 32.0 | 99.0 | 117.0 | 149.0 | Credit/Debit Card
+848.0 | 23.0 | Junior | Biology | 848.0 | 420.0 | 4663.0 | 950.0 | 173.0 | 167.0 | 101.0 | 108.0 | 29.0 | 54.0 | 159.0 | 128.0 | Mobile Payment App
+849.0 | 19.0 | Female | Junior | Engineering | 1022.0 | 227.0 | 4305.0 | 982.0 | 296.0 | 73.0 | 252.0 | 149.0 | 79.0 | 206.0 | 152.0 | 162.0 | Cash
+850.0 | 23.0 | Junior | Economics | 1189.0 | 980.0 | 4230.0 | 607.0 | 190.0 | 52.0 | 250.0 | 140.0 | 63.0 | 190.0 | 125.0 | 186.0 | Credit/Debit Card
+851.0 | 18.0 | Female | Sophomore | Economics | 771.0 | 45.0 | 3719.0 | 821.0 | 189.0 | 173.0 | 295.0 | 60.0 | 38.0 | 258.0 | 107.0 | 187.0 | Mobile Payment App
+852.0 | 25.0 | Sophomore | Computer Science | 1280.0 | 483.0 | 5743.0 | 678.0 | 206.0 | 54.0 | 82.0 | 49.0 | 85.0 | 256.0 | 187.0 | 29.0 | Credit/Debit Card
+853.0 | 21.0 | Male | Senior | Biology | 933.0 | 988.0 | 4414.0 | 731.0 | 298.0 | 123.0 | 273.0 | 22.0 | 20.0 | 147.0 | 41.0 | 128.0 | Cash
+854.0 | 24.0 | Female | Sophomore | Computer Science | 1257.0 | 795.0 | 5913.0 | 480.0 | 120.0 | 107.0 | 300.0 | 34.0 | 46.0 | 219.0 | 193.0 | 195.0 | Mobile Payment App
+855.0 | 24.0 | Female | Junior | Computer Science | 1313.0 | 818.0 | 3335.0 | 845.0 | 363.0 | 190.0 | 212.0 | 69.0 | 37.0 | 103.0 | 186.0 | 79.0 | Cash
+856.0 | 21.0 | Male | Senior | Engineering | 1034.0 | 927.0 | 4084.0 | 758.0 | 330.0 | 179.0 | 136.0 | 149.0 | 63.0 | 242.0 | 190.0 | 36.0 | Mobile Payment App
+857.0 | 19.0 | Male | Sophomore | Psychology | 669.0 | 153.0 | 5509.0 | 741.0 | 335.0 | 78.0 | 170.0 | 69.0 | 68.0 | 296.0 | 73.0 | 166.0 | Mobile Payment App
+858.0 | 19.0 | Senior | Computer Science | 728.0 | 814.0 | 3380.0 | 970.0 | 183.0 | 178.0 | 139.0 | 29.0 | 63.0 | 193.0 | 64.0 | 175.0 | Mobile Payment App
+859.0 | 18.0 | Male | Sophomore | Economics | 569.0 | 513.0 | 5429.0 | 730.0 | 375.0 | 118.0 | 195.0 | 96.0 | 27.0 | 280.0 | 65.0 | 136.0 | Mobile Payment App
+860.0 | 19.0 | Male | Freshman | Engineering | 960.0 | 179.0 | 5253.0 | 671.0 | 161.0 | 128.0 | 273.0 | 40.0 | 89.0 | 233.0 | 163.0 | 172.0 | Cash
+861.0 | 18.0 | Male | Freshman | Computer Science | 1288.0 | 879.0 | 3829.0 | 982.0 | 191.0 | 65.0 | 86.0 | 107.0 | 80.0 | 97.0 | 137.0 | 134.0 | Cash
+862.0 | 22.0 | Female | Freshman | Engineering | 556.0 | 904.0 | 3548.0 | 689.0 | 105.0 | 145.0 | 165.0 | 133.0 | 71.0 | 110.0 | 183.0 | 98.0 | Cash
+863.0 | 23.0 | Male | Senior | Engineering | 1413.0 | 80.0 | 5976.0 | 836.0 | 386.0 | 194.0 | 266.0 | 29.0 | 99.0 | 213.0 | 109.0 | 158.0 | Cash
+864.0 | 25.0 | Senior | Biology | 957.0 | 114.0 | 4956.0 | 923.0 | 326.0 | 150.0 | 199.0 | 49.0 | 88.0 | 246.0 | 118.0 | 78.0 | Cash
+865.0 | 24.0 | Freshman | Engineering | 1084.0 | 582.0 | 3305.0 | 520.0 | 353.0 | 89.0 | 279.0 | 20.0 | 68.0 | 173.0 | 151.0 | 128.0 | Mobile Payment App
+866.0 | 22.0 | Male | Freshman | Psychology | 1270.0 | 546.0 | 4425.0 | 559.0 | 304.0 | 160.0 | 79.0 | 95.0 | 99.0 | 191.0 | 70.0 | 189.0 | Mobile Payment App
+867.0 | 24.0 | Female | Sophomore | Computer Science | 845.0 | 484.0 | 5594.0 | 793.0 | 130.0 | 51.0 | 153.0 | 77.0 | 47.0 | 89.0 | 151.0 | 63.0 | Mobile Payment App
+868.0 | 21.0 | Female | Freshman | Economics | 1423.0 | 298.0 | 4484.0 | 439.0 | 312.0 | 157.0 | 118.0 | 56.0 | 43.0 | 235.0 | 188.0 | 129.0 | Cash
+869.0 | 19.0 | Male | Sophomore | Engineering | 683.0 | 614.0 | 4718.0 | 643.0 | 132.0 | 186.0 | 83.0 | 31.0 | 68.0 | 85.0 | 181.0 | 96.0 | Cash
+870.0 | 21.0 | Freshman | Psychology | 1309.0 | 561.0 | 5639.0 | 973.0 | 303.0 | 197.0 | 117.0 | 37.0 | 64.0 | 101.0 | 37.0 | 142.0 | Mobile Payment App
+871.0 | 25.0 | Male | Senior | Economics | 888.0 | 218.0 | 4433.0 | 806.0 | 166.0 | 121.0 | 75.0 | 148.0 | 69.0 | 120.0 | 128.0 | 71.0 | Credit/Debit Card
+872.0 | 24.0 | Male | Sophomore | Psychology | 1496.0 | 522.0 | 4678.0 | 640.0 | 212.0 | 140.0 | 200.0 | 22.0 | 69.0 | 98.0 | 162.0 | 70.0 | Credit/Debit Card
+873.0 | 25.0 | Male | Junior | Economics | 965.0 | 465.0 | 4599.0 | 737.0 | 291.0 | 88.0 | 70.0 | 70.0 | 34.0 | 170.0 | 195.0 | 64.0 | Cash
+874.0 | 20.0 | Female | Junior | Biology | 1329.0 | 533.0 | 3509.0 | 826.0 | 234.0 | 131.0 | 262.0 | 142.0 | 30.0 | 157.0 | 141.0 | 40.0 | Cash
+875.0 | 21.0 | Female | Sophomore | Engineering | 1021.0 | 789.0 | 5681.0 | 844.0 | 235.0 | 99.0 | 167.0 | 115.0 | 53.0 | 127.0 | 131.0 | 190.0 | Mobile Payment App
+876.0 | 18.0 | Male | Freshman | Biology | 501.0 | 422.0 | 5257.0 | 612.0 | 149.0 | 142.0 | 72.0 | 58.0 | 36.0 | 230.0 | 73.0 | 44.0 | Mobile Payment App
+877.0 | 21.0 | Female | Sophomore | Engineering | 1223.0 | 302.0 | 3930.0 | 801.0 | 128.0 | 157.0 | 242.0 | 135.0 | 36.0 | 226.0 | 193.0 | 52.0 | Mobile Payment App
+878.0 | 19.0 | Male | Senior | Psychology | 1495.0 | 1000.0 | 5857.0 | 980.0 | 228.0 | 126.0 | 82.0 | 39.0 | 72.0 | 144.0 | 78.0 | 190.0 | Cash
+879.0 | 25.0 | Male | Sophomore | Engineering | 862.0 | 674.0 | 5473.0 | 575.0 | 338.0 | 54.0 | 264.0 | 39.0 | 60.0 | 262.0 | 180.0 | 196.0 | Cash
+880.0 | 25.0 | Male | Senior | Economics | 1037.0 | 844.0 | 4320.0 | 894.0 | 393.0 | 176.0 | 280.0 | 73.0 | 21.0 | 241.0 | 44.0 | 196.0 | Credit/Debit Card
+881.0 | 19.0 | Male | Freshman | Engineering | 505.0 | 293.0 | 5861.0 | 835.0 | 387.0 | 181.0 | 250.0 | 93.0 | 91.0 | 113.0 | 81.0 | 171.0 | Cash
+882.0 | 24.0 | Female | Senior | Psychology | 1193.0 | 397.0 | 4234.0 | 761.0 | 120.0 | 75.0 | 92.0 | 104.0 | 28.0 | 216.0 | 101.0 | 116.0 | Credit/Debit Card
+883.0 | 18.0 | Sophomore | Psychology | 1452.0 | 683.0 | 3275.0 | 586.0 | 327.0 | 65.0 | 176.0 | 32.0 | 40.0 | 205.0 | 160.0 | 58.0 | Credit/Debit Card
+884.0 | 24.0 | Sophomore | Psychology | 1422.0 | 860.0 | 4913.0 | 892.0 | 149.0 | 115.0 | 159.0 | 133.0 | 90.0 | 227.0 | 92.0 | 147.0 | Cash
+885.0 | 25.0 | Male | Sophomore | Biology | 717.0 | 197.0 | 5618.0 | 696.0 | 354.0 | 105.0 | 102.0 | 26.0 | 95.0 | 300.0 | 110.0 | 78.0 | Cash
+886.0 | 24.0 | Female | Junior | Economics | 1333.0 | 538.0 | 5187.0 | 467.0 | 237.0 | 183.0 | 192.0 | 114.0 | 79.0 | 248.0 | 95.0 | 41.0 | Credit/Debit Card
+887.0 | 24.0 | Female | Sophomore | Psychology | 978.0 | 974.0 | 4420.0 | 642.0 | 241.0 | 146.0 | 183.0 | 30.0 | 76.0 | 130.0 | 79.0 | 21.0 | Cash
+888.0 | 25.0 | Male | Freshman | Biology | 1141.0 | 362.0 | 3197.0 | 926.0 | 397.0 | 121.0 | 150.0 | 122.0 | 69.0 | 258.0 | 173.0 | 120.0 | Mobile Payment App
+889.0 | 22.0 | Male | Sophomore | Biology | 1399.0 | 611.0 | 4995.0 | 678.0 | 220.0 | 93.0 | 84.0 | 144.0 | 49.0 | 200.0 | 189.0 | 90.0 | Mobile Payment App
+890.0 | 24.0 | Male | Freshman | Psychology | 1200.0 | 341.0 | 4547.0 | 778.0 | 330.0 | 51.0 | 129.0 | 24.0 | 75.0 | 238.0 | 192.0 | 153.0 | Cash
+891.0 | 21.0 | Sophomore | Economics | 1053.0 | 64.0 | 4305.0 | 444.0 | 142.0 | 139.0 | 280.0 | 34.0 | 56.0 | 176.0 | 38.0 | 147.0 | Mobile Payment App
+892.0 | 25.0 | Junior | Biology | 1118.0 | 584.0 | 4423.0 | 592.0 | 126.0 | 149.0 | 134.0 | 74.0 | 48.0 | 109.0 | 114.0 | 131.0 | Cash
+893.0 | 21.0 | Male | Junior | Biology | 1094.0 | 321.0 | 3758.0 | 741.0 | 137.0 | 172.0 | 50.0 | 147.0 | 96.0 | 134.0 | 192.0 | 56.0 | Mobile Payment App
+894.0 | 21.0 | Freshman | Psychology | 1252.0 | 226.0 | 4206.0 | 530.0 | 245.0 | 126.0 | 69.0 | 147.0 | 52.0 | 64.0 | 183.0 | 24.0 | Credit/Debit Card
+895.0 | 18.0 | Male | Junior | Psychology | 686.0 | 252.0 | 5848.0 | 720.0 | 238.0 | 191.0 | 265.0 | 39.0 | 58.0 | 104.0 | 142.0 | 82.0 | Mobile Payment App
+896.0 | 18.0 | Male | Junior | Economics | 513.0 | 123.0 | 5909.0 | 807.0 | 168.0 | 161.0 | 181.0 | 48.0 | 26.0 | 124.0 | 46.0 | 58.0 | Cash
+897.0 | 25.0 | Male | Junior | Biology | 1174.0 | 75.0 | 4909.0 | 799.0 | 149.0 | 163.0 | 151.0 | 138.0 | 30.0 | 298.0 | 115.0 | 43.0 | Cash
+898.0 | 24.0 | Freshman | Psychology | 1224.0 | 235.0 | 4645.0 | 913.0 | 209.0 | 101.0 | 77.0 | 85.0 | 97.0 | 78.0 | 80.0 | 111.0 | Cash
+899.0 | 23.0 | Junior | Biology | 975.0 | 211.0 | 3952.0 | 769.0 | 131.0 | 134.0 | 283.0 | 65.0 | 91.0 | 127.0 | 151.0 | 79.0 | Credit/Debit Card
+900.0 | 18.0 | Male | Sophomore | Engineering | 1435.0 | 950.0 | 3626.0 | 842.0 | 221.0 | 139.0 | 87.0 | 136.0 | 68.0 | 54.0 | 129.0 | 54.0 | Mobile Payment App
+901.0 | 22.0 | Male | Senior | Engineering | 894.0 | 27.0 | 4496.0 | 718.0 | 373.0 | 144.0 | 254.0 | 139.0 | 82.0 | 286.0 | 134.0 | 198.0 | Credit/Debit Card
+902.0 | 21.0 | Junior | Economics | 1168.0 | 81.0 | 5292.0 | 637.0 | 175.0 | 196.0 | 193.0 | 52.0 | 90.0 | 217.0 | 48.0 | 178.0 | Cash
+903.0 | 25.0 | Male | Freshman | Computer Science | 1482.0 | 92.0 | 3987.0 | 540.0 | 194.0 | 125.0 | 193.0 | 143.0 | 78.0 | 268.0 | 63.0 | 199.0 | Credit/Debit Card
+904.0 | 19.0 | Sophomore | Psychology | 1385.0 | 249.0 | 5745.0 | 452.0 | 399.0 | 170.0 | 71.0 | 145.0 | 37.0 | 231.0 | 114.0 | 154.0 | Mobile Payment App
+905.0 | 20.0 | Male | Sophomore | Computer Science | 1476.0 | 832.0 | 5745.0 | 808.0 | 225.0 | 73.0 | 251.0 | 22.0 | 95.0 | 123.0 | 78.0 | 178.0 | Mobile Payment App
+906.0 | 22.0 | Female | Senior | Economics | 812.0 | 101.0 | 4840.0 | 777.0 | 195.0 | 87.0 | 51.0 | 71.0 | 48.0 | 162.0 | 188.0 | 58.0 | Mobile Payment App
+907.0 | 18.0 | Male | Freshman | Psychology | 1191.0 | 611.0 | 3373.0 | 673.0 | 327.0 | 62.0 | 164.0 | 133.0 | 26.0 | 229.0 | 107.0 | 152.0 | Cash
+908.0 | 20.0 | Male | Senior | Economics | 1440.0 | 1000.0 | 3823.0 | 525.0 | 135.0 | 142.0 | 131.0 | 34.0 | 27.0 | 90.0 | 200.0 | 122.0 | Cash
+909.0 | 24.0 | Female | Sophomore | Biology | 1447.0 | 246.0 | 4038.0 | 406.0 | 235.0 | 113.0 | 98.0 | 113.0 | 50.0 | 71.0 | 37.0 | 33.0 | Credit/Debit Card
+910.0 | 21.0 | Female | Freshman | Computer Science | 1030.0 | 357.0 | 4883.0 | 806.0 | 100.0 | 99.0 | 87.0 | 46.0 | 38.0 | 155.0 | 169.0 | 91.0 | Mobile Payment App
+911.0 | 23.0 | Female | Senior | Engineering | 1034.0 | 202.0 | 5347.0 | 558.0 | 381.0 | 116.0 | 271.0 | 67.0 | 44.0 | 228.0 | 124.0 | 184.0 | Credit/Debit Card
+912.0 | 20.0 | Female | Junior | Economics | 1406.0 | 10.0 | 3674.0 | 967.0 | 303.0 | 94.0 | 286.0 | 61.0 | 61.0 | 121.0 | 181.0 | 62.0 | Mobile Payment App
+913.0 | 21.0 | Senior | Biology | 1086.0 | 38.0 | 3425.0 | 605.0 | 381.0 | 53.0 | 171.0 | 129.0 | 24.0 | 165.0 | 136.0 | 67.0 | Credit/Debit Card
+914.0 | 25.0 | Female | Sophomore | Psychology | 1334.0 | 320.0 | 4772.0 | 794.0 | 204.0 | 129.0 | 160.0 | 139.0 | 37.0 | 228.0 | 106.0 | 67.0 | Mobile Payment App
+915.0 | 25.0 | Female | Senior | Engineering | 507.0 | 474.0 | 4996.0 | 750.0 | 181.0 | 107.0 | 156.0 | 79.0 | 27.0 | 122.0 | 39.0 | 87.0 | Cash
+916.0 | 21.0 | Male | Senior | Engineering | 1483.0 | 892.0 | 4014.0 | 458.0 | 400.0 | 90.0 | 217.0 | 134.0 | 50.0 | 142.0 | 60.0 | 42.0 | Mobile Payment App
+917.0 | 20.0 | Sophomore | Economics | 888.0 | 228.0 | 3253.0 | 539.0 | 207.0 | 182.0 | 241.0 | 71.0 | 41.0 | 254.0 | 125.0 | 48.0 | Credit/Debit Card
+918.0 | 23.0 | Freshman | Economics | 1204.0 | 815.0 | 4350.0 | 871.0 | 166.0 | 120.0 | 275.0 | 87.0 | 77.0 | 237.0 | 85.0 | 21.0 | Credit/Debit Card
+919.0 | 23.0 | Male | Junior | Economics | 1047.0 | 207.0 | 5892.0 | 667.0 | 161.0 | 197.0 | 255.0 | 53.0 | 96.0 | 168.0 | 105.0 | 168.0 | Cash
+920.0 | 21.0 | Male | Freshman | Psychology | 1279.0 | 900.0 | 5478.0 | 815.0 | 336.0 | 136.0 | 154.0 | 145.0 | 81.0 | 236.0 | 108.0 | 186.0 | Credit/Debit Card
+921.0 | 19.0 | Female | Sophomore | Economics | 613.0 | 543.0 | 5947.0 | 622.0 | 309.0 | 99.0 | 151.0 | 94.0 | 36.0 | 83.0 | 199.0 | 141.0 | Mobile Payment App
+922.0 | 18.0 | Male | Senior | Computer Science | 1280.0 | 550.0 | 4843.0 | 500.0 | 112.0 | 99.0 | 119.0 | 67.0 | 70.0 | 141.0 | 97.0 | 109.0 | Credit/Debit Card
+923.0 | 25.0 | Male | Sophomore | Economics | 696.0 | 976.0 | 5246.0 | 475.0 | 258.0 | 162.0 | 87.0 | 67.0 | 68.0 | 232.0 | 72.0 | 132.0 | Mobile Payment App
+924.0 | 20.0 | Female | Senior | Economics | 1191.0 | 315.0 | 4490.0 | 476.0 | 270.0 | 152.0 | 169.0 | 129.0 | 100.0 | 75.0 | 193.0 | 157.0 | Credit/Debit Card
+925.0 | 24.0 | Female | Freshman | Biology | 1287.0 | 239.0 | 3301.0 | 493.0 | 252.0 | 98.0 | 246.0 | 36.0 | 70.0 | 282.0 | 134.0 | 114.0 | Mobile Payment App
+926.0 | 23.0 | Female | Junior | Engineering | 1391.0 | 362.0 | 4261.0 | 697.0 | 269.0 | 108.0 | 105.0 | 145.0 | 43.0 | 100.0 | 39.0 | 144.0 | Cash
+927.0 | 23.0 | Sophomore | Economics | 1345.0 | 291.0 | 4809.0 | 686.0 | 173.0 | 132.0 | 229.0 | 115.0 | 40.0 | 207.0 | 63.0 | 57.0 | Credit/Debit Card
+928.0 | 19.0 | Junior | Computer Science | 1344.0 | 825.0 | 3106.0 | 563.0 | 333.0 | 142.0 | 129.0 | 111.0 | 47.0 | 96.0 | 94.0 | 153.0 | Cash
+929.0 | 23.0 | Junior | Economics | 779.0 | 708.0 | 3808.0 | 876.0 | 391.0 | 94.0 | 298.0 | 34.0 | 34.0 | 192.0 | 87.0 | 107.0 | Mobile Payment App
+930.0 | 23.0 | Female | Senior | Economics | 1123.0 | 490.0 | 5507.0 | 932.0 | 370.0 | 141.0 | 233.0 | 91.0 | 61.0 | 258.0 | 139.0 | 187.0 | Mobile Payment App
+931.0 | 22.0 | Male | Senior | Economics | 1038.0 | 686.0 | 4766.0 | 929.0 | 366.0 | 133.0 | 70.0 | 93.0 | 90.0 | 74.0 | 118.0 | 106.0 | Credit/Debit Card
+932.0 | 22.0 | Female | Senior | Computer Science | 595.0 | 995.0 | 3971.0 | 572.0 | 111.0 | 79.0 | 291.0 | 24.0 | 71.0 | 244.0 | 61.0 | 198.0 | Mobile Payment App
+933.0 | 25.0 | Female | Freshman | Engineering | 1345.0 | 295.0 | 4585.0 | 621.0 | 285.0 | 101.0 | 270.0 | 115.0 | 55.0 | 211.0 | 55.0 | 107.0 | Cash
+934.0 | 19.0 | Female | Junior | Computer Science | 534.0 | 546.0 | 4102.0 | 520.0 | 371.0 | 196.0 | 106.0 | 75.0 | 56.0 | 239.0 | 45.0 | 122.0 | Cash
+935.0 | 24.0 | Female | Senior | Computer Science | 1176.0 | 326.0 | 4890.0 | 837.0 | 245.0 | 93.0 | 134.0 | 78.0 | 81.0 | 54.0 | 107.0 | 40.0 | Cash
+936.0 | 20.0 | Female | Sophomore | Biology | 836.0 | 105.0 | 5807.0 | 419.0 | 243.0 | 149.0 | 89.0 | 72.0 | 52.0 | 71.0 | 74.0 | 143.0 | Mobile Payment App
+937.0 | 18.0 | Female | Freshman | Biology | 1047.0 | 15.0 | 4342.0 | 620.0 | 359.0 | 195.0 | 212.0 | 63.0 | 94.0 | 193.0 | 141.0 | 48.0 | Credit/Debit Card
+938.0 | 24.0 | Female | Sophomore | Engineering | 865.0 | 907.0 | 5189.0 | 936.0 | 161.0 | 115.0 | 284.0 | 61.0 | 100.0 | 234.0 | 129.0 | 163.0 | Mobile Payment App
+939.0 | 18.0 | Junior | Psychology | 1148.0 | 565.0 | 3353.0 | 613.0 | 218.0 | 159.0 | 271.0 | 92.0 | 67.0 | 235.0 | 122.0 | 186.0 | Credit/Debit Card
+940.0 | 21.0 | Female | Senior | Engineering | 696.0 | 715.0 | 5238.0 | 710.0 | 195.0 | 133.0 | 98.0 | 54.0 | 66.0 | 294.0 | 41.0 | 197.0 | Credit/Debit Card
+941.0 | 19.0 | Female | Freshman | Economics | 778.0 | 741.0 | 5664.0 | 558.0 | 398.0 | 171.0 | 183.0 | 71.0 | 52.0 | 148.0 | 83.0 | 138.0 | Credit/Debit Card
+942.0 | 22.0 | Senior | Psychology | 1140.0 | 598.0 | 5623.0 | 665.0 | 278.0 | 183.0 | 236.0 | 110.0 | 22.0 | 238.0 | 194.0 | 22.0 | Credit/Debit Card
+943.0 | 22.0 | Female | Sophomore | Computer Science | 557.0 | 351.0 | 3510.0 | 857.0 | 112.0 | 158.0 | 269.0 | 40.0 | 78.0 | 267.0 | 31.0 | 146.0 | Cash
+944.0 | 24.0 | Male | Sophomore | Computer Science | 948.0 | 741.0 | 5923.0 | 954.0 | 265.0 | 181.0 | 81.0 | 59.0 | 71.0 | 216.0 | 157.0 | 33.0 | Mobile Payment App
+945.0 | 24.0 | Female | Freshman | Engineering | 1249.0 | 574.0 | 4477.0 | 653.0 | 111.0 | 182.0 | 112.0 | 92.0 | 84.0 | 241.0 | 112.0 | 196.0 | Mobile Payment App
+946.0 | 24.0 | Sophomore | Economics | 1092.0 | 988.0 | 4819.0 | 768.0 | 240.0 | 158.0 | 109.0 | 111.0 | 33.0 | 236.0 | 137.0 | 58.0 | Credit/Debit Card
+947.0 | 20.0 | Female | Junior | Computer Science | 717.0 | 958.0 | 5667.0 | 447.0 | 304.0 | 194.0 | 95.0 | 71.0 | 49.0 | 193.0 | 94.0 | 103.0 | Mobile Payment App
+948.0 | 19.0 | Female | Sophomore | Computer Science | 857.0 | 615.0 | 3851.0 | 487.0 | 255.0 | 95.0 | 287.0 | 31.0 | 46.0 | 299.0 | 93.0 | 74.0 | Cash
+949.0 | 18.0 | Senior | Biology | 1021.0 | 581.0 | 4690.0 | 502.0 | 222.0 | 161.0 | 98.0 | 80.0 | 73.0 | 56.0 | 188.0 | 85.0 | Credit/Debit Card
+950.0 | 22.0 | Female | Sophomore | Psychology | 1056.0 | 669.0 | 5378.0 | 596.0 | 278.0 | 179.0 | 223.0 | 47.0 | 87.0 | 135.0 | 55.0 | 51.0 | Mobile Payment App
+951.0 | 25.0 | Male | Freshman | Economics | 758.0 | 387.0 | 4974.0 | 534.0 | 101.0 | 76.0 | 62.0 | 65.0 | 27.0 | 120.0 | 160.0 | 26.0 | Credit/Debit Card
+952.0 | 21.0 | Freshman | Economics | 653.0 | 639.0 | 5045.0 | 496.0 | 336.0 | 84.0 | 236.0 | 115.0 | 34.0 | 220.0 | 169.0 | 125.0 | Cash
+953.0 | 21.0 | Male | Sophomore | Computer Science | 643.0 | 218.0 | 4138.0 | 793.0 | 271.0 | 182.0 | 52.0 | 55.0 | 99.0 | 79.0 | 45.0 | 91.0 | Credit/Debit Card
+954.0 | 25.0 | Male | Freshman | Engineering | 668.0 | 893.0 | 3446.0 | 653.0 | 347.0 | 88.0 | 276.0 | 73.0 | 95.0 | 73.0 | 152.0 | 35.0 | Cash
+955.0 | 25.0 | Female | Sophomore | Psychology | 645.0 | 79.0 | 3830.0 | 940.0 | 249.0 | 63.0 | 69.0 | 61.0 | 40.0 | 74.0 | 76.0 | 75.0 | Mobile Payment App
+956.0 | 20.0 | Female | Senior | Psychology | 1020.0 | 522.0 | 3874.0 | 408.0 | 150.0 | 162.0 | 168.0 | 129.0 | 98.0 | 255.0 | 138.0 | 174.0 | Credit/Debit Card
+957.0 | 20.0 | Junior | Computer Science | 1128.0 | 458.0 | 5302.0 | 602.0 | 270.0 | 65.0 | 299.0 | 143.0 | 58.0 | 218.0 | 138.0 | 142.0 | Cash
+958.0 | 22.0 | Male | Senior | Economics | 1186.0 | 650.0 | 4387.0 | 798.0 | 139.0 | 59.0 | 160.0 | 109.0 | 21.0 | 275.0 | 119.0 | 32.0 | Mobile Payment App
+959.0 | 23.0 | Female | Senior | Psychology | 528.0 | 573.0 | 4286.0 | 889.0 | 209.0 | 136.0 | 149.0 | 105.0 | 80.0 | 151.0 | 46.0 | 73.0 | Mobile Payment App
+960.0 | 25.0 | Male | Senior | Computer Science | 774.0 | 799.0 | 4397.0 | 629.0 | 163.0 | 75.0 | 183.0 | 39.0 | 33.0 | 54.0 | 136.0 | 125.0 | Cash
+961.0 | 22.0 | Male | Senior | Economics | 1236.0 | 255.0 | 3954.0 | 600.0 | 274.0 | 115.0 | 84.0 | 55.0 | 23.0 | 297.0 | 31.0 | 39.0 | Credit/Debit Card
+962.0 | 24.0 | Sophomore | Biology | 938.0 | 612.0 | 3797.0 | 928.0 | 190.0 | 65.0 | 79.0 | 111.0 | 45.0 | 196.0 | 113.0 | 171.0 | Mobile Payment App
+963.0 | 22.0 | Senior | Computer Science | 1169.0 | 588.0 | 4110.0 | 508.0 | 104.0 | 159.0 | 242.0 | 30.0 | 78.0 | 105.0 | 163.0 | 195.0 | Mobile Payment App
+964.0 | 25.0 | Male | Freshman | Computer Science | 1061.0 | 333.0 | 5826.0 | 949.0 | 250.0 | 138.0 | 158.0 | 57.0 | 20.0 | 265.0 | 193.0 | 103.0 | Mobile Payment App
+965.0 | 24.0 | Sophomore | Economics | 514.0 | 158.0 | 3039.0 | 506.0 | 361.0 | 84.0 | 158.0 | 132.0 | 49.0 | 104.0 | 159.0 | 99.0 | Cash
+966.0 | 19.0 | Male | Junior | Engineering | 1015.0 | 493.0 | 5435.0 | 827.0 | 369.0 | 147.0 | 121.0 | 87.0 | 49.0 | 289.0 | 121.0 | 74.0 | Mobile Payment App
+967.0 | 18.0 | Male | Junior | Computer Science | 743.0 | 104.0 | 3493.0 | 726.0 | 223.0 | 105.0 | 96.0 | 73.0 | 37.0 | 275.0 | 158.0 | 75.0 | Mobile Payment App
+968.0 | 21.0 | Male | Sophomore | Engineering | 913.0 | 70.0 | 4183.0 | 714.0 | 268.0 | 88.0 | 198.0 | 87.0 | 31.0 | 69.0 | 39.0 | 177.0 | Cash
+969.0 | 24.0 | Junior | Engineering | 1142.0 | 946.0 | 4748.0 | 867.0 | 264.0 | 166.0 | 125.0 | 99.0 | 69.0 | 287.0 | 84.0 | 135.0 | Credit/Debit Card
+970.0 | 25.0 | Female | Senior | Psychology | 868.0 | 670.0 | 3274.0 | 443.0 | 308.0 | 120.0 | 61.0 | 70.0 | 96.0 | 86.0 | 199.0 | 127.0 | Mobile Payment App
+971.0 | 19.0 | Sophomore | Engineering | 1464.0 | 17.0 | 3939.0 | 490.0 | 357.0 | 87.0 | 131.0 | 97.0 | 67.0 | 168.0 | 87.0 | 135.0 | Credit/Debit Card
+972.0 | 21.0 | Female | Senior | Psychology | 1260.0 | 617.0 | 4060.0 | 799.0 | 244.0 | 62.0 | 193.0 | 107.0 | 62.0 | 285.0 | 180.0 | 130.0 | Cash
+973.0 | 19.0 | Male | Junior | Computer Science | 1326.0 | 817.0 | 5451.0 | 453.0 | 172.0 | 87.0 | 62.0 | 112.0 | 70.0 | 220.0 | 93.0 | 32.0 | Cash
+974.0 | 18.0 | Female | Senior | Computer Science | 1219.0 | 671.0 | 4152.0 | 700.0 | 335.0 | 152.0 | 296.0 | 98.0 | 86.0 | 77.0 | 82.0 | 27.0 | Cash
+975.0 | 19.0 | Freshman | Computer Science | 1038.0 | 823.0 | 5211.0 | 576.0 | 207.0 | 92.0 | 263.0 | 54.0 | 26.0 | 270.0 | 123.0 | 165.0 | Credit/Debit Card
+976.0 | 25.0 | Male | Junior | Biology | 1418.0 | 510.0 | 3832.0 | 976.0 | 370.0 | 117.0 | 218.0 | 89.0 | 89.0 | 283.0 | 185.0 | 60.0 | Mobile Payment App
+977.0 | 18.0 | Female | Junior | Engineering | 1385.0 | 13.0 | 4384.0 | 678.0 | 253.0 | 119.0 | 76.0 | 113.0 | 50.0 | 229.0 | 74.0 | 169.0 | Mobile Payment App
+978.0 | 23.0 | Female | Freshman | Computer Science | 553.0 | 118.0 | 5030.0 | 960.0 | 304.0 | 135.0 | 212.0 | 105.0 | 54.0 | 147.0 | 118.0 | 183.0 | Mobile Payment App
+979.0 | 20.0 | Male | Senior | Economics | 1013.0 | 227.0 | 4119.0 | 805.0 | 366.0 | 62.0 | 191.0 | 135.0 | 60.0 | 84.0 | 151.0 | 172.0 | Mobile Payment App
+980.0 | 18.0 | Senior | Engineering | 1019.0 | 589.0 | 5357.0 | 828.0 | 247.0 | 65.0 | 112.0 | 58.0 | 92.0 | 170.0 | 30.0 | 126.0 | Mobile Payment App
+981.0 | 24.0 | Junior | Computer Science | 669.0 | 7.0 | 4461.0 | 828.0 | 266.0 | 59.0 | 60.0 | 129.0 | 27.0 | 131.0 | 75.0 | 165.0 | Credit/Debit Card
+982.0 | 19.0 | Female | Freshman | Computer Science | 933.0 | 698.0 | 4156.0 | 780.0 | 371.0 | 80.0 | 235.0 | 84.0 | 82.0 | 269.0 | 50.0 | 170.0 | Mobile Payment App
+983.0 | 20.0 | Female | Junior | Psychology | 1166.0 | 671.0 | 3244.0 | 528.0 | 164.0 | 117.0 | 238.0 | 127.0 | 56.0 | 243.0 | 84.0 | 108.0 | Cash
+984.0 | 25.0 | Freshman | Economics | 1197.0 | 652.0 | 4424.0 | 637.0 | 248.0 | 186.0 | 186.0 | 82.0 | 58.0 | 254.0 | 116.0 | 27.0 | Mobile Payment App
+985.0 | 19.0 | Female | Senior | Biology | 973.0 | 695.0 | 4709.0 | 555.0 | 114.0 | 93.0 | 190.0 | 121.0 | 70.0 | 190.0 | 129.0 | 178.0 | Cash
+986.0 | 23.0 | Female | Junior | Computer Science | 1381.0 | 696.0 | 4387.0 | 646.0 | 171.0 | 142.0 | 97.0 | 109.0 | 83.0 | 216.0 | 88.0 | 190.0 | Cash
+987.0 | 22.0 | Male | Junior | Psychology | 1082.0 | 221.0 | 4524.0 | 533.0 | 276.0 | 131.0 | 242.0 | 109.0 | 21.0 | 217.0 | 49.0 | 182.0 | Credit/Debit Card
+988.0 | 23.0 | Male | Senior | Engineering | 1160.0 | 168.0 | 3395.0 | 810.0 | 105.0 | 182.0 | 51.0 | 26.0 | 64.0 | 279.0 | 74.0 | 105.0 | Cash
+989.0 | 22.0 | Female | Junior | Computer Science | 1011.0 | 753.0 | 3523.0 | 475.0 | 392.0 | 187.0 | 298.0 | 99.0 | 73.0 | 125.0 | 93.0 | 31.0 | Cash
+990.0 | 20.0 | Senior | Psychology | 1412.0 | 155.0 | 5576.0 | 443.0 | 305.0 | 119.0 | 136.0 | 120.0 | 41.0 | 290.0 | 30.0 | 91.0 | Mobile Payment App
+991.0 | 24.0 | Junior | Psychology | 1391.0 | 259.0 | 3572.0 | 755.0 | 136.0 | 55.0 | 86.0 | 62.0 | 66.0 | 187.0 | 153.0 | 23.0 | Cash
+992.0 | 20.0 | Male | Freshman | Economics | 1293.0 | 672.0 | 5635.0 | 435.0 | 389.0 | 192.0 | 87.0 | 23.0 | 64.0 | 67.0 | 77.0 | 137.0 | Credit/Debit Card
+993.0 | 20.0 | Male | Freshman | Psychology | 1380.0 | 594.0 | 3658.0 | 739.0 | 277.0 | 187.0 | 92.0 | 144.0 | 69.0 | 283.0 | 68.0 | 21.0 | Mobile Payment App
+994.0 | 22.0 | Male | Senior | Psychology | 764.0 | 286.0 | 5430.0 | 589.0 | 387.0 | 61.0 | 68.0 | 46.0 | 96.0 | 86.0 | 46.0 | 85.0 | Mobile Payment App
+995.0 | 22.0 | Female | Senior | Biology | 1346.0 | 520.0 | 3688.0 | 969.0 | 152.0 | 194.0 | 151.0 | 42.0 | 38.0 | 252.0 | 65.0 | 163.0 | Cash
+996.0 | 19.0 | Female | Senior | Biology | 1407.0 | 560.0 | 3380.0 | 508.0 | 265.0 | 52.0 | 206.0 | 40.0 | 98.0 | 274.0 | 84.0 | 135.0 | Mobile Payment App
+997.0 | 20.0 | Male | Junior | Economics | 957.0 | 393.0 | 3497.0 | 723.0 | 339.0 | 139.0 | 69.0 | 112.0 | 46.0 | 284.0 | 57.0 | 28.0 | Mobile Payment App
+998.0 | 22.0 | Senior | Economics | 1174.0 | 612.0 | 3649.0 | 543.0 | 237.0 | 123.0 | 200.0 | 129.0 | 90.0 | 190.0 | 101.0 | 65.0 | Mobile Payment App
+999.0 | 24.0 | Sophomore | Computer Science | 541.0 | 640.0 | 5965.0 | 609.0 | 270.0 | 191.0 | 215.0 | 139.0 | 43.0 | 281.0 | 88.0 | 145.0 | Cash

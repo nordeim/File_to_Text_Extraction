@@ -1,3 +1,10 @@
+This version was originally developed by Grok3. It was improved by DeepSeek R1 and then Claude 3.7.
+```bash
+python file_conversion_app-v3.py  # file_conversion_app_claude_deepseek_grok3.py
+```
+![image](https://github.com/user-attachments/assets/916e8043-f102-4dce-8e8f-a7d6cb6a6e68)
+
+---
 ```bash
 // conda create -n File_to_Text_Extraction python=3.11 -y && conda activate File_to_Text_Extraction # optional
 pip install gradio langchain_community PyPDF2 python-docx openpyxl python-pptx
